@@ -1,0 +1,125 @@
+<script>
+      $(function() {                         
+        function loadFree () {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(content => {                            
+              let freeList = JSON.parse(content)                              
+              freeListElement.empty()
+
+              freeList.forEach(free => {
+                let freeRowHtml = ejs.render(freeRowTemplate, free, {delimiter: '?'});
+                freeListElement.append(freeRowHtml)
+              })
+
+              $(document).trigger('search.refresh')
+                                       
+              resolve(content)
+            }).withFailureHandler(error => {
+              reject(error)
+            }).getFreeStringified();
+          })
+        }
+
+        function moveFreeToAssembly(orderIndex) {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(response => {              
+              resolve(response)
+            }).withFailureHandler(error => {
+                reject(error)
+            }).moveFreeToAssembly(orderIndex);
+          })          
+        }
+
+        function removeFree (orderNumber) {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(() => {
+              resolve()                                 
+            }).withFailureHandler(error => {
+                reject(error)
+            }).removeFree(orderNumber);
+          })
+        }
+
+        loadFree()
+
+        $(document).on('click', 'button[data-action="free.move-to-assembly"]', function(e) {                    
+          if (!freeListElement.data('block')) {
+            freeListElement.data('block', true)            
+
+            let orderNumber = $(this).data('orderNumber')                 
+            let loader = $(this).find('[data-element="loader"]')
+            let freeMoveToAssemblyModal = $('#freeMoveToAssemblyModal')            
+            
+            loader.show()
+
+            moveFreeToAssembly(orderNumber)
+              .then(
+                () => {              
+                  loadFree().then(() => {
+                    assemblyListElement.trigger('refresh')                  
+                    loader.hide()
+                    freeMoveToAssemblyModal.modal('hide')
+                    freeListElement.data('block', false)   
+                  })
+                },
+                error => {           
+                  loadFree().then(() => {                    
+                    messageModal.data('message', prepareError(error))
+                    messageModal.modal('show')      
+                   
+                    assemblyListElement.trigger('refresh')                  
+                    loader.hide()
+                    freeMoveToAssemblyModal.modal('hide')
+                    freeListElement.data('block', false)   
+                  })                                    
+                }
+              )   
+          }
+        })
+
+        $('#freeMoveToAssemblyModal').on('show.bs.modal', function (e) {
+          var button = $(e.relatedTarget) 
+          var orderNumber = button.data('orderNumber') 
+
+          var modal = $(this)
+          modal.find('[data-element="order-number"]').text(orderNumber)
+          modal.find('button[data-action="free.move-to-assembly"]').data('orderNumber', orderNumber)
+        })  
+
+        $(document).on('click', 'button[data-action="free.remove"]', function(e) {                    
+          if (!freeListElement.data('block')) {
+            freeListElement.data('block', true)
+
+            let orderNumber = $(this).data('orderNumber')
+            let loader = $(this).find('[data-element="loader"]')
+            let freeRemoveModal = $('#freeRemoveModal')
+            
+            loader.show()
+
+            removeFree(orderNumber)
+              .then(response => {              
+                loadFree().then(response => {
+                  loader.hide()
+                  freeRemoveModal.modal('hide')
+                  freeListElement.data('block', false)
+                })
+              })   
+          }
+        })
+
+
+        $('#freeRemoveModal').on('show.bs.modal', function (e) {
+          var button = $(e.relatedTarget) 
+          var orderNumber = button.data('orderNumber') 
+
+          var modal = $(this)
+          modal.find('[data-element="order-number"]').text(orderNumber)
+          modal.find('button[data-action="free.remove"]').data('orderNumber', orderNumber)          
+        })
+        
+
+        freeListElement.on('refresh', function() {
+          loadFree() 
+        })
+      })
+</script>

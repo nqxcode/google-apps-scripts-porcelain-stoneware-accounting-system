@@ -1,0 +1,287 @@
+<script>
+      $(function() {                         
+        function loadAssemblies () {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(content => {                            
+              let assemblies = JSON.parse(content)                              
+              assemblyListElement.empty()
+
+              assemblies.forEach(assembly => {
+                let assemblyRowHtml = ejs.render(assemblyRowTemplate, assembly, {delimiter: '?'});
+                assemblyListElement.append(assemblyRowHtml)
+              })
+
+              initButtonsState()
+              $(document).trigger('search.refresh')
+                                        
+              resolve(content)
+            }).withFailureHandler(error => {
+              reject(error)
+            }).getAssembliesStringified();
+          })
+        }
+
+        function addAssembly(formObject) {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(response => {              
+              resolve(response)
+            }).withFailureHandler(error => {
+                reject(error)
+            }).addAssembly(formObject);
+          })          
+        }
+
+        function moveAssemblyToShipment(orderNumber) {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(response => {              
+              resolve(response)
+            }).withFailureHandler(error => {
+                reject(error)
+            }).moveAssemblyToShipment(orderNumber);
+          })          
+        }
+
+        function updateAssembly(orderNumber, assemblyData) {     
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(response => {
+              resolve(response)                                 
+            }).withFailureHandler(error => {
+                reject(error)
+            }).updateAssembly(orderNumber, assemblyData);
+          })
+        }
+
+        function getOrderNumber(assemblyElement) {
+          return assemblyElement.index()
+        }
+
+        function initButtonsState() {
+          let assemblyElements = assemblyListElement.find('[data-element="assembly"]')
+
+          assemblyElements.each(function() {
+            let assemblyElement = $(this)            
+            let orderNumberInput = assemblyElement.find('[name="order_number"]')
+            let setChangeModeButton = assemblyElement.find('button[data-action="assemblies.set-change-mode"]')
+            let moveToShipmentButton = assemblyElement.find('button[data-action="assemblies.show-move-to-shipment-confirmation"]')
+
+            if (orderNumberInput.val() != '') {
+              assemblyElement.removeClass('warning')
+              orderNumberInput.prop('disabled', true)
+              setChangeModeButton.prop('disabled', true)
+              setChangeModeButton.hide();
+              moveToShipmentButton.prop('disabled', false)                             
+
+            } else {
+              assemblyElement.addClass('warning')
+              orderNumberInput.prop('disabled', false)
+              setChangeModeButton.prop('disabled', false)
+              setChangeModeButton.show();
+              moveToShipmentButton.prop('disabled', true)      
+                    
+            }
+          })
+        }
+
+        loadAssemblies()
+        
+
+        let formValidator = $('form#assembly').validate({
+          rules: {            
+          },
+          messages: {            
+          }
+        });
+
+        $('form#assembly').on('submit', function(e) {   
+          e.preventDefault();    
+  
+          if ($(this).valid()) {
+            let form = $(this).get(0)
+            let loader = $(this).find('[data-element="loader"]')
+            
+            loader.show();
+
+            addAssembly(form)
+              .then(
+                () => {    
+                  loadAssemblies().then(response => {
+                    form.reset();
+                    loader.hide();
+                  })                     
+                },
+                error => {
+                  formValidator.showErrors({
+                    "order_number": prepareError(error)
+                  });
+                  loader.hide();
+                }
+              )  
+          }
+        })    
+
+        $(document).on('click', 'button[data-action="assemblies.set-change-mode"]', function(e) {     
+          if (assemblyListElement.data('block')) {
+            return
+          }
+        
+          let assemblyElements = assemblyListElement.find('[data-element="assembly"]')          
+          let assemblyElement = assemblyElements.has(this)          
+          
+          let otherAssemblyElements = assemblyElements.filter(function() { return getOrderNumber($(this)) != getOrderNumber(assemblyElement) })
+          
+          function getButtons(assemblyElement) {
+            let setChangeModeButton = assemblyElement.find('button[data-action="assemblies.set-change-mode"]')
+            let saveChangesButton = assemblyElement.find('button[data-action="assemblies.save-changes"]')
+            let cancelChangesButton = assemblyElement.find('button[data-action="assemblies.cancel-changes"]')
+            let moveToShipmentButton = assemblyElement.find('button[data-action="assemblies.show-move-to-shipment-confirmation"]')
+
+            return {
+              setChangeModeButton: setChangeModeButton,
+              saveChangesButton: saveChangesButton,
+              cancelChangesButton: cancelChangesButton,
+              moveToShipmentButton: moveToShipmentButton
+            }
+          }
+
+          assemblyElement.find('[data-name]').hide()
+          assemblyElement.find('[name]').show()
+
+          let buttons = getButtons(assemblyElement)
+          buttons.setChangeModeButton.hide()
+          buttons.moveToShipmentButton.hide()
+          buttons.saveChangesButton.show()
+          buttons.cancelChangesButton.show()
+
+          $.each(otherAssemblyElements, function() {
+            let assemblyElement = $(this);
+
+            assemblyElement.find('[data-name]').show()
+            assemblyElement.find('[name]').hide()
+
+            let buttons = getButtons(assemblyElement)
+
+            if (! buttons.setChangeModeButton.prop('disabled')) {
+              buttons.setChangeModeButton.show()
+            } else {
+              buttons.setChangeModeButton.hide()
+            }
+            
+            buttons.moveToShipmentButton.show()
+            buttons.saveChangesButton.hide()
+            buttons.cancelChangesButton.hide()
+          })
+        })
+
+        $(document).on('click', 'button[data-action="assemblies.save-changes"]', function(e) {
+          if (!assemblyListElement.data('block')) {
+            assemblyListElement.data('block', true)
+
+            let assemblyElement = assemblyListElement.find('[data-element="assembly"]').has(this)
+            let orderNumber = getOrderNumber(assemblyElement)
+
+            let saveChangesButton = $(this)                               
+            let setChangeModeButton = assemblyElement.find('button[data-action="assemblies.set-change-mode"]')
+            let cancelChangesButton = assemblyElement.find('button[data-action="assemblies.cancel-changes"]')
+
+            let loader = $(this).find('[data-element="loader"]')
+
+            let form = assemblyElement.find('[name]')
+            let assemblyData = getFormData(form)       
+
+            loader.show()
+            updateAssembly(orderNumber, assemblyData)
+            .then(
+              () => {
+                loadAssemblies().then(() => {              
+                  loader.hide()
+                  assemblyListElement.data('block', false)
+                })     
+              },
+              error => {                                
+                loadAssemblies().then(() => {              
+                  messageModal.data('message', prepareError(error))
+                  messageModal.modal('show')
+
+                  loader.hide()
+                  assemblyListElement.data('block', false)
+                })
+              }
+            )
+          }
+        })
+        
+        $(document).on('click', 'button[data-action="assemblies.cancel-changes"]', function(e) {         
+          if (assemblyListElement.data('block')) {
+            return
+          }
+          
+          let assemblyElement = assemblyListElement.find('[data-element="assembly"]').has(this)
+          let orderNumber = $(this).data('orderNumber')                          
+
+          let cancelChangesButton = $(this)          
+          let setChangeModeButton = assemblyElement.find('button[data-action="assemblies.set-change-mode"]')
+          let saveChangesButton = assemblyElement.find('button[data-action="assemblies.save-changes"]')
+          let moveToShipmentButton = assemblyElement.find('button[data-action="assemblies.show-move-to-shipment-confirmation"]')
+
+          assemblyElement.find('[data-name]').show()
+          assemblyElement.find('[name]').hide()
+
+          setChangeModeButton.show()
+          moveToShipmentButton.show()
+          saveChangesButton.hide()
+          cancelChangesButton.hide()                    
+        })   
+
+
+        $(document).on('click', 'button[data-action="assemblies.move-to-shipment"]', function(e) {                    
+          if (!assemblyListElement.data('block')) {
+            assemblyListElement.data('block', true)
+
+            let assemblyElement = assemblyListElement.find('[data-element="assembly"]').has(this)            
+
+            let orderNumber = $(this).data('orderNumber')                    
+            let loader = $(this).find('[data-element="loader"]')
+            let assemblyMoveToShipmentModal = $('#assemblyMoveToShipmentModal')            
+            
+            loader.show()
+
+            moveAssemblyToShipment(orderNumber)
+              .then(
+                () => {                    
+                  loadAssemblies().then(() => {
+                    shipmentListElement.trigger('refresh')
+                    loader.hide()
+                    assemblyMoveToShipmentModal.modal('hide')
+                    assemblyListElement.data('block', false)
+                  })
+                },
+                error => {
+                  loadAssemblies().then(() => {
+                    messageModal.data('message', prepareError(error))
+                    messageModal.modal('show')
+
+                    shipmentListElement.trigger('refresh')
+                    loader.hide()
+                    assemblyMoveToShipmentModal.modal('hide')
+                    assemblyListElement.data('block', false)
+                  })                  
+                }
+              )   
+          }
+        })
+
+        $('#assemblyMoveToShipmentModal').on('show.bs.modal', function (e) {
+          var button = $(e.relatedTarget) 
+          var orderNumber = button.data('orderNumber') 
+
+          var modal = $(this)
+          modal.find('[data-element="order-number"]').text(orderNumber)
+          modal.find('button[data-action="assemblies.move-to-shipment"]').data('orderNumber', orderNumber)
+        })
+
+        assemblyListElement.on('refresh', function() {
+          loadAssemblies() 
+        })
+
+      })
+</script>

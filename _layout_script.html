@@ -1,0 +1,155 @@
+<script>        
+      $(function() {           
+        window.getFormData = function ($form){
+            let data = $form.serializeArray();
+            var result = {};
+
+            $.map(data, function(v, i){
+                result[v['name']] = v['value'];
+            });
+
+            return result
+        }
+
+        window.prepareError = function(error) {          
+          return error.message.replace('Error: ', '')
+        }
+
+        window.loadStoneColors = function () {
+          google.script.run.withSuccessHandler(function(stoneColors) {
+            
+              $('select[name="stone_color"]').each(function () {
+                var $select = $(this)
+                $select.empty()
+
+                $.each($.merge([''], stoneColors), function (i, color) {
+                  $select.append($('<option>', { value: color, text : color }));
+              })
+
+            });
+          }).getStoneColors();
+        }
+
+        window.loadStoneShapes = function () {
+          google.script.run.withSuccessHandler(function(stoneShapes) {
+              $('select[name="stone_shape"]').each(function () {
+                var $select = $(this)
+                $select.empty()
+                
+                $.each($.merge([''], stoneShapes), function (i, shape) {
+                  $select.append($('<option>', { value: shape, text : shape }));
+                })
+              })
+            }).getStoneShapes();
+        }
+
+        window.initFormControls = function(form) {
+            let diameterElement = form.find('[name="diameter"]')
+            let lengthMinElement = form.find('[name="length_min"]')
+            let lengthMaxElement = form.find('[name="length_max"]')
+            let widthElement = form.find('[name="width"]')
+            let stoneShapeElement = form.find('[name="stone_shape"]')
+            let stoneColorElement = form.find('[name="stone_color"]')
+
+            let rules = [
+              {element: lengthMaxElement, stoneShapes: ['бочка', 'овал', 'стадион', 'прямоугольник', 'раздвижной стол']},
+              {element: lengthMinElement, stoneShapes: ['раздвижной стол']},                            
+              {element: widthElement, stoneShapes: ['бочка', 'овал', 'стадион', 'прямоугольник', 'раздвижной стол']},
+              {element: diameterElement, stoneShapes: ['круг', 'сектора']}              
+            ]
+
+            stoneShapeElement.change(function(){
+                let value = stoneShapeElement.val()
+
+                rules.forEach(function(rule) {
+                  let disabled = !rule.stoneShapes.includes(value)
+                  rule.element.prop('disabled', disabled)
+                  if (disabled) {
+                    rule.element.val('');
+                  }                  
+                })
+            })
+
+            stoneShapeElement.trigger('change')
+        }          
+
+        window.initForms = function() {
+            let needForm = $('form#need');
+            let assemblyForm = $('form#assembly');
+            let polishingForm = $('form#polishing');
+
+            let forms = [needForm, assemblyForm, polishingForm]
+
+            forms.forEach(function(form){
+                initFormControls(form)
+            })
+        }      
+
+        loadStoneColors()
+        loadStoneShapes()      
+        initForms()
+
+        $(document).on('colors.refresh', function (e) {
+          loadStoneColors()             
+        })
+
+        $(document).on('shapes.refresh', function (e) {          
+          loadStoneShapes()      
+        })
+
+        $(document).on('search.refresh', function() {
+            $('[data-element="query"]').trigger('keyup')
+        })
+
+        window.needListElement = $('#need_list')
+        window.assemblyListElement = $('#assembly_list') 
+        window.shipmentListElement = $('#shipment_list') 
+        window.freeListElement = $('#free_list')
+        window.polishingListElement = $('#polishing_list')  
+        window.stoneColorListElement = $('#stone_color_list')
+        window.stoneShapeListElement = $('#stone_shape_list')
+        window.messageModal = $('#messageModal')        
+
+        $('input[type="search"]').on("keyup", function() {
+            let value = $(this).val().toLowerCase();
+
+            let filter = function() {              
+              let textList = [];
+              $(this).find('[data-name]').each(function() {
+                textList.push($(this).text());
+              })
+
+              $(this).toggle(textList.join(' ').toLowerCase().indexOf(value) > -1)
+            }
+
+            let tabsElements = [
+              {tab: $('#need-tab'), elements: $('#need_list [data-element="need"]')},
+              {tab: $('#polishing-tab'), elements: $('#polishing_list [data-element="polishing"]')},
+              {tab: $('#assembly-tab'), elements: $('#assembly_list [data-element="assembly"]')},              
+              {tab: $('#shipment-tab'), elements: $('#shipment_list [data-element="shipment"]')},                            
+              {tab: $('#free-tab'), elements: $('#free_list [data-element="free"]')},                            
+              {tab: $('#properties-tab'), elements: $('#stone_color_list [data-element="stone_color"], #stone_shape_list [data-element="stone_shape"]')},                            
+            ]
+
+            tabsElements.forEach(obj => {
+              obj.elements.filter(filter);
+              
+              obj.tab.find('sup').text(obj.elements.filter(function() { return $(this).css('display') !== 'none' }).length)
+            })
+            
+        });
+
+        $('[data-action="search.clear"]').on('click', function() {
+          let queryElement = $('[data-element="query"]')
+          queryElement.val('')
+          queryElement.trigger('keyup')
+        })
+
+        $('#messageModal').on('show.bs.modal', function (e) {
+          var modal = $(this)
+          modal.find('.modal-title').text(modal.data('title'))
+          modal.find('.modal-body').text(modal.data('message'))          
+        })        
+
+      })
+</script>

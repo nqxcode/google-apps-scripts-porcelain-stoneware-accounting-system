@@ -1,0 +1,143 @@
+<script>
+      $(function() {     
+        function loadStoneColors () {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(content => {                            
+              let stoneColors = JSON.parse(content)                              
+              stoneColorListElement.empty()
+
+              stoneColors.forEach(stoneColor => {                
+                let stoneColorRowHtml = ejs.render(stoneColorRowTemplate, {stone_color: stoneColor}, {delimiter: '?'});
+                stoneColorListElement.append(stoneColorRowHtml)
+              })
+                                      
+              $(document).trigger('search.refresh') 
+
+              resolve(content)
+            }).withFailureHandler(error => {
+              reject(error)
+            }).getStoneColorsStringified();
+          })
+        }
+
+        loadStoneColors()
+
+
+        function addStoneColor(formObj) {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(response => {              
+              resolve(response)
+            }).withFailureHandler(error => {
+                reject(error)
+            }).addStoneColor(formObj);
+          })          
+        }
+
+        function removeStoneColor(colorIndex) {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(response => {              
+              resolve(response)
+            }).withFailureHandler(error => {
+                reject(error)
+            }).removeStoneColor(colorIndex);
+          })          
+        }
+
+
+        let formValidator = $('form#stone_color').validate({
+          rules: {
+            stone_color: "required"
+          },
+          messages: {
+            stone_color: "Укажите цвет камня"
+          }
+        });
+
+        $('form#stone_color').on('submit', function(e) {   
+          e.preventDefault();    
+  
+          if ($(this).valid()) {
+            let form = $(this).get(0)
+            let loader = $(this).find('[data-element="loader"]')
+            
+            loader.show();
+
+            addStoneColor(form)
+              .then(
+                (response) => {    
+                  if (response === false) {
+                    formValidator.showErrors({
+                      "stone_color": "Цвет должен быть уникальным"
+                    });
+                    loader.hide();
+                    return
+                  } 
+
+                  loadStoneColors().then(
+                    () => {
+                      $(document).trigger('colors.refresh')
+                      form.reset();
+                      loader.hide();
+                  })    
+                },
+                error => {
+                    loadStoneColors().then(
+                      () => {
+                        $(document).trigger('colors.refresh')
+                        messageModal.data('message', prepareError(error))
+                        messageModal.modal('show')   
+                        form.reset();
+                        loader.hide();
+                    })
+                }
+              )  
+            }
+        })  
+
+        $(document).on('click', 'button[data-action="stone_colors.remove"]', function(e) {                    
+          if (!stoneColorListElement.data('block')) {
+            stoneColorListElement.data('block', true)
+          
+          
+            let colorIndex = $(this).data('colorIndex')            
+            let loader = $(this).find('[data-element="loader"]')
+            let stoneColorRemoveModal = $('#stoneColorRemoveModal')
+            
+            loader.show()            
+
+            removeStoneColor(colorIndex)
+              .then(
+                () => {                      
+                  loadStoneColors().then(
+                    () => {
+                      $(document).trigger('colors.refresh')
+                      loader.hide()                  
+                      stoneColorRemoveModal.modal('hide')
+                      stoneColorListElement.data('block', false)
+                    }
+                  )
+                },
+                error => {
+                  $(document).trigger('colors.refresh')
+                  loader.hide()                  
+                  stoneColorRemoveModal.modal('hide')
+                  stoneColorListElement.data('block', false)
+                }
+            )   
+          }
+        })
+
+
+        $('#stoneColorRemoveModal').on('show.bs.modal', function (e) {
+          let button = $(e.relatedTarget) 
+          let colorName = button.data('colorName')
+          let stoneColorElement = stoneColorListElement.find('[data-element="stone_color"]').has(button)
+          let colorIndex = stoneColorElement.index()
+
+          let modal = $(this)          
+          modal.find('[data-element="color-name"]').text(colorName)          
+          modal.find('[data-action="stone_colors.remove"]').data('colorIndex', colorIndex)          
+        })
+
+      })
+</script>

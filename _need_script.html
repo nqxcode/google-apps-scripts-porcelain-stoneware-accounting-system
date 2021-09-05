@@ -1,0 +1,309 @@
+<script>
+      $(function() {           
+        function loadNeeds () {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(content => {                            
+              let needs = JSON.parse(content)                              
+              needListElement.empty()
+
+              needs.forEach(need => {
+                let needRowHtml = ejs.render(needRowTemplate, need, {delimiter: '?'});
+                needListElement.append(needRowHtml)
+              })
+
+              $(document).trigger('search.refresh')
+                                        
+              resolve(content)
+            }).withFailureHandler(error => {
+              reject(error)
+            }).getNeedsStringified();
+          })
+        }
+
+        function addNeed(formObject) {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(response => {              
+              resolve(response)
+            }).withFailureHandler(error => {
+                reject(error)
+            }).addNeed(formObject);
+          })          
+        }
+
+        function updateNeed(orderNumber, needData) {     
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(() => {
+              resolve()                                 
+            }).withFailureHandler(error => {
+                reject(error)
+            }).updateNeed(orderNumber, needData);
+          })
+        }
+
+        function moveNeedToAssembly(orderNumber) {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(response => {              
+              resolve(response)
+            }).withFailureHandler(error => {
+                reject(error)
+            }).moveNeedToAssembly(orderNumber);
+          })          
+        }
+
+        function moveNeedToPolishing(orderNumber) {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(response => {              
+              resolve(response)
+            }).withFailureHandler(error => {
+                reject(error)
+            }).moveNeedToPolishing(orderNumber);
+          })          
+        }
+
+        function getOrderNumber(needElement) {
+          return needElement.data('orderNumber')
+        }
+
+        loadNeeds()
+        
+
+        let formValidator = $('form#need').validate({
+          rules: {
+            order_number: "required"
+          },
+          messages: {
+            order_number: "Укажите номер заказа"
+          }
+        });
+
+        $('form#need').on('submit', function(e) {   
+          e.preventDefault();    
+  
+          if ($(this).valid()) {
+            let form = $(this).get(0)
+            let loader = $(this).find('[data-element="loader"]')
+            
+            loader.show();
+
+            addNeed(form)
+              .then(response => {    
+                if (response === false) {
+                  formValidator.showErrors({
+                    "order_number": "Номер заказа должен быть уникальным"
+                  });
+                  loader.hide();
+
+                } else {
+                  loadNeeds().then(response => {
+                    form.reset();
+                    loader.hide();
+                  })              
+                }      
+              })  
+          }
+        })    
+
+        $(document).on('click', 'button[data-action="needs.set-change-mode"]', function(e) {     
+          if (needListElement.data('block')) {
+            return
+          }
+        
+          let needElements = needListElement.find('[data-element="need"]')          
+          let needElement = needElements.has(this)          
+          
+          let otherNeedElements = needElements.filter(function() { return getOrderNumber($(this)) != getOrderNumber(needElement) })
+          
+          function getButtons(needElement) {
+            let setChangeModeButton = needElement.find('button[data-action="needs.set-change-mode"]')
+            let saveChangesButton = needElement.find('button[data-action="needs.save-changes"]')
+            let cancelChangesButton = needElement.find('button[data-action="needs.cancel-changes"]')
+            let moveToAssemblyButton = needElement.find('button[data-action="needs.show-move-to-assembly-confirmation"]')
+
+            return {
+              setChangeModeButton: setChangeModeButton,
+              saveChangesButton: saveChangesButton,
+              cancelChangesButton: cancelChangesButton,
+              moveToAssemblyButton: moveToAssemblyButton
+            }
+          }
+
+          needElement.find('[data-name]').hide()
+          needElement.find('[name]').show()
+
+          let buttons = getButtons(needElement)
+          buttons.setChangeModeButton.hide()
+          buttons.moveToAssemblyButton.hide()
+          buttons.saveChangesButton.show()
+          buttons.cancelChangesButton.show()
+
+          $.each(otherNeedElements, function() {
+            let needElement = $(this);
+
+            needElement.find('[data-name]').show()
+            needElement.find('[name]').hide()
+
+            let buttons = getButtons(needElement)
+
+            buttons.setChangeModeButton.show()
+            buttons.moveToAssemblyButton.show()
+            buttons.saveChangesButton.hide()
+            buttons.cancelChangesButton.hide()
+          })
+        })
+
+        $(document).on('click', 'button[data-action="needs.save-changes"]', function(e) {
+          if (!needListElement.data('block')) {
+            needListElement.data('block', true)
+
+            let needElement = needListElement.find('[data-element="need"]').has(this)
+            let orderNumber = getOrderNumber(needElement)
+
+            let saveChangesButton = $(this)                               
+            let setChangeModeButton = needElement.find('button[data-action="needs.set-change-mode"]')
+            let cancelChangesButton = needElement.find('button[data-action="needs.cancel-changes"]')
+
+            let loader = $(this).find('[data-element="loader"]')
+
+            let form = needElement.find('[name]')
+            let needData = getFormData(form)       
+
+            loader.show()
+
+            updateNeed(orderNumber, needData)
+            .then(
+              () => {
+                loadNeeds().then(() => {              
+                  loader.hide()
+                  needListElement.data('block', false)
+                })     
+              },
+              error => {
+                loadNeeds().then(() => {              
+                  messageModal.data('message', prepareError(error))
+                  messageModal.modal('show')  
+
+                  loader.hide()
+                  needListElement.data('block', false)
+                })                                                      
+              }
+            )
+          }
+        })
+        
+        $(document).on('click', 'button[data-action="needs.cancel-changes"]', function(e) {         
+          if (needListElement.data('block')) {
+            return
+          }
+          
+          let needElement = needListElement.find('[data-element="need"]').has(this)
+          let orderNumber = $(this).data('orderNumber')                          
+
+          let cancelChangesButton = $(this)          
+          let setChangeModeButton = needElement.find('button[data-action="needs.set-change-mode"]')
+          let saveChangesButton = needElement.find('button[data-action="needs.save-changes"]')
+          let moveToAssemblyButton = needElement.find('button[data-action="needs.show-move-to-assembly-confirmation"]')
+
+          needElement.find('[data-name]').show()
+          needElement.find('[name]').hide()
+
+          setChangeModeButton.show()
+          moveToAssemblyButton.show()
+          saveChangesButton.hide()
+          cancelChangesButton.hide()                    
+        })   
+
+
+        $(document).on('click', 'button[data-action="needs.move-to-assembly"]', function(e) {                    
+          if (!needListElement.data('block')) {
+            needListElement.data('block', true)
+
+            let needElement = needListElement.find('[data-element="need"]').has(this)            
+
+            let orderNumber = $(this).data('orderNumber')                    
+            let loader = $(this).find('[data-element="loader"]')
+            let needMoveToAssemblyModal = $('#needMoveToAssemblyModal')            
+            
+            loader.show()
+
+            moveNeedToAssembly(orderNumber)
+              .then(
+                () => {              
+                  loadNeeds().then(() => {
+                    assemblyListElement.trigger('refresh')                  
+                    loader.hide()
+                    needMoveToAssemblyModal.modal('hide')
+                    needListElement.data('block', false)   
+                  })
+                },
+                error => {           
+                  loadNeeds().then(() => {                    
+                    messageModal.data('message', prepareError(error))
+                    messageModal.modal('show')      
+                   
+                    assemblyListElement.trigger('refresh')                  
+                    loader.hide()
+                    needMoveToAssemblyModal.modal('hide')
+                    needListElement.data('block', false)   
+                  })                                    
+                }
+              )   
+          }
+        })
+
+        $('#needMoveToAssemblyModal').on('show.bs.modal', function (e) {
+          var button = $(e.relatedTarget) 
+          var orderNumber = button.data('orderNumber') 
+
+          var modal = $(this)
+          modal.find('[data-element="order-number"]').text(orderNumber)
+          modal.find('button[data-action="needs.move-to-assembly"]').data('orderNumber', orderNumber)
+        })
+
+
+        $(document).on('click', 'button[data-action="needs.move-to-polishing"]', function(e) {                    
+          if (!needListElement.data('block')) {
+            needListElement.data('block', true)
+
+            let needElement = needListElement.find('[data-element="need"]').has(this)            
+
+            let orderNumber = $(this).data('orderNumber')                    
+            let loader = $(this).find('[data-element="loader"]')
+            let needMoveToPolishingModal = $('#needMoveToPolishingModal')            
+            
+            loader.show()
+
+            moveNeedToPolishing(orderNumber)
+              .then(
+                () => {              
+                  loadNeeds().then(() => {
+                    polishingListElement.trigger('refresh')                  
+                    loader.hide()
+                    needMoveToPolishingModal.modal('hide')
+                    needListElement.data('block', false)   
+                  })
+                },
+                error => {           
+                  loadNeeds().then(() => {                    
+                    messageModal.data('message', prepareError(error))
+                    messageModal.modal('show')      
+                   
+                    polishingListElement.trigger('refresh')                  
+                    loader.hide()
+                    needMoveToPolishingModal.modal('hide')
+                    needListElement.data('block', false)   
+                  })                                    
+                }
+              )   
+          }
+        })
+
+        $('#needMoveToPolishingModal').on('show.bs.modal', function (e) {
+          var button = $(e.relatedTarget) 
+          var orderNumber = button.data('orderNumber') 
+
+          var modal = $(this)
+          modal.find('[data-element="order-number"]').text(orderNumber)
+          modal.find('button[data-action="needs.move-to-polishing"]').data('orderNumber', orderNumber)
+        })  
+      })
+</script>

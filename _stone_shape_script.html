@@ -1,0 +1,143 @@
+<script>
+      $(function() {     
+        let stoneShapeListElement = $('#stone_shape_list')
+
+        function loadStoneShapes () {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(content => {                            
+              let stoneShapes = JSON.parse(content)                              
+              stoneShapeListElement.empty()
+
+              stoneShapes.forEach(stoneShape => {
+                console.log(stoneShape)
+                let stoneShapeRowHtml = ejs.render(stoneShapeRowTemplate, {stone_shape: stoneShape}, {delimiter: '?'});
+                stoneShapeListElement.append(stoneShapeRowHtml)
+              })
+
+              $(document).trigger('search.refresh')
+                                       
+              resolve(content)
+            }).withFailureHandler(error => {
+              reject(error)
+            }).getStoneShapesStringified();
+          })
+        }
+
+        function addStoneShape(formObj) {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(response => {              
+              resolve(response)
+            }).withFailureHandler(error => {
+                reject(error)
+            }).addStoneShape(formObj);
+          })          
+        }
+
+        function removeStoneShape(shapeIndex) {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(response => {              
+              resolve(response)
+            }).withFailureHandler(error => {
+                reject(error)
+            }).removeStoneShape(shapeIndex);
+          })          
+        }
+
+        loadStoneShapes()
+
+        let formValidator = $('form#stone_shape').validate({
+          rules: {
+            stone_shape: "required"
+          },
+          messages: {
+            stone_shape: "Укажите форму камня"
+          }
+        });
+
+        $('form#stone_shape').on('submit', function(e) {   
+          e.preventDefault();    
+  
+          if ($(this).valid()) {
+            let form = $(this).get(0)
+            let loader = $(this).find('[data-element="loader"]')
+            
+            loader.show();
+
+            addStoneShape(form)
+              .then(
+                (response) => {    
+                  if (response === false) {
+                    formValidator.showErrors({
+                      "stone_shape": "Форма должна быть уникальной"
+                    });
+                    loader.hide();
+                    return
+                  }
+
+                  loadStoneShapes().then(
+                      () => {
+                        $(document).trigger('shapes.refresh')
+                        form.reset();
+                        loader.hide();
+                    })       
+                },
+                error => {
+                    loadStoneShapes().then(
+                      () => {
+                        $(document).trigger('shapes.refresh')
+                        messageModal.data('message', prepareError(error))
+                        messageModal.modal('show')   
+                        form.reset();
+                        loader.hide();
+                    })
+                }
+              )  
+            }
+        })  
+
+        $(document).on('click', 'button[data-action="stone_shapes.remove"]', function(e) {                    
+          if (!stoneShapeListElement.data('block')) {
+            stoneShapeListElement.data('block', true)
+          
+          
+            let shapeIndex = $(this).data('shapeIndex')            
+            let loader = $(this).find('[data-element="loader"]')
+            let stoneShapeRemoveModal = $('#stoneShapeRemoveModal')
+            
+            loader.show()            
+
+            removeStoneShape(shapeIndex)
+              .then(
+                () => {                      
+                  loadStoneShapes().then(
+                    () => {
+                      $(document).trigger('shapes.refresh')
+                      loader.hide()                  
+                      stoneShapeRemoveModal.modal('hide')
+                      stoneShapeListElement.data('block', false)
+                    }
+                  )
+                },
+                error => {
+                  $(document).trigger('shapes.refresh')
+                  loader.hide()                  
+                  stoneShapeRemoveModal.modal('hide')
+                  stoneShapeListElement.data('block', false)
+                }
+            )   
+          }
+        })
+
+
+        $('#stoneShapeRemoveModal').on('show.bs.modal', function (e) {
+          let button = $(e.relatedTarget) 
+          let shapeName = button.data('shapeName')
+          let stoneShapeElement = stoneShapeListElement.find('[data-element="stone_shape"]').has(button)
+          let shapeIndex = stoneShapeElement.index()
+
+          let modal = $(this)          
+          modal.find('[data-element="shape-name"]').text(shapeName)          
+          modal.find('[data-action="stone_shapes.remove"]').data('shapeIndex', shapeIndex)          
+        })
+      })
+</script>

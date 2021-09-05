@@ -1,0 +1,130 @@
+<script>
+      $(function() {                         
+        function loadShipments () {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(content => {                            
+              let shipments = JSON.parse(content)                              
+              shipmentListElement.empty()
+
+              shipments.forEach(shipment => {
+                let shipmentRowHtml = ejs.render(shipmentRowTemplate, shipment, {delimiter: '?'});
+                shipmentListElement.append(shipmentRowHtml)
+              })
+
+              $(document).trigger('search.refresh')
+                                       
+              resolve(content)
+            }).withFailureHandler(error => {
+              reject(error)
+            }).getShipmentsStringified();
+          })
+        }
+
+        function removeShipment (orderNumber) {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(() => {
+              resolve()                                 
+            }).withFailureHandler(error => {
+                reject(error)
+            }).removeShipment(orderNumber);
+          })
+        }
+
+
+        function moveShipmentToFree(orderNumber) {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(response => {              
+              resolve(response)
+            }).withFailureHandler(error => {
+                reject(error)
+            }).moveShipmentToFree(orderNumber);
+          })          
+        }
+
+        loadShipments()
+
+        $(document).on('click', 'button[data-action="shipments.move-to-free"]', function(e) {                    
+          if (!shipmentListElement.data('block')) {
+            shipmentListElement.data('block', true)
+
+            let shipmentList = shipmentListElement.find('[data-element="shipment"]').has(this)            
+
+            let orderNumber = $(this).data('orderNumber')                    
+            let loader = $(this).find('[data-element="loader"]')
+            let shipmentMoveToFreeModal = $('#shipmentMoveToFreeModal')            
+            
+            loader.show()
+
+            moveShipmentToFree(orderNumber)
+              .then(
+                () => {              
+                  loadShipments().then(() => {
+                    freeListElement.trigger('refresh')                  
+                    loader.hide()
+                    shipmentMoveToFreeModal.modal('hide')
+                    shipmentListElement.data('block', false)   
+                  })
+                },
+                error => {           
+                  loadShipments().then(() => {                    
+                    messageModal.data('message', prepareError(error))
+                    messageModal.modal('show')      
+                   
+                    freeListElement.trigger('refresh')                  
+                    loader.hide()
+                    shipmentMoveToFreeModal.modal('hide')
+                    shipmentListElement.data('block', false)   
+                  })                                    
+                }
+              )   
+          }
+        })
+
+        $('#shipmentMoveToFreeModal').on('show.bs.modal', function (e) {
+          var button = $(e.relatedTarget) 
+          var orderNumber = button.data('orderNumber') 
+
+          var modal = $(this)
+          modal.find('[data-element="order-number"]').text(orderNumber)
+          modal.find('button[data-action="shipments.move-to-free"]').data('orderNumber', orderNumber)
+        })
+
+        $(document).on('click', 'button[data-action="shipments.remove"]', function(e) {                    
+          if (!shipmentListElement.data('block')) {
+            shipmentListElement.data('block', true)
+
+            let shipmentElement = shipmentListElement.find('[data-element="shipment"]').has(this)            
+
+            let orderNumber = $(this).data('orderNumber')
+            let loader = $(this).find('[data-element="loader"]')
+            let shipmentRemoveModal = $('#shipmentRemoveModal')
+            
+            loader.show()
+
+            removeShipment(orderNumber)
+              .then(response => {              
+                loadShipments().then(response => {
+                  loader.hide()
+                  shipmentRemoveModal.modal('hide')
+                  shipmentListElement.data('block', false)
+                })
+              })   
+          }
+        })
+
+
+        $('#shipmentRemoveModal').on('show.bs.modal', function (e) {
+          var button = $(e.relatedTarget) 
+          var orderNumber = button.data('orderNumber') 
+
+          var modal = $(this)
+          modal.find('[data-element="order-number"]').text(orderNumber)
+          modal.find('button[data-action="shipments.remove"]').data('orderNumber', orderNumber)          
+        })
+        
+
+        shipmentListElement.on('refresh', function() {
+          loadShipments() 
+        })
+      })
+</script>
