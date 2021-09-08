@@ -1,4 +1,4 @@
-let spreadSheetUrl = "https://docs.google.com/spreadsheets/d/1LdpB3l_gwgvOv1RL5t00kOQENtct-Op3wV7B9UzkagE/edit#gid=1282691482"
+let spreadSheetUrl = "https://docs.google.com/spreadsheets/d/1LdpB3l_gwgvOv1RL5t00kOQENtct-Op3wV7B9UzkagE/edit#gid=895656586"
 let spreadSheet = SpreadsheetApp.openByUrl(spreadSheetUrl)
 
 let needsSheet = spreadSheet.getSheetByName("Потребность")
@@ -9,7 +9,7 @@ let polishingsSheet = spreadSheet.getSheetByName("Полировка")
 let propertiesSheet = spreadSheet.getSheetByName("Свойства")
 
 function doGet(e) {    
-  return HtmlService.createTemplateFromFile('index').evaluate(); 
+  return HtmlService.createTemplateFromFile('index').evaluate().setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL); 
 }
 
 function doPost(e) {
