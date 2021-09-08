@@ -1,10 +1,10 @@
 <div data-element="stone_color" class="row">
-    <div class="col-md-2 d-flex">        
+    <div class="col d-flex">        
         <div class="mt-auto mb-auto" data-name="stone_color"><?= stone_color ?></div>
         <input type="text" class="form-control" name="stone_color" placeholder="Цвет камня" style="display: none;" value="<?= stone_color ?>" disabled="disabled">
     </div>                                                  
 
-    <div class="col-md-2 d-flex">    
+    <div class="col-lg-2 d-flex buttons-container actions">    
       <button type="button" data-action="stone_colors.show-remove-confirmation" class="btn btn-outline-danger btn-sm" data-toggle="modal"  data-target="#stoneColorRemoveModal" data-color-name="<?= stone_color ?>">
         Удалить
       </button>

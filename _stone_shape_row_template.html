@@ -1,10 +1,10 @@
 <div data-element="stone_shape" class="row">
-    <div class="col-md-2 d-flex">        
+    <div class="col d-flex">        
         <div class="mt-auto mb-auto" data-name="stone_shape"><?= stone_shape ?></div>
         <input type="date" class="form-control" name="stone_shape" placeholder="Форма камня" style="display: none;" value="<?= stone_shape ?>" disabled="disabled">
     </div>                                                  
 
-    <div class="col-md-2 d-flex">    
+    <div class="col-lg-2 d-flex buttons-container actions">    
       <button type="button" data-action="stone_shapes.show-remove-confirmation" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#stoneShapeRemoveModal" data-shape-name="<?= stone_shape ?>">
         Удалить
       </button>

@@ -1,17 +1,17 @@
 <form id="stone_color">  
     <div class="form-row mt-2">
-        <div class="form-group col-md-2">
-            <label for="stone_color">Цвет камня</label>
-            <input type="text" class="form-control" name="stone_color" placeholder="Цвет камня">
+        <div class="form-group col">            
+            <input type="text" class="form-control w-50" name="stone_color" placeholder="Цвет камня">
         </div>  
                         
 
-        <div class="form-group col-md-2">
-          <label>Действия</label>
-          <button type="submit" data-action="stone_colors.add" class="btn btn-primary btn-block">
-            <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
-            Добавить
-          </button>
+        <div class="form-group col-lg-2 d-flex buttons-container actions">          
+          <div>
+            <button type="submit" data-action="stone_colors.add" class="btn btn-primary">
+              <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+              Добавить
+            </button>
+          </div>
         </div>
     </div>    
 </form>
