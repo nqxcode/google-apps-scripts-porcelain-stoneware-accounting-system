@@ -61,7 +61,7 @@ function addAssembly(assemblyData)
   
   assembliesSheet.appendRow([
     assemblyData.date_of_adoption,    
-    assemblyData.order_number,
+    "'" + assemblyData.order_number,
     assemblyData.diameter,
     assemblyData.length_min,
     assemblyData.length_max,

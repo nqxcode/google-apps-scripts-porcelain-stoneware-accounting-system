@@ -44,7 +44,7 @@ function addNeed(orderData) {
   needsSheet.appendRow([
     orderData.date_of_adoption,
     orderData.date_of_shipping,
-    orderData.order_number,
+    "'" + orderData.order_number,
     orderData.diameter,
     orderData.length_min,
     orderData.length_max,

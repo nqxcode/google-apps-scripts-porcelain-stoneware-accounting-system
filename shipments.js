@@ -30,7 +30,7 @@ function addShipment(orderData) {
 
   shipmentsSheet.appendRow([
     orderData.date_of_adoption,    
-    orderData.order_number,
+    "'" + orderData.order_number,
     orderData.diameter,
     orderData.length_min,
     orderData.length_max,

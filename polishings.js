@@ -61,7 +61,7 @@ function addPolishing(polishingData)
 
   polishingsSheet.appendRow([
     polishingData.date_of_adoption,    
-    polishingData.order_number,
+    "'" + polishingData.order_number,
     polishingData.diameter,
     polishingData.length_min,
     polishingData.length_max,
