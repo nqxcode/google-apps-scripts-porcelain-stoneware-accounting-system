@@ -8,8 +8,7 @@
               let stoneShapes = JSON.parse(content)                              
               stoneShapeListElement.empty()
 
-              stoneShapes.forEach(stoneShape => {
-                console.log(stoneShape)
+              stoneShapes.forEach(stoneShape => {                
                 let stoneShapeRowHtml = ejs.render(stoneShapeRowTemplate, {stone_shape: stoneShape}, {delimiter: '?'});
                 stoneShapeListElement.append(stoneShapeRowHtml)
               })

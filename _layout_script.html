@@ -1,5 +1,14 @@
 <script>        
       $(function() {           
+        window.needListElement = $('#need_list')
+        window.assemblyListElement = $('#assembly_list') 
+        window.shipmentListElement = $('#shipment_list') 
+        window.freeListElement = $('#free_list')
+        window.polishingListElement = $('#polishing_list')  
+        window.stoneColorListElement = $('#stone_color_list')
+        window.stoneShapeListElement = $('#stone_shape_list')
+        window.messageModal = $('#messageModal')        
+
         window.getFormData = function ($form){
             let data = $form.serializeArray();
             var result = {};
@@ -15,7 +24,7 @@
           return error.message.replace('Error: ', '')
         }
 
-        window.loadStoneColors = function () {
+        let loadStoneColors = function () {
           google.script.run.withSuccessHandler(function(stoneColors) {
             
               $('select[name="stone_color"]').each(function () {
@@ -25,12 +34,11 @@
                 $.each($.merge([''], stoneColors), function (i, color) {
                   $select.append($('<option>', { value: color, text : color }));
               })
-
             });
           }).getStoneColors();
         }
 
-        window.loadStoneShapes = function () {
+        let loadStoneShapes = function () {
           google.script.run.withSuccessHandler(function(stoneShapes) {
               $('select[name="stone_shape"]').each(function () {
                 var $select = $(this)
@@ -38,12 +46,12 @@
                 
                 $.each($.merge([''], stoneShapes), function (i, shape) {
                   $select.append($('<option>', { value: shape, text : shape }));
-                })
+                })                
               })
             }).getStoneShapes();
         }
 
-        window.initFormControls = function(form) {
+        let initFormControls = function(form) {
             let diameterElement = form.find('[name="diameter"]')
             let lengthMinElement = form.find('[name="length_min"]')
             let lengthMaxElement = form.find('[name="length_max"]')
@@ -73,44 +81,22 @@
             stoneShapeElement.trigger('change')
         }          
 
-        window.initForms = function() {
-            let needForm = $('form#need');
-            let assemblyForm = $('form#assembly');
-            let polishingForm = $('form#polishing');
+        let initForms = function() {
+          let needForm = $('form#need');
+          let assemblyForm = $('form#assembly');
+          let polishingForm = $('form#polishing');
 
-            let forms = [needForm, assemblyForm, polishingForm]
+          let forms = [needForm, assemblyForm, polishingForm]
 
-            forms.forEach(function(form){
-                initFormControls(form)
-            })
+          forms.forEach(function(form){
+              initFormControls(form)
+          })
+
+          loadStoneColors()
+          loadStoneShapes()
         }      
 
-        loadStoneColors()
-        loadStoneShapes()      
-        initForms()
-
-        $(document).on('colors.refresh', function (e) {
-          loadStoneColors()             
-        })
-
-        $(document).on('shapes.refresh', function (e) {          
-          loadStoneShapes()      
-        })
-
-        $(document).on('search.refresh', function() {
-            $('[data-element="query"]').trigger('keyup')
-        })
-
-        window.needListElement = $('#need_list')
-        window.assemblyListElement = $('#assembly_list') 
-        window.shipmentListElement = $('#shipment_list') 
-        window.freeListElement = $('#free_list')
-        window.polishingListElement = $('#polishing_list')  
-        window.stoneColorListElement = $('#stone_color_list')
-        window.stoneShapeListElement = $('#stone_shape_list')
-        window.messageModal = $('#messageModal')        
-
-        $('input[type="search"]').on("keyup", function() {
+        let searchHandler = function(e) {
             let value = $(this).val().toLowerCase();
 
             let filter = function() {              
@@ -137,6 +123,24 @@
               obj.tab.find('sup').text(obj.elements.filter(function() { return $(this).css('display') !== 'none' }).length)
             })
             
+        }
+      
+        initForms()
+
+        $(document).on('colors.refresh', function (e) {
+          loadStoneColors()             
+        })
+
+        $(document).on('shapes.refresh', function (e) {          
+          loadStoneShapes()      
+        })
+
+        $(document).on('search.refresh', function() {
+            $('[data-element="query"]').trigger('keyup')
+        })
+
+        $('input[type="search"]').on("keyup", function(e) {
+          searchHandler.call(this, e)
         });
 
         $('[data-action="search.clear"]').on('click', function() {
