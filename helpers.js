@@ -13,3 +13,7 @@ function formatDate(date) {
   return formattedDate
 }
 
+function prepareOrderNumber(orderNumber)
+{
+  return orderNumber ? ("'" + orderNumber) : undefined
+}

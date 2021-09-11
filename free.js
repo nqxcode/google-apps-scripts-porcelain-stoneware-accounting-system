@@ -52,7 +52,6 @@ function moveFreeToAssembly(orderNumber)
   }
 }
 
-
 function findFree(orderNumber)
 {
   let freeList = getFree()  

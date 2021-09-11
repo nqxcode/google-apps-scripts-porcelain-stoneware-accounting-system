@@ -59,9 +59,10 @@ function addAssembly(assemblyData)
     throw new Error(`Чтобы добавить заказ в сборку, нужно заполнить хотя бы одно поле`)
   }
   
+
   assembliesSheet.appendRow([
     assemblyData.date_of_adoption,    
-    "'" + assemblyData.order_number,
+    prepareOrderNumber(assemblyData.order_number),
     assemblyData.diameter,
     assemblyData.length_min,
     assemblyData.length_max,
