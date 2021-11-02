@@ -60,6 +60,26 @@
           })          
         }
 
+        function moveNeedToShipment(orderNumber) {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(response => {              
+              resolve(response)
+            }).withFailureHandler(error => {
+                reject(error)
+            }).moveNeedToShipment(orderNumber);
+          })          
+        }
+
+        function moveNeedToFree(orderNumber) {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(response => {              
+              resolve(response)
+            }).withFailureHandler(error => {
+                reject(error)
+            }).moveNeedToFree(orderNumber);
+          })          
+        }
+
         function getOrderNumber(needElement) {
           return needElement.data('orderNumber')
         }
@@ -86,20 +106,20 @@
             loader.show();
 
             addNeed(form)
-              .then(response => {    
-                if (response === false) {
-                  formValidator.showErrors({
-                    "order_number": "Номер заказа должен быть уникальным"
-                  });
-                  loader.hide();
-
-                } else {
+              .then(
+                () => {    
                   loadNeeds().then(response => {
                     form.reset();
                     loader.hide();
-                  })              
-                }      
-              })  
+                  })                     
+                },
+                error => {
+                  formValidator.showErrors({
+                    "order_number": prepareError(error)
+                  });
+                  loader.hide();
+                }
+              )  
           }
         })    
 
@@ -129,6 +149,7 @@
 
           needElement.find('[data-name]').hide()
           needElement.find('[name]').show()
+          initFormControls(needElement)
 
           let buttons = getButtons(needElement)
           buttons.setChangeModeButton.hide()
@@ -305,5 +326,98 @@
           modal.find('[data-element="order-number"]').text(orderNumber)
           modal.find('button[data-action="needs.move-to-polishing"]').data('orderNumber', orderNumber)
         })  
+
+
+        $(document).on('click', 'button[data-action="needs.move-to-shipment"]', function(e) {                    
+          if (!needListElement.data('block')) {
+            needListElement.data('block', true)
+
+            let needElement = needListElement.find('[data-element="need"]').has(this)            
+
+            let orderNumber = $(this).data('orderNumber')                    
+            let loader = $(this).find('[data-element="loader"]')
+            let needMoveToShipmentModal = $('#needMoveToShipmentModal')            
+            
+            loader.show()
+
+            moveNeedToShipment(orderNumber)
+              .then(
+                () => {              
+                  loadNeeds().then(() => {
+                    shipmentListElement.trigger('refresh')                  
+                    loader.hide()
+                    needMoveToShipmentModal.modal('hide')
+                    needListElement.data('block', false)   
+                  })
+                },
+                error => {           
+                  loadNeeds().then(() => {                    
+                    messageModal.data('message', prepareError(error))
+                    messageModal.modal('show')      
+                   
+                    shipmentListElement.trigger('refresh')                  
+                    loader.hide()
+                    needMoveToShipmentModal.modal('hide')
+                    needListElement.data('block', false)   
+                  })                                    
+                }
+              )   
+          }
+        })
+
+        $('#needMoveToShipmentModal').on('show.bs.modal', function (e) {
+          var button = $(e.relatedTarget) 
+          var orderNumber = button.data('orderNumber') 
+
+          var modal = $(this)
+          modal.find('[data-element="order-number"]').text(orderNumber)
+          modal.find('button[data-action="needs.move-to-shipment"]').data('orderNumber', orderNumber)
+        }) 
+
+        $(document).on('click', 'button[data-action="needs.move-to-free"]', function(e) {                    
+          if (!needListElement.data('block')) {
+            needListElement.data('block', true)
+
+            let needElement = needListElement.find('[data-element="need"]').has(this)            
+
+            let orderNumber = $(this).data('orderNumber')                    
+            let loader = $(this).find('[data-element="loader"]')
+            let needMoveToFreeModal = $('#needMoveToFreeModal')            
+            
+            loader.show()
+
+            moveNeedToFree(orderNumber)
+              .then(
+                () => {              
+                  loadNeeds().then(() => {
+                    freeListElement.trigger('refresh')                  
+                    loader.hide()
+                    needMoveToFreeModal.modal('hide')
+                    needListElement.data('block', false)   
+                  })
+                },
+                error => {           
+                  loadNeeds().then(() => {                    
+                    messageModal.data('message', prepareError(error))
+                    messageModal.modal('show')      
+                   
+                    freeListElement.trigger('refresh')                  
+                    loader.hide()
+                    needMoveToFreeModal.modal('hide')
+                    needListElement.data('block', false)   
+                  })                                    
+                }
+              )   
+          }
+        })
+
+        $('#needMoveToFreeModal').on('show.bs.modal', function (e) {
+          var button = $(e.relatedTarget) 
+          var orderNumber = button.data('orderNumber') 
+
+          var modal = $(this)
+          modal.find('[data-element="order-number"]').text(orderNumber)
+          modal.find('button[data-action="needs.move-to-free"]').data('orderNumber', orderNumber)
+        }) 
       })
 </script>

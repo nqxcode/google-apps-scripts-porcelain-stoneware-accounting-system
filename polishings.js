@@ -39,10 +39,11 @@ function checkPolishingOrderNumberUnique(orderNumber) {
   return polishingRow === null
 }
 
-function addPolishing(polishingData)
+function addPolishing(polishingData, options)
 {  
-  if(polishingData.order_number && !checkPolishingOrderNumberUnique(polishingData.order_number)) {
-    throw new Error(`Номер заказа должен быть уникальным`)
+  options = options || {}
+  if(polishingData.order_number) {
+    checkOrderNumberUnique(polishingData.order_number, {...{throwIfNotUnique: true}, ...options})
   }
 
   let polishingColumnsMap = getPolishingColumnsMap()
@@ -80,15 +81,15 @@ function updatePolishing(orderIndex, polishingData) {
     let field = polishingColumnsMap[column]
     let value = polishingData[field]
 
-    if (field === 'order_number' && value && !checkPolishingOrderNumberUnique(value)) {
-      throw new Error(`Заказ с номером ${value} уже существует в сборке`)
+    if (field === 'order_number' && value) {
+      checkOrderNumberUnique(value, {throwIfNotUnique: true})
     } 
   }
 
   for(column = 0; column < polishingColumnsMap.length; column++) {
     let field = polishingColumnsMap[column]
-    let value = polishingData[field];
-
+    let value = prepareFormFieldValue(field, polishingData)
+    
     if (value !== undefined) {
       polishingsSheet.getRange(polishingRow, column).setValue(value);     
     }
@@ -102,23 +103,90 @@ function movePolishingToAssembly(orderNumber)
     throw new Error(`Заказа с номером ${orderNumber} не существует в полировке`)
   }
 
-  addAssembly({
-    date_of_adoption: formatDate(Date.now()),
-    order_number: orderData.order_number,
-    diameter: orderData.diameter,
-    length_min: orderData.length_min,
-    length_max: orderData.length_max,
-    width: orderData.width,
-    stone_shape: orderData.stone_shape,
-    stone_color: orderData.stone_color
-  })
+  addAssembly(
+    {
+      date_of_adoption: formatDate(Date.now()),
+      order_number: orderData.order_number,
+      diameter: orderData.diameter,
+      length_min: orderData.length_min,
+      length_max: orderData.length_max,
+      width: orderData.width,
+      stone_shape: orderData.stone_shape,
+      stone_color: orderData.stone_color
+    },
+    {
+      checkOrderNumberUnique: {
+        needs: false,
+        polishings: false,
+        assemblies: true,
+        shipments: false
+      }
+    }
+  )
 
   let isRemovedFromPolishing = removePolishing(orderNumber)
   if (!isRemovedFromPolishing) {
     throw new Error(`Заказ с номером ${orderNumber} не был удален из полировки`)
   }
+} 
 
-  return false
+function movePolishingToShipment(orderNumber)
+{
+  let orderData = findPolishing(orderNumber)
+  if (!orderData) {
+    throw new Error(`Заказа с номером ${orderNumber} не существует в полировке`)
+  }
+
+  addShipment(
+    {
+      date_of_adoption: formatDate(Date.now()),
+      order_number: orderData.order_number,
+      diameter: orderData.diameter,
+      length_min: orderData.length_min,
+      length_max: orderData.length_max,
+      width: orderData.width,
+      stone_shape: orderData.stone_shape,
+      stone_color: orderData.stone_color
+    },
+    {
+      checkOrderNumberUnique: {
+        needs: false,
+        polishings: false,
+        assemblies: false,
+        shipments: true
+      }
+    }
+  )
+
+  let isRemovedFromPolishing = removePolishing(orderNumber)
+  if (!isRemovedFromPolishing) {
+    throw new Error(`Заказ с номером ${orderNumber} не был удален из полировки`)
+  }
+} 
+
+function movePolishingToFree(orderNumber)
+{
+  let orderData = findPolishing(orderNumber)
+  if (!orderData) {
+    throw new Error(`Заказа с номером ${orderNumber} не существует в полировке`)
+  }
+
+  addFree(
+    {
+      date_of_adoption: formatDate(Date.now()),      
+      diameter: orderData.diameter,
+      length_min: orderData.length_min,
+      length_max: orderData.length_max,
+      width: orderData.width,
+      stone_shape: orderData.stone_shape,
+      stone_color: orderData.stone_color
+    }
+  )
+
+  let isRemovedFromPolishing = removePolishing(orderNumber)
+  if (!isRemovedFromPolishing) {
+    throw new Error(`Заказ с номером ${orderNumber} не был удален из полировки`)
+  }
 } 
 
 function findPolishing(orderNumber)

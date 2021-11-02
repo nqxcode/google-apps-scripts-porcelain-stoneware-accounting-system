@@ -17,15 +17,10 @@ function getShipmentColumnsMap() {
     return columnsMap;
 }
 
-function checkShipmentOrderNumberUnique(orderNumber) {
-  let shipmentRow = findShipmentRow(orderNumber)
-
-  return shipmentRow === null
-}
-
-function addShipment(orderData) {
-  if(orderData.order_number && !checkShipmentOrderNumberUnique(orderData.order_number)) {
-    return false
+function addShipment(orderData, options) {
+  options = options || {}
+  if(orderData.order_number) {
+    checkOrderNumberUnique(orderData.order_number, {...{throwIfNotUnique: true}, ...options})
   }
 
   shipmentsSheet.appendRow([
@@ -38,8 +33,24 @@ function addShipment(orderData) {
     orderData.stone_shape,
     orderData.stone_color
   ]);
+}
 
-  return true
+function updateShipment(orderNumber, shipmentData) {
+  let shipmentRow = findShipmentRow(orderNumber)
+  if (!shipmentRow) {
+    throw new Error(`Заказа с номером ${orderNumber} не сущестует в отгрузке`)
+  }  
+
+  let shipmentColumnsMap = getShipmentColumnsMap()
+
+  for(column = 0; column < shipmentColumnsMap.length; column++) {
+    let field = shipmentColumnsMap[column]
+    let value = prepareFormFieldValue(field, shipmentData);
+
+    if (value !== undefined) {
+      shipmentsSheet.getRange(shipmentRow, column).setValue(value);     
+    }
+  }
 }
 
 function findShipmentRow(orderNumber) {
@@ -75,7 +86,7 @@ function removeShipment(orderNumber) {
 function moveShipmentToFree(orderNumber) {
   let orderData = findShipment(orderNumber)
     if (!orderData) {
-    throw new Error(`Заказа с номером ${orderNumber} уже существует в отгруженных`)
+    throw new Error(`Заказа с номером ${orderNumber} уже существует в отгрузке`)
   }
 
   addFree({
@@ -89,7 +100,75 @@ function moveShipmentToFree(orderNumber) {
 
   let isRemovedFromShipment = removeShipment(orderNumber)
   if (!isRemovedFromShipment) {  
-    throw new Error(`Заказ с номером ${orderNumber} не был удален из отгруженных`)  
+    throw new Error(`Заказ с номером ${orderNumber} не был удален из отгрузки`)  
+  }
+}
+
+function moveShipmentToAssembly(orderNumber)
+{
+  let orderData = findShipment(orderNumber)
+  if (!orderData) {
+    throw new Error(`Заказа с номером ${orderNumber} не существует в отгрузке`)
+  }
+
+  addAssembly(
+    {
+      date_of_adoption: formatDate(Date.now()),
+      order_number: orderData.order_number,
+      diameter: orderData.diameter,
+      length_min: orderData.length_min,
+      length_max: orderData.length_max,
+      width: orderData.width,
+      stone_shape: orderData.stone_shape,
+      stone_color: orderData.stone_color
+    },
+    {
+      checkOrderNumberUnique: {
+        needs: false,
+        polishings: false,
+        assemblies: true,
+        shipments: false
+      }
+    }
+  )
+
+  let isRemovedFromShipment = removeShipment(orderNumber)
+  if (!isRemovedFromShipment) {
+    throw new Error(`Заказ с номером ${orderNumber} не был удален из отгрузки`)
+  }
+} 
+
+function moveShipmentToPolishing(orderNumber)
+{
+  let orderData = findShipment(orderNumber)
+  if (!orderData) {
+    throw new Error(`Заказа с номером ${orderNumber} не существует в отгрузке`)
+  }
+
+  addPolishing(
+    {
+      date_of_adoption: formatDate(Date.now()),
+      order_number: orderData.order_number,
+      diameter: orderData.diameter,
+      length_min: orderData.length_min,
+      length_max: orderData.length_max,
+      width: orderData.width,
+      stone_shape: orderData.stone_shape,
+      stone_color: orderData.stone_color
+    },
+    {
+      checkOrderNumberUnique: {
+        needs: false,
+        polishings: true,
+        assemblies: false,
+        shipments: false
+      }
+    }
+  )
+
+  let isRemovedFromShipment = removeShipment(orderNumber)
+  if (!isRemovedFromShipment) {
+    throw new Error(`Заказ с номером ${orderNumber} не был удален из отгрузки`)
   }
 }
 

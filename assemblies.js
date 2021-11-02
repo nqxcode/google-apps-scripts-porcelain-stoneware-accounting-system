@@ -33,16 +33,11 @@ function getAssemblyRowByIndex(orderIndex) {
   return getAssemblyOffset() + orderIndex
 }
 
-function checkAssemblyOrderNumberUnique(orderNumber) {  
-  let assemblyRow = findAssemblyRow(orderNumber)  
-
-  return assemblyRow === null
-}
-
-function addAssembly(assemblyData)
+function addAssembly(assemblyData, options)
 {  
-  if(assemblyData.order_number && !checkAssemblyOrderNumberUnique(assemblyData.order_number)) {
-    throw new Error(`Заказ с номером ${assemblyData.order_number} уже существует в сборке`)
+  options = options || {}  
+  if(assemblyData.order_number) {
+    checkOrderNumberUnique(assemblyData.order_number, {...{throwIfNotUnique: true}, ...options})
   }
 
   let assemblyColumnsMap = getAssemblyColumnsMap()
@@ -81,14 +76,14 @@ function updateAssembly(orderIndex, assemblyData) {
     let field = assemblyColumnsMap[column]
     let value = assemblyData[field]
 
-    if (field === 'order_number' && value && !checkAssemblyOrderNumberUnique(value)) {
-      throw new Error(`Заказ с номером ${value} уже существует в сборке`)
+    if (field === 'order_number' && value) {
+      checkOrderNumberUnique(value, {throwIfNotUnique: true})
     } 
   }
 
   for(column = 0; column < assemblyColumnsMap.length; column++) {
-    let field = assemblyColumnsMap[column]
-    let value = assemblyData[field];
+    let field = assemblyColumnsMap[column]    
+    let value = prepareFormFieldValue(field, assemblyData)
 
     if (value !== undefined) {
       assembliesSheet.getRange(assemblyRow, column).setValue(value);     
@@ -103,20 +98,85 @@ function moveAssemblyToShipment(orderNumber)
     throw new Error(`Заказа с номером ${orderNumber} не существует в сборке`)
   }
 
-  let isAddedToShipment = addShipment({
-    date_of_adoption: formatDate(Date.now()),
-    order_number: orderData.order_number,
-    diameter: orderData.diameter,
-    length_min: orderData.length_min,
-    length_max: orderData.length_max,
-    width: orderData.width,
-    stone_shape: orderData.stone_shape,
-    stone_color: orderData.stone_color
-  })
+  addShipment(
+    {
+      date_of_adoption: formatDate(Date.now()),
+      order_number: orderData.order_number,
+      diameter: orderData.diameter,
+      length_min: orderData.length_min,
+      length_max: orderData.length_max,
+      width: orderData.width,
+      stone_shape: orderData.stone_shape,
+      stone_color: orderData.stone_color
+    },
+    {
+      checkOrderNumberUnique: {
+        needs: false,
+        polishings: false,
+        assemblies: false,
+        shipments: true
+      }
+    }
+  )
 
-  if (!isAddedToShipment) {
-    throw new Error(`Заказ с номером ${orderNumber} уже существует в отгрузке`)
+  let isRemovedFromAssembly = removeAssembly(orderNumber)
+  if (!isRemovedFromAssembly) {
+    throw new Error(`Заказ с номером ${orderNumber} не был удален из сборки`)
   }
+}
+
+function moveAssemblyToPolishing(orderNumber)
+{
+  let orderData = findAssembly(orderNumber)
+  if (!orderData) {
+    throw new Error(`Заказа с номером ${orderNumber} не существует в сборке`)
+  }
+
+  addPolishing(
+    {
+      date_of_adoption: formatDate(Date.now()),
+      order_number: orderData.order_number,
+      diameter: orderData.diameter,
+      length_min: orderData.length_min,
+      length_max: orderData.length_max,
+      width: orderData.width,
+      stone_shape: orderData.stone_shape,
+      stone_color: orderData.stone_color
+    },
+    {
+      checkOrderNumberUnique: {
+        needs: false,
+        polishings: true,
+        assemblies: false,
+        shipments: false
+      }
+    }
+  )
+
+  let isRemovedFromAssembly = removeAssembly(orderNumber)
+  if (!isRemovedFromAssembly) {
+    throw new Error(`Заказ с номером ${orderNumber} не был удален из сборки`)
+  }
+}
+
+function moveAssemblyToFree(orderNumber)
+{
+  let orderData = findAssembly(orderNumber)
+  if (!orderData) {
+    throw new Error(`Заказа с номером ${orderNumber} не существует в сборке`)
+  }
+
+  addFree(
+    {
+      date_of_adoption: formatDate(Date.now()),      
+      diameter: orderData.diameter,
+      length_min: orderData.length_min,
+      length_max: orderData.length_max,
+      width: orderData.width,
+      stone_shape: orderData.stone_shape,
+      stone_color: orderData.stone_color
+    }
+  )
 
   let isRemovedFromAssembly = removeAssembly(orderNumber)
   if (!isRemovedFromAssembly) {

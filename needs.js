@@ -30,15 +30,9 @@ function findNeedRow(orderNumber) {
   return null
 }
 
-function checkNeedOrderNumberUnique(orderNumber) {
-  let needRow = findNeedRow(orderNumber)
-
-  return needRow === null
-}
-
 function addNeed(orderData) {  
-  if(orderData.order_number && !checkNeedOrderNumberUnique(orderData.order_number)) {
-    return false
+  if(orderData.order_number) {
+    checkOrderNumberUnique(orderData.order_number, {throwIfNotUnique: true})
   }
 
   needsSheet.appendRow([
@@ -52,31 +46,35 @@ function addNeed(orderData) {
     orderData.stone_shape,
     orderData.stone_color
   ]);
-
-  return true
 }
 
 
 function moveNeedToAssembly(orderNumber) {
   let orderData = findNeed(orderNumber)
-    if (!orderData) {
-    throw new Error(`Заказа с номером ${orderNumber} уже существует в потребностях`)
+  if (!orderData) {
+    throw new Error(`Заказа с номером ${orderNumber} не существует в потребностях`)
   }
 
-  if (findAssembly(orderNumber)) {
-    throw new Error(`Заказ с номером ${orderNumber} уже существует в сборке`)
-  }
-
-  addAssembly({
-    date_of_adoption: formatDate(Date.now()),
-    order_number: orderData.order_number,
-    diameter: orderData.diameter,
-    length_min: orderData.length_min,
-    length_max: orderData.length_max,
-    width: orderData.width,
-    stone_shape: orderData.stone_shape,
-    stone_color: orderData.stone_color
-  })
+  addAssembly(
+    {
+      date_of_adoption: formatDate(Date.now()),
+      order_number: orderData.order_number,
+      diameter: orderData.diameter,
+      length_min: orderData.length_min,
+      length_max: orderData.length_max,
+      width: orderData.width,
+      stone_shape: orderData.stone_shape,
+      stone_color: orderData.stone_color
+    },
+    {
+      checkOrderNumberUnique: {
+        needs: false,
+        polishings: false,
+        assemblies: true,
+        shipments: false
+      }
+    }
+  )
 
   let isRemovedFromNeed = removeNeed(orderNumber)
   if (!isRemovedFromNeed) {  
@@ -87,23 +85,86 @@ function moveNeedToAssembly(orderNumber) {
 function moveNeedToPolishing(orderNumber) {
   let orderData = findNeed(orderNumber)
     if (!orderData) {
-    throw new Error(`Заказа с номером ${orderNumber} уже существует в потребностях`)
+    throw new Error(`Заказа с номером ${orderNumber} не существует в потребностях`)
   }
 
-  if (findPolishing(orderNumber)) {
-    throw new Error(`Заказ с номером ${orderNumber} уже существует в полировке`)
+  addPolishing(
+    {
+      date_of_adoption: formatDate(Date.now()),
+      order_number: orderData.order_number,
+      diameter: orderData.diameter,
+      length_min: orderData.length_min,
+      length_max: orderData.length_max,
+      width: orderData.width,
+      stone_shape: orderData.stone_shape,
+      stone_color: orderData.stone_color
+    },
+    {
+      checkOrderNumberUnique: {
+        needs: false,
+        polishings: true,
+        assemblies: false,
+        shipments: false
+      }
+    }
+  )
+
+  let isRemovedFromNeed = removeNeed(orderNumber)
+  if (!isRemovedFromNeed) {  
+    throw new Error(`Заказ с номером ${orderNumber} не был удален из потребностей`)  
+  }
+}
+
+function moveNeedToShipment(orderNumber) {
+  let orderData = findNeed(orderNumber)
+    if (!orderData) {
+    throw new Error(`Заказа с номером ${orderNumber} не существует в потребностях`)
   }
 
-  addPolishing({
-    date_of_adoption: formatDate(Date.now()),
-    order_number: orderData.order_number,
-    diameter: orderData.diameter,
-    length_min: orderData.length_min,
-    length_max: orderData.length_max,
-    width: orderData.width,
-    stone_shape: orderData.stone_shape,
-    stone_color: orderData.stone_color
-  })
+  addShipment(
+    {
+      date_of_adoption: formatDate(Date.now()),
+      order_number: orderData.order_number,
+      diameter: orderData.diameter,
+      length_min: orderData.length_min,
+      length_max: orderData.length_max,
+      width: orderData.width,
+      stone_shape: orderData.stone_shape,
+      stone_color: orderData.stone_color
+    },
+    {
+      checkOrderNumberUnique: {
+        needs: false,
+        polishings: false,
+        assemblies: false,
+        shipments: true
+      }
+    }
+  )
+
+  let isRemovedFromNeed = removeNeed(orderNumber)
+  if (!isRemovedFromNeed) {  
+    throw new Error(`Заказ с номером ${orderNumber} не был удален из потребностей`)  
+  }
+}
+
+function moveNeedToFree(orderNumber) {
+  let orderData = findNeed(orderNumber)
+    if (!orderData) {
+    throw new Error(`Заказа с номером ${orderNumber} не существует в потребностях`)
+  }
+
+  addFree(
+    {
+      date_of_adoption: formatDate(Date.now()),      
+      diameter: orderData.diameter,
+      length_min: orderData.length_min,
+      length_max: orderData.length_max,
+      width: orderData.width,
+      stone_shape: orderData.stone_shape,
+      stone_color: orderData.stone_color
+    }
+  )
 
   let isRemovedFromNeed = removeNeed(orderNumber)
   if (!isRemovedFromNeed) {  
@@ -131,7 +192,7 @@ function updateNeed(orderNumber, needData) {
 
   for(column = 0; column < needColumnsMap.length; column++) {
     let field = needColumnsMap[column]
-    let value = needData[field];
+    let value = prepareFormFieldValue(field, needData);
 
     if (value !== undefined) {
       needsSheet.getRange(needRow, column).setValue(value);     

@@ -67,26 +67,28 @@
         </select>                         
     </div>                                            
     
-    <div class="col-lg-2 d-flex buttons-container actions">
-      <button type="button" data-action="needs.set-change-mode" data-order-number="<?= order_number ?>" class="btn btn-primary btn-sm d-none" disabled="disabled">         
+    <div class="col-lg-3 d-flex buttons-container actions">
+      <button type="button" data-action="needs.set-change-mode" data-order-number="<?= order_number ?>" class="btn btn-outline-primary btn-sm">         
           Изменить
-      </button>     
-      
-      <button type="button" data-action="needs.save-changes" data-order-number="<?= order_number ?>" class="btn btn-primary btn-sm" style="display: none;">    
+      </button>      
+      <button type="button" data-action="needs.save-changes" data-order-number="<?= order_number ?>" class="btn btn-outline-primary btn-sm" style="display: none;">    
          <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>     
           Сохранить
-      </button>    
-       
-      <button type="button" data-action="needs.cancel-changes" data-order-number="<?= order_number ?>" class="btn btn-secondary btn-sm" style="display: none;">        
+      </button>          
+      <button type="button" data-action="needs.cancel-changes" data-order-number="<?= order_number ?>" class="btn btn-outline-secondary btn-sm" style="display: none;">        
           Отменить
-      </button>      
-      
+      </button>            
       <button type="button" data-action="needs.show-move-to-assembly-confirmation" data-order-number="<?= order_number ?>" class="btn btn-outline-success btn-sm show-move-to-assembly-confirmation-button" data-toggle="modal" data-target="#needMoveToAssemblyModal">
-        В сборку
-      </button>
-      &nbsp;
+        В&nbsp;сборку
+      </button>      
       <button type="button" data-action="needs.show-move-to-polishing-confirmation" data-order-number="<?= order_number ?>" class="btn btn-outline-info btn-sm show-move-to-polishing-confirmation-button" data-toggle="modal" data-target="#needMoveToPolishingModal">
-        В полировку
+        В&nbsp;полировку
+      </button>      
+      <button type="button" data-action="needs.show-move-to-shipment-confirmation" data-order-number="<?= order_number ?>" class="btn btn-outline-secondary btn-sm show-move-to-shipment-confirmation-button" data-toggle="modal" data-target="#needMoveToShipmentModal">
+        В&nbsp;отгрузку
+      </button>      
+      <button type="button" data-action="needs.show-move-to-free-confirmation" data-order-number="<?= order_number ?>" class="btn btn-outline-warning btn-sm show-move-to-free-confirmation-button" data-toggle="modal" data-target="#needMoveToFreeModal">
+        В&nbsp;свободные 
       </button>
     </div>
 </div>    

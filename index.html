@@ -126,7 +126,7 @@
           window.freeRowTemplate = <?!= JSON.stringify(getContent('_free_row_template')) ?>;
           window.polishingRowTemplate = <?!= JSON.stringify(getContent('_polishing_row_template')) ?>;
           window.stoneColorRowTemplate = <?!= JSON.stringify(getContent('_stone_color_row_template')) ?>;  
-          window.stoneShapeRowTemplate = <?!= JSON.stringify(getContent('_stone_shape_row_template')) ?>;  
+          window.stoneShapeRowTemplate = <?!= JSON.stringify(getContent('_stone_shape_row_template')) ?>;            
         </script>
 
         <script> 
@@ -136,15 +136,24 @@
         <!-- Include modals templates -->
         <?!= include('_message'); ?> 
         <?!= include('_need_move_to_assembly_confirmation'); ?>              
-        <?!= include('_need_move_to_polishing_confirmation'); ?>              
+        <?!= include('_need_move_to_polishing_confirmation'); ?> 
+        <?!= include('_need_move_to_shipment_confirmation'); ?>                          
+        <?!= include('_need_move_to_free_confirmation'); ?>      
         <?!= include('_assembly_move_to_shipment_confirmation'); ?>        
+        <?!= include('_assembly_move_to_polishing_confirmation'); ?>        
+        <?!= include('_assembly_move_to_free_confirmation'); ?>        
         <?!= include('_shipment_remove_confirmation'); ?> 
         <?!= include('_shipment_move_to_free_confirmation'); ?> 
+        <?!= include('_shipment_move_to_assembly_confirmation'); ?> 
+        <?!= include('_shipment_move_to_polishing_confirmation'); ?> 
         <?!= include('_free_remove_confirmation'); ?>
         <?!= include('_free_move_to_assembly_confirmation'); ?>
+        <?!= include('_free_move_to_polishing_confirmation'); ?>
         <?!= include('_polishing_move_to_assembly_confirmation'); ?>
+        <?!= include('_polishing_move_to_shipment_confirmation'); ?>
+        <?!= include('_polishing_move_to_free_confirmation'); ?>
         <?!= include('_stone_color_remove_confirmation'); ?>         
-        <?!= include('_stone_shape_remove_confirmation'); ?>     
+        <?!= include('_stone_shape_remove_confirmation'); ?>             
         
         <!-- Include libraries scripts -->
         <?!= include('_scripts'); ?>    

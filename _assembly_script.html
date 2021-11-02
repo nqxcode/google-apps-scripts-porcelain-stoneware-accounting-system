@@ -51,6 +51,26 @@
           })
         }
 
+        function moveAssemblyToPolishing(orderNumber) {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(response => {              
+              resolve(response)
+            }).withFailureHandler(error => {
+                reject(error)
+            }).moveAssemblyToPolishing(orderNumber);
+          })          
+        }
+
+        function moveAssemblyToFree(orderNumber) {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(response => {              
+              resolve(response)
+            }).withFailureHandler(error => {
+                reject(error)
+            }).moveAssemblyToFree(orderNumber);
+          })          
+        }
+
         function getOrderNumber(assemblyElement) {
           return assemblyElement.index()
         }
@@ -63,13 +83,17 @@
             let orderNumberInput = assemblyElement.find('[name="order_number"]')
             let setChangeModeButton = assemblyElement.find('button[data-action="assemblies.set-change-mode"]')
             let moveToShipmentButton = assemblyElement.find('button[data-action="assemblies.show-move-to-shipment-confirmation"]')
+            let moveToPolishingButton = assemblyElement.find('button[data-action="assemblies.show-move-to-polishing-confirmation"]')
+            let moveToFreeButton = assemblyElement.find('button[data-action="assemblies.show-move-to-free-confirmation"]')
 
             if (orderNumberInput.val() != '') {
               assemblyElement.removeClass('warning')
               orderNumberInput.prop('disabled', true)
-              setChangeModeButton.prop('disabled', true)
-              setChangeModeButton.hide();
+              setChangeModeButton.prop('disabled', false)
+              setChangeModeButton.show();
               moveToShipmentButton.prop('disabled', false)                             
+              moveToPolishingButton.prop('disabled', false)    
+              moveToFreeButton.prop('disabled', false)    
 
             } else {
               assemblyElement.addClass('warning')
@@ -77,6 +101,8 @@
               setChangeModeButton.prop('disabled', false)
               setChangeModeButton.show();
               moveToShipmentButton.prop('disabled', true)      
+              moveToPolishingButton.prop('disabled', true)   
+              moveToFreeButton.prop('disabled', true)    
                     
             }
           })
@@ -145,6 +171,7 @@
 
           assemblyElement.find('[data-name]').hide()
           assemblyElement.find('[name]').show()
+          initFormControls(assemblyElement)
 
           let buttons = getButtons(assemblyElement)
           buttons.setChangeModeButton.hide()
@@ -283,5 +310,96 @@
           loadAssemblies() 
         })
 
+        $(document).on('click', 'button[data-action="assemblies.move-to-polishing"]', function(e) {                    
+          if (!assemblyListElement.data('block')) {
+            assemblyListElement.data('block', true)
+
+            let assemblyElement = assemblyListElement.find('[data-element="assembly"]').has(this)            
+
+            let orderNumber = $(this).data('orderNumber')                    
+            let loader = $(this).find('[data-element="loader"]')
+            let assemblyMoveToPolishingModal = $('#assemblyMoveToPolishingModal')             
+            
+            loader.show()
+
+            moveAssemblyToPolishing(orderNumber)
+              .then(
+                () => {                    
+                  loadAssemblies().then(() => {
+                    polishingListElement.trigger('refresh')
+                    loader.hide()
+                    assemblyMoveToPolishingModal.modal('hide')
+                    assemblyListElement.data('block', false)
+                  })
+                },
+                error => {
+                  loadAssemblies().then(() => {
+                    messageModal.data('message', prepareError(error))
+                    messageModal.modal('show')
+
+                    polishingListElement.trigger('refresh')
+                    loader.hide()
+                    assemblyMoveToPolishingModal.modal('hide')
+                    assemblyListElement.data('block', false)
+                  })                  
+                }
+              )   
+          }
+        })
+
+        $('#assemblyMoveToPolishingModal').on('show.bs.modal', function (e) {
+          var button = $(e.relatedTarget) 
+          var orderNumber = button.data('orderNumber') 
+
+          var modal = $(this)
+          modal.find('[data-element="order-number"]').text(orderNumber)
+          modal.find('button[data-action="assemblies.move-to-polishing"]').data('orderNumber', orderNumber)
+        })
+
+        $(document).on('click', 'button[data-action="assemblies.move-to-free"]', function(e) {                    
+          if (!assemblyListElement.data('block')) {
+            assemblyListElement.data('block', true)
+
+            let assemblyElement = assemblyListElement.find('[data-element="assembly"]').has(this)            
+
+            let orderNumber = $(this).data('orderNumber')                    
+            let loader = $(this).find('[data-element="loader"]')
+            let assemblyMoveToFreeModal = $('#assemblyMoveToFreeModal')             
+            
+            loader.show()
+
+            moveAssemblyToFree(orderNumber)
+              .then(
+                () => {                    
+                  loadAssemblies().then(() => {
+                    freeListElement.trigger('refresh')
+                    loader.hide()
+                    assemblyMoveToFreeModal.modal('hide')
+                    assemblyListElement.data('block', false)
+                  })
+                },
+                error => {
+                  loadAssemblies().then(() => {
+                    messageModal.data('message', prepareError(error))
+                    messageModal.modal('show')
+
+                    freeListElement.trigger('refresh')
+                    loader.hide()
+                    assemblyMoveToFreeModal.modal('hide')
+                    assemblyListElement.data('block', false)
+                  })                  
+                }
+              )   
+          }
+        })
+
+        $('#assemblyMoveToFreeModal').on('show.bs.modal', function (e) {
+          var button = $(e.relatedTarget) 
+          var orderNumber = button.data('orderNumber') 
+
+          var modal = $(this)
+          modal.find('[data-element="order-number"]').text(orderNumber)
+          modal.find('button[data-action="assemblies.move-to-free"]').data('orderNumber', orderNumber)
+        })
       })
 </script>

@@ -41,6 +41,26 @@
           })          
         }
 
+        function movePolishingToShipment(orderNumber) {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(response => {              
+              resolve(response)
+            }).withFailureHandler(error => {
+                reject(error)
+            }).movePolishingToShipment(orderNumber);
+          })          
+        }
+
+        function movePolishingToFree(orderNumber) {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(response => {              
+              resolve(response)
+            }).withFailureHandler(error => {
+                reject(error)
+            }).movePolishingToFree(orderNumber);
+          })          
+        }
+
         function updatePolishing(orderNumber, polishingData) {     
           return new Promise((resolve, reject) => {
             google.script.run.withSuccessHandler(response => {
@@ -63,13 +83,17 @@
             let orderNumberInput = polishingElement.find('[name="order_number"]')
             let setChangeModeButton = polishingElement.find('button[data-action="polishings.set-change-mode"]')
             let moveToAssemblyButton = polishingElement.find('button[data-action="polishings.show-move-to-assembly-confirmation"]')
+            let moveToShipmentButton = polishingElement.find('button[data-action="polishings.show-move-to-shipment-confirmation"]')
+            let moveToFreeButton = polishingElement.find('button[data-action="polishings.show-move-to-free-confirmation"]')
 
             if (orderNumberInput.val() != '') {
               polishingElement.removeClass('warning')
               orderNumberInput.prop('disabled', true)
-              setChangeModeButton.prop('disabled', true)
-              setChangeModeButton.hide();
+              setChangeModeButton.prop('disabled', false) 
+              setChangeModeButton.show();
               moveToAssemblyButton.prop('disabled', false)                             
+              moveToShipmentButton.prop('disabled', false)   
+              moveToFreeButton.prop('disabled', false)   
 
             } else {
               polishingElement.addClass('warning')
@@ -77,7 +101,8 @@
               setChangeModeButton.prop('disabled', false)
               setChangeModeButton.show();
               moveToAssemblyButton.prop('disabled', true)      
-                    
+              moveToShipmentButton.prop('disabled', true)   
+              moveToFreeButton.prop('disabled', true)   
             }
           })
         }
@@ -145,6 +170,7 @@
 
           polishingElement.find('[data-name]').hide()
           polishingElement.find('[name]').show()
+          initFormControls(polishingElement)
 
           let buttons = getButtons(polishingElement)
           buttons.setChangeModeButton.hide()
@@ -278,9 +304,99 @@
           modal.find('button[data-action="polishings.move-to-assembly"]').data('orderNumber', orderNumber)
         })
 
+        $(document).on('click', 'button[data-action="polishings.move-to-free"]', function(e) {                    
+          if (!polishingListElement.data('block')) {
+            polishingListElement.data('block', true)
+
+            let polishingElement = polishingListElement.find('[data-element="polishing"]').has(this)            
+
+            let orderNumber = $(this).data('orderNumber')                    
+            let loader = $(this).find('[data-element="loader"]')
+            let polishingMoveToFreeModal = $('#polishingMoveToFreeModal')            
+            
+            loader.show()
+
+            movePolishingToFree(orderNumber)
+              .then(
+                () => {                    
+                  loadPolishings().then(() => {
+                    freeListElement.trigger('refresh')
+                    loader.hide()
+                    polishingMoveToFreeModal.modal('hide')
+                    polishingListElement.data('block', false)
+                  })
+                },
+                error => {
+                  loadPolishings().then(() => {
+                    messageModal.data('message', prepareError(error))
+                    messageModal.modal('show')
+
+                    freeListElement.trigger('refresh')
+                    loader.hide()
+                    polishingMoveToFreeModal.modal('hide')
+                    polishingListElement.data('block', false)
+                  })                  
+                }
+              )   
+          }
+        })
+
+        $('#polishingMoveToFreeModal').on('show.bs.modal', function (e) {
+          var button = $(e.relatedTarget) 
+          var orderNumber = button.data('orderNumber') 
+
+          var modal = $(this)
+          modal.find('[data-element="order-number"]').text(orderNumber)
+          modal.find('button[data-action="polishings.move-to-free"]').data('orderNumber', orderNumber)
+        })
+
+        $(document).on('click', 'button[data-action="polishings.move-to-shipment"]', function(e) {                    
+          if (!polishingListElement.data('block')) {
+            polishingListElement.data('block', true)
+
+            let polishingElement = polishingListElement.find('[data-element="polishing"]').has(this)            
+
+            let orderNumber = $(this).data('orderNumber')                    
+            let loader = $(this).find('[data-element="loader"]')
+            let polishingMoveToShipmentModal = $('#polishingMoveToShipmentModal')            
+            
+            loader.show()
+
+            movePolishingToShipment(orderNumber)
+              .then(
+                () => {                    
+                  loadPolishings().then(() => {
+                    shipmentListElement.trigger('refresh')
+                    loader.hide()
+                    polishingMoveToShipmentModal.modal('hide')
+                    polishingListElement.data('block', false)
+                  })
+                },
+                error => {
+                  loadPolishings().then(() => {
+                    messageModal.data('message', prepareError(error))
+                    messageModal.modal('show')
+
+                    shipmentListElement.trigger('refresh')
+                    loader.hide()
+                    polishingMoveToShipmentModal.modal('hide')
+                    polishingListElement.data('block', false)
+                  })                  
+                }
+              )   
+          }
+        })
+
+        $('#polishingMoveToShipmentModal').on('show.bs.modal', function (e) {
+          var button = $(e.relatedTarget) 
+          var orderNumber = button.data('orderNumber') 
+
+          var modal = $(this)
+          modal.find('[data-element="order-number"]').text(orderNumber)
+          modal.find('button[data-action="polishings.move-to-shipment"]').data('orderNumber', orderNumber)
+        })
         polishingListElement.on('refresh', function() {
           loadPolishings() 
         })
-
       })
 </script>

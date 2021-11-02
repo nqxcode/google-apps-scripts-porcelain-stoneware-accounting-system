@@ -27,7 +27,7 @@
         let loadStoneColors = function () {
           google.script.run.withSuccessHandler(function(stoneColors) {
             
-              $('select[name="stone_color"]').each(function () {
+              $('form select[name="stone_color"]').each(function () {
                 var $select = $(this)
                 $select.empty()
 
@@ -40,7 +40,7 @@
 
         let loadStoneShapes = function () {
           google.script.run.withSuccessHandler(function(stoneShapes) {
-              $('select[name="stone_shape"]').each(function () {
+              $('form select[name="stone_shape"]').each(function () {
                 var $select = $(this)
                 $select.empty()
                 
@@ -51,34 +51,47 @@
             }).getStoneShapes();
         }
 
-        let initFormControls = function(form) {
-            let diameterElement = form.find('[name="diameter"]')
-            let lengthMinElement = form.find('[name="length_min"]')
-            let lengthMaxElement = form.find('[name="length_max"]')
-            let widthElement = form.find('[name="width"]')
-            let stoneShapeElement = form.find('[name="stone_shape"]')
-            let stoneColorElement = form.find('[name="stone_color"]')
+        function getFormRules(orderNumber, polishingData) {     
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(response => {
+              resolve(response)                                 
+            }).withFailureHandler(error => {
+                reject(error)
+            }).getFormRules();
+          })
+        }
 
-            let rules = [
-              {element: lengthMaxElement, stoneShapes: ['бочка', 'овал', 'стадион', 'прямоугольник', 'раздвижной стол']},
-              {element: lengthMinElement, stoneShapes: ['раздвижной стол']},                            
-              {element: widthElement, stoneShapes: ['бочка', 'овал', 'стадион', 'прямоугольник', 'раздвижной стол']},
-              {element: diameterElement, stoneShapes: ['круг', 'сектора']}              
-            ]
+        let formRules;
+        window.initFormControls = function(form) {
+            let stoneShapeElement = form.find('[name="stone_shape"]')                    
 
-            stoneShapeElement.change(function(){
-                let value = stoneShapeElement.val()
+            let handleInputs = function(rules) {
+              stoneShapeElement.change(function(){
+                    let value = stoneShapeElement.val()
+                    rules.forEach(function(rule) {
+                      let disabled = !rule.stoneShapes.includes(value)                  
+                      let element = form.find(`[name="${rule.field}"]`)
 
-                rules.forEach(function(rule) {
-                  let disabled = !rule.stoneShapes.includes(value)
-                  rule.element.prop('disabled', disabled)
-                  if (disabled) {
-                    rule.element.val('');
-                  }                  
+                      element.prop('disabled', disabled)
+                      if (disabled) {
+                        element.val('');
+                      }                  
+                    })
                 })
-            })
 
-            stoneShapeElement.trigger('change')
+                stoneShapeElement.trigger('change')
+            }
+
+            if (!formRules) {
+              getFormRules().then(
+                rules => {
+                  formRules = rules
+                  handleInputs(rules)
+                }
+              )
+            } else {
+              handleInputs(formRules)
+            }
         }          
 
         let initForms = function() {
