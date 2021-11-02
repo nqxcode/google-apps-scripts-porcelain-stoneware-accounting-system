@@ -68,8 +68,18 @@
             let handleInputs = function(rules) {
               stoneShapeElement.change(function(){
                     let value = stoneShapeElement.val()
+
+                    let allStoneShapes = rules
+                      .map(rule => rule.stoneShapes)
+                      .reduce(function(accumulator, stoneShapes) { return accumulator.concat(stoneShapes) }, [])
+                      .filter(function(value, index, self) { return self.indexOf(value) === index })
+                    
                     rules.forEach(function(rule) {
-                      let disabled = !rule.stoneShapes.includes(value)                  
+                      let disabled = false;
+                      if (allStoneShapes.includes(value)) {
+                        disabled = !rule.stoneShapes.includes(value)                                          
+                      }
+                      
                       let element = form.find(`[name="${rule.field}"]`)
 
                       element.prop('disabled', disabled)
