@@ -57,8 +57,8 @@ function checkOrderNumberUnique(orderNumber, options) {
     }
 
     return true
-    }
   }
+}
 
 function getFormRules()
 {

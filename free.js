@@ -29,6 +29,28 @@ function addFree(orderData) {
   return true
 }
 
+function updateFree(orderNumber, freeData) {
+  let freeRow = findFreeRow(orderNumber)
+  if (!freeRow) {
+    throw new Error(`Заказа с номером по порядку ${orderNumber} не сущестует в свободных`)
+  }  
+
+  let freeColumnsMap = getFreeColumnsMap()
+
+  for(column = 0; column < freeColumnsMap.length; column++) {
+    let field = freeColumnsMap[column]    
+    let value = prepareFormFieldValue(field, freeData)
+
+    if (value !== undefined) {
+      freeSheet.getRange(freeRow, column).setValue(value);     
+    }
+  }
+}
+
+function getFreeRowByIndex(orderIndex) { 
+  return getFreeOffset() + orderIndex
+}
+
 function moveFreeToAssembly(orderNumber)
 {
   let freeData = findFree(orderNumber)

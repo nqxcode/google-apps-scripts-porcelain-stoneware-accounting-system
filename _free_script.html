@@ -20,6 +20,16 @@
           })
         }
 
+        function updateFree(orderNumber, freeData) {      
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(response => {
+              resolve(response)                                 
+            }).withFailureHandler(error => {
+                reject(error)
+            }).updateFree(orderNumber, freeData);
+          })
+        }
+
         function moveFreeToAssembly(orderIndex) {
           return new Promise((resolve, reject) => {
             google.script.run.withSuccessHandler(response => {              
@@ -50,7 +60,126 @@
           })
         }
 
+        function getOrderNumber(freeElement) {
+          return freeElement.data('orderNumber') 
+        }
+
         loadFree()
+        
+
+        $(document).on('click', 'button[data-action="free.set-change-mode"]', function(e) {     
+          if (freeListElement.data('block')) {
+            return
+          }
+        
+          let freeElements = freeListElement.find('[data-element="free"]')          
+          let freeElement = freeElements.has(this)          
+          
+          let otherfreeElements = freeElements.filter(function() { return getOrderNumber($(this)) != getOrderNumber(freeElement) })
+          
+          function getButtons(freeElement) {
+            let setChangeModeButton = freeElement.find('button[data-action="free.set-change-mode"]')
+            let saveChangesButton = freeElement.find('button[data-action="free.save-changes"]')
+            let cancelChangesButton = freeElement.find('button[data-action="free.cancel-changes"]')
+            let moveToAssemblyButton = freeElement.find('button[data-action="free.show-move-to-assembly-confirmation"]')
+
+            return {
+              setChangeModeButton: setChangeModeButton,
+              saveChangesButton: saveChangesButton,
+              cancelChangesButton: cancelChangesButton,
+              moveToAssemblyButton: moveToAssemblyButton
+            }
+          }
+
+          freeElement.find('[data-name]').hide()
+          freeElement.find('[name]').show()
+          initFormControls(freeElement)
+
+          let buttons = getButtons(freeElement)
+          buttons.setChangeModeButton.hide()
+          buttons.moveToAssemblyButton.hide()
+          buttons.saveChangesButton.show()
+          buttons.cancelChangesButton.show()
+
+          $.each(otherfreeElements, function() {
+            let freeElement = $(this);
+
+            freeElement.find('[data-name]').show()
+            freeElement.find('[name]').hide()
+
+            let buttons = getButtons(freeElement)
+
+            if (! buttons.setChangeModeButton.prop('disabled')) {
+              buttons.setChangeModeButton.show()
+            } else {
+              buttons.setChangeModeButton.hide()
+            }
+            
+            buttons.moveToAssemblyButton.show()
+            buttons.saveChangesButton.hide()
+            buttons.cancelChangesButton.hide()
+          })
+        })
+
+        $(document).on('click', 'button[data-action="free.save-changes"]', function(e) {
+          if (!freeListElement.data('block')) {
+            freeListElement.data('block', true)
+
+            let freeElement = freeListElement.find('[data-element="free"]').has(this)
+            let orderNumber = getOrderNumber(freeElement) 
+
+            let saveChangesButton = $(this)                               
+            let setChangeModeButton = freeElement.find('button[data-action="free.set-change-mode"]')
+            let cancelChangesButton = freeElement.find('button[data-action="free.cancel-changes"]')
+
+            let loader = $(this).find('[data-element="loader"]')
+
+            let form = freeElement.find('[name]')
+            let freeData = getFormData(form)       
+
+            loader.show()
+            updateFree(orderNumber, freeData)
+            .then(
+              () => {
+                loadFree().then(() => {              
+                  loader.hide()
+                  freeListElement.data('block', false)
+                })     
+              },
+              error => {                                
+                loadFree().then(() => {              
+                  messageModal.data('message', prepareError(error))
+                  messageModal.modal('show')
+
+                  loader.hide()
+                  freeListElement.data('block', false)
+                })
+              }
+            )
+          }
+        })
+
+        $(document).on('click', 'button[data-action="free.cancel-changes"]', function(e) {         
+          if (freeListElement.data('block')) {
+            return
+          }
+          
+          let freeElement = freeListElement.find('[data-element="free"]').has(this) 
+          let orderNumber = $(this).data('orderNumber')                          
+
+          let cancelChangesButton = $(this)          
+          let setChangeModeButton = freeElement.find('button[data-action="free.set-change-mode"]')
+          let saveChangesButton = freeElement.find('button[data-action="free.save-changes"]')
+          let moveToAssemblyButton = freeElement.find('button[data-action="free.show-move-to-assembly-confirmation"]')
+
+          freeElement.find('[data-name]').show()
+          freeElement.find('[name]').hide()
+
+          setChangeModeButton.show()
+          moveToAssemblyButton.show()
+          saveChangesButton.hide()
+          cancelChangesButton.hide()                    
+        })  
 
         $(document).on('click', 'button[data-action="free.move-to-assembly"]', function(e) {                    
           if (!freeListElement.data('block')) {
