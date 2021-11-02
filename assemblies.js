@@ -125,11 +125,11 @@ function moveAssemblyToShipment(orderNumber)
   }
 }
 
-function moveAssemblyToPolishing(orderNumber)
+function moveAssemblyToPolishing(orderIndex)
 {
-  let orderData = findAssembly(orderNumber)
+  let orderData = getAssemblyByIndex(orderIndex)
   if (!orderData) {
-    throw new Error(`Заказа с номером ${orderNumber} не существует в сборке`)
+    throw new Error(`Заказа с номером по порядку ${orderIndex + 1} не существует в сборке`)
   }
 
   addPolishing(
@@ -153,17 +153,17 @@ function moveAssemblyToPolishing(orderNumber)
     }
   )
 
-  let isRemovedFromAssembly = removeAssembly(orderNumber)
+  let isRemovedFromAssembly = removeAssemblyByIndex(orderIndex)
   if (!isRemovedFromAssembly) {
-    throw new Error(`Заказ с номером ${orderNumber} не был удален из сборки`)
+    throw new Error(`Заказ с номером по порядку ${orderIndex + 1} не был удален из сборки`)
   }
 }
 
-function moveAssemblyToFree(orderNumber)
+function moveAssemblyToFree(orderIndex)
 {
-  let orderData = findAssembly(orderNumber)
+  let orderData = getAssemblyByIndex(orderIndex)
   if (!orderData) {
-    throw new Error(`Заказа с номером ${orderNumber} не существует в сборке`)
+    throw new Error(`Заказа с номером по порядку ${orderIndex + 1} не существует в сборке`)
   }
 
   addFree(
@@ -178,9 +178,9 @@ function moveAssemblyToFree(orderNumber)
     }
   )
 
-  let isRemovedFromAssembly = removeAssembly(orderNumber)
+  let isRemovedFromAssembly = removeAssemblyByIndex(orderIndex)
   if (!isRemovedFromAssembly) {
-    throw new Error(`Заказ с номером ${orderNumber} не был удален из сборки`)
+    throw new Error(`Заказ с номером по порядку ${orderIndex + 1} не был удален из сборки`)
   }
 }
 
@@ -188,6 +188,14 @@ function findAssembly(orderNumber)
 {
   let assemblies = getAssemblies()  
   let assembly = assemblies.find((assembly) => assembly.order_number == orderNumber)
+
+  return assembly;
+}
+
+function getAssemblyByIndex(orderIndex)
+{
+  let assemblies = getAssemblies()  
+  let assembly = assemblies[orderIndex] || null
 
   return assembly;
 }
@@ -202,20 +210,33 @@ function removeAssembly(orderNumber) {
   return false
 }
 
+function removeAssemblyByIndex(orderIndex) {
+  let assemblyRow = getAssemblyRowByIndex(orderIndex)
+  if (assemblyRow) {
+    assembliesSheet.deleteRow(assemblyRow)
+    return true
+  }
+
+  return false
+}
+
+
 function getAssemblies()
 {
   let data = assembliesSheet
     .getRange(getAssemblyOffset(), 1, assembliesSheet.getLastRow(), 8)
     .getValues()
     .filter(v => v.filter(c => c).length)
-    .map(assembly => prepareAssembly(assembly));    
+    .map((assembly, assemblyIndex) => prepareAssembly(assembly, assemblyIndex));    
 
   return data;
 }
 
-function prepareAssembly(assemblyData)
+function prepareAssembly(assemblyData, orderIndex)
 {
   let assemblyObj = {}
+
+  assemblyObj.order_index = orderIndex;
 
   getAssemblyColumnsMap().forEach((field, column) => {
     let value = assemblyData[column - 1];

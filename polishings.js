@@ -96,11 +96,11 @@ function updatePolishing(orderIndex, polishingData) {
   }
 }
 
-function movePolishingToAssembly(orderNumber)
+function movePolishingToAssembly(orderIndex)
 {
-  let orderData = findPolishing(orderNumber)
+  let orderData = getPolishingByIndex(orderIndex)
   if (!orderData) {
-    throw new Error(`Заказа с номером ${orderNumber} не существует в полировке`)
+    throw new Error(`Заказа с номером по порядку ${orderIndex + 1} не существует в полировке`)
   }
 
   addAssembly(
@@ -124,9 +124,9 @@ function movePolishingToAssembly(orderNumber)
     }
   )
 
-  let isRemovedFromPolishing = removePolishing(orderNumber)
+  let isRemovedFromPolishing = removePolishingByIndex(orderIndex)
   if (!isRemovedFromPolishing) {
-    throw new Error(`Заказ с номером ${orderNumber} не был удален из полировки`)
+    throw new Error(`Заказ с номером по порядку ${orderIndex + 1} не был удален из полировки`)
   }
 } 
 
@@ -164,11 +164,11 @@ function movePolishingToShipment(orderNumber)
   }
 } 
 
-function movePolishingToFree(orderNumber)
+function movePolishingToFree(orderIndex)
 {
-  let orderData = findPolishing(orderNumber)
+  let orderData = getPolishingByIndex(orderIndex)
   if (!orderData) {
-    throw new Error(`Заказа с номером ${orderNumber} не существует в полировке`)
+    throw new Error(`Заказа с номером ${orderIndex + 1} не существует в полировке`)
   }
 
   addFree(
@@ -183,9 +183,9 @@ function movePolishingToFree(orderNumber)
     }
   )
 
-  let isRemovedFromPolishing = removePolishing(orderNumber)
+  let isRemovedFromPolishing = removePolishingByIndex(orderIndex)
   if (!isRemovedFromPolishing) {
-    throw new Error(`Заказ с номером ${orderNumber} не был удален из полировки`)
+    throw new Error(`Заказ с номером по порядку ${orderIndex + 1} не был удален из полировки`)
   }
 } 
 
@@ -194,11 +194,29 @@ function findPolishing(orderNumber)
   let polishings = getPolishings()  
   let polishing = polishings.find((polishing) => polishing.order_number == orderNumber)
 
-  return polishing;
+  return polishing
+}
+
+function getPolishingByIndex(orderIndex)
+{
+  let polishings = getPolishings()  
+  let polishing = polishings[orderIndex] || null
+
+  return polishing
 }
 
 function removePolishing(orderNumber) {
   let polishingRow = findPolishingRow(orderNumber)
+  if (polishingRow) {
+    polishingsSheet.deleteRow(polishingRow)
+    return true
+  }
+
+  return false
+}
+
+function removePolishingByIndex(orderIndex) {
+  let polishingRow = getPolishingRowByIndex(orderIndex)
   if (polishingRow) {
     polishingsSheet.deleteRow(polishingRow)
     return true
@@ -213,14 +231,15 @@ function getPolishings()
     .getRange(getPolishingOffset(), 1, polishingsSheet.getLastRow(), 8)
     .getValues()
     .filter(v => v.filter(c => c).length)
-    .map(polishing => preparePolishing(polishing));    
+    .map((polishing, polishingIndex) => preparePolishing(polishing, polishingIndex));    
 
   return data;
 }
 
-function preparePolishing(polishingData)
+function preparePolishing(polishingData, polishingIndex)
 {
   let polishingObj = {}
+  polishingObj.order_index = polishingIndex
 
   getPolishingColumnsMap().forEach((field, column) => {
     let value = polishingData[column - 1];

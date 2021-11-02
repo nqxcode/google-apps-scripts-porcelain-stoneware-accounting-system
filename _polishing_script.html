@@ -31,13 +31,13 @@
           })          
         }
 
-        function movePolishingToAssembly(orderNumber) {
+        function movePolishingToAssembly(orderIndex) {
           return new Promise((resolve, reject) => {
             google.script.run.withSuccessHandler(response => {              
               resolve(response)
             }).withFailureHandler(error => {
                 reject(error)
-            }).movePolishingToAssembly(orderNumber);
+            }).movePolishingToAssembly(orderIndex);
           })          
         }
 
@@ -51,13 +51,13 @@
           })          
         }
 
-        function movePolishingToFree(orderNumber) {
+        function movePolishingToFree(orderIndex) {
           return new Promise((resolve, reject) => {
             google.script.run.withSuccessHandler(response => {              
               resolve(response)
             }).withFailureHandler(error => {
                 reject(error)
-            }).movePolishingToFree(orderNumber);
+            }).movePolishingToFree(orderIndex);
           })          
         }
 
@@ -100,9 +100,9 @@
               orderNumberInput.prop('disabled', false)
               setChangeModeButton.prop('disabled', false)
               setChangeModeButton.show();
-              moveToAssemblyButton.prop('disabled', true)      
+              moveToAssemblyButton.prop('disabled', false)                             
               moveToShipmentButton.prop('disabled', true)   
-              moveToFreeButton.prop('disabled', true)   
+              moveToFreeButton.prop('disabled', false)   
             }
           })
         }
@@ -264,13 +264,13 @@
 
             let polishingElement = polishingListElement.find('[data-element="polishing"]').has(this)            
 
-            let orderNumber = $(this).data('orderNumber')                    
+            let orderIndex = $(this).data('orderIndex')                    
             let loader = $(this).find('[data-element="loader"]')
             let polishingMoveToAssemblyModal = $('#polishingMoveToAssemblyModal')            
             
             loader.show()
 
-            movePolishingToAssembly(orderNumber)
+            movePolishingToAssembly(orderIndex) 
               .then(
                 () => {                    
                   loadPolishings().then(() => {
@@ -298,10 +298,15 @@
         $('#polishingMoveToAssemblyModal').on('show.bs.modal', function (e) {
           var button = $(e.relatedTarget) 
           var orderNumber = button.data('orderNumber') 
+          var orderIndex = button.data('orderIndex')
 
           var modal = $(this)
-          modal.find('[data-element="order-number"]').text(orderNumber)
-          modal.find('button[data-action="polishings.move-to-assembly"]').data('orderNumber', orderNumber)
+          modal.find('[data-element="order-number"]').text(orderNumber || (orderIndex + 1))
+          modal.find('[data-element="sequential-number-info"]').css('display', orderNumber ? 'none' : 'inline')          
+
+          movePolishingToAssemblyButton = modal.find('button[data-action="polishings.move-to-assembly"]')
+          movePolishingToAssemblyButton.data('orderNumber', orderNumber)
+          movePolishingToAssemblyButton.data('orderIndex', orderIndex)
         })
 
         $(document).on('click', 'button[data-action="polishings.move-to-free"]', function(e) {                    
@@ -310,13 +315,13 @@
 
             let polishingElement = polishingListElement.find('[data-element="polishing"]').has(this)            
 
-            let orderNumber = $(this).data('orderNumber')                    
+            let orderIndex = $(this).data('orderIndex')                    
             let loader = $(this).find('[data-element="loader"]')
             let polishingMoveToFreeModal = $('#polishingMoveToFreeModal')            
             
             loader.show()
 
-            movePolishingToFree(orderNumber)
+            movePolishingToFree(orderIndex)
               .then(
                 () => {                    
                   loadPolishings().then(() => {
@@ -344,10 +349,15 @@
         $('#polishingMoveToFreeModal').on('show.bs.modal', function (e) {
           var button = $(e.relatedTarget) 
           var orderNumber = button.data('orderNumber') 
+          var orderIndex = button.data('orderIndex')
 
           var modal = $(this)
-          modal.find('[data-element="order-number"]').text(orderNumber)
-          modal.find('button[data-action="polishings.move-to-free"]').data('orderNumber', orderNumber)
+          modal.find('[data-element="order-number"]').text(orderNumber || (orderIndex + 1))
+          modal.find('[data-element="sequential-number-info"]').css('display', orderNumber ? 'none' : 'inline')          
+
+          movePolishingToFreeButton = modal.find('button[data-action="polishings.move-to-free"]')
+          movePolishingToFreeButton.data('orderNumber', orderNumber)
+          movePolishingToFreeButton.data('orderIndex', orderIndex)
         })
 
         $(document).on('click', 'button[data-action="polishings.move-to-shipment"]', function(e) {                    
@@ -395,6 +405,7 @@
           modal.find('[data-element="order-number"]').text(orderNumber)
           modal.find('button[data-action="polishings.move-to-shipment"]').data('orderNumber', orderNumber)
         })
+
         polishingListElement.on('refresh', function() {
           loadPolishings() 
         })

@@ -51,23 +51,23 @@
           })
         }
 
-        function moveAssemblyToPolishing(orderNumber) {
+        function moveAssemblyToPolishing(orderIndex) {
           return new Promise((resolve, reject) => {
             google.script.run.withSuccessHandler(response => {              
               resolve(response)
             }).withFailureHandler(error => {
                 reject(error)
-            }).moveAssemblyToPolishing(orderNumber);
+            }).moveAssemblyToPolishing(orderIndex);
           })          
         }
 
-        function moveAssemblyToFree(orderNumber) {
+        function moveAssemblyToFree(orderIndex) {
           return new Promise((resolve, reject) => {
             google.script.run.withSuccessHandler(response => {              
               resolve(response)
             }).withFailureHandler(error => {
                 reject(error)
-            }).moveAssemblyToFree(orderNumber);
+            }).moveAssemblyToFree(orderIndex);
           })          
         }
 
@@ -93,7 +93,7 @@
               setChangeModeButton.show();
               moveToShipmentButton.prop('disabled', false)                             
               moveToPolishingButton.prop('disabled', false)    
-              moveToFreeButton.prop('disabled', false)    
+              moveToFreeButton.prop('disabled', false)
 
             } else {
               assemblyElement.addClass('warning')
@@ -101,8 +101,8 @@
               setChangeModeButton.prop('disabled', false)
               setChangeModeButton.show();
               moveToShipmentButton.prop('disabled', true)      
-              moveToPolishingButton.prop('disabled', true)   
-              moveToFreeButton.prop('disabled', true)    
+              moveToPolishingButton.prop('disabled', false)    
+              moveToFreeButton.prop('disabled', false)   
                     
             }
           })
@@ -312,17 +312,15 @@
 
         $(document).on('click', 'button[data-action="assemblies.move-to-polishing"]', function(e) {                    
           if (!assemblyListElement.data('block')) {
-            assemblyListElement.data('block', true)
+            assemblyListElement.data('block', true)       
 
-            let assemblyElement = assemblyListElement.find('[data-element="assembly"]').has(this)            
-
-            let orderNumber = $(this).data('orderNumber')                    
+            let orderIndex = $(this).data('orderIndex')                    
             let loader = $(this).find('[data-element="loader"]')
             let assemblyMoveToPolishingModal = $('#assemblyMoveToPolishingModal')             
             
             loader.show()
 
-            moveAssemblyToPolishing(orderNumber)
+            moveAssemblyToPolishing(orderIndex)
               .then(
                 () => {                    
                   loadAssemblies().then(() => {
@@ -350,25 +348,28 @@
         $('#assemblyMoveToPolishingModal').on('show.bs.modal', function (e) {
           var button = $(e.relatedTarget) 
           var orderNumber = button.data('orderNumber') 
+          var orderIndex = button.data('orderIndex') 
 
           var modal = $(this)
-          modal.find('[data-element="order-number"]').text(orderNumber)
-          modal.find('button[data-action="assemblies.move-to-polishing"]').data('orderNumber', orderNumber)
+          modal.find('[data-element="order-number"]').text(orderNumber || (orderIndex + 1))
+          modal.find('[data-element="sequential-number-info"]').css('display', orderNumber ? 'none' : 'inline')
+
+          moveAssemblyToPolishingButton = modal.find('button[data-action="assemblies.move-to-polishing"]')
+          moveAssemblyToPolishingButton.data('orderNumber', orderNumber)
+          moveAssemblyToPolishingButton.data('orderIndex', orderIndex)
         })
 
         $(document).on('click', 'button[data-action="assemblies.move-to-free"]', function(e) {                    
           if (!assemblyListElement.data('block')) {
-            assemblyListElement.data('block', true)
+            assemblyListElement.data('block', true)           
 
-            let assemblyElement = assemblyListElement.find('[data-element="assembly"]').has(this)            
-
-            let orderNumber = $(this).data('orderNumber')                    
+            let orderIndex =  $(this).data('orderIndex')
             let loader = $(this).find('[data-element="loader"]')
             let assemblyMoveToFreeModal = $('#assemblyMoveToFreeModal')             
             
             loader.show()
 
-            moveAssemblyToFree(orderNumber)
+            moveAssemblyToFree(orderIndex)
               .then(
                 () => {                    
                   loadAssemblies().then(() => {
@@ -395,11 +396,17 @@
 
         $('#assemblyMoveToFreeModal').on('show.bs.modal', function (e) {
           var button = $(e.relatedTarget) 
-          var orderNumber = button.data('orderNumber') 
+
+          var orderNumber = button.data('orderNumber')
+          var orderIndex = button.data('orderIndex')
 
           var modal = $(this)
-          modal.find('[data-element="order-number"]').text(orderNumber)
-          modal.find('button[data-action="assemblies.move-to-free"]').data('orderNumber', orderNumber)
+          modal.find('[data-element="order-number"]').text(orderNumber || (orderIndex + 1))
+          modal.find('[data-element="sequential-number-info"]').css('display', orderNumber ? 'none' : 'inline')
+
+          moveAssemblyToFreeButton = modal.find('button[data-action="assemblies.move-to-free"]')
+          moveAssemblyToFreeButton.data('orderNumber', orderNumber)
+          moveAssemblyToFreeButton.data('orderIndex', orderIndex)
         })
       })
 </script>
