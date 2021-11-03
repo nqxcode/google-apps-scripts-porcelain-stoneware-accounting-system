@@ -85,15 +85,29 @@ function getFormRule(field)
   return null
 }
 
+function getAllStoneShapes()
+{
+  return getFormRules()
+    .map(rule => rule.stoneShapes)
+    .reduce(function(accumulator, stoneShapes) { return accumulator.concat(stoneShapes) }, [])
+    .filter(function(value, index, self) { return self.indexOf(value) === index })
+}
+
 function prepareFormFieldValue(field, formData)
 {
-    let value = formData[field]    
+    let value = formData[field]
     
     let rule = getFormRule(field)
     if (rule) {
       let stoneShape = formData['stone_shape']
-      if (stoneShape) {
-        let isNeedToReset = !rule.stoneShapes.includes(stoneShape)
+      if (stoneShape) {        
+        let isNeedToReset = false
+        
+        let allStoneShapes = getAllStoneShapes()
+        if (allStoneShapes.includes(stoneShape)) {        
+          isNeedToReset = !rule.stoneShapes.includes(stoneShape)
+        }        
+
         if (isNeedToReset) {
             value = null
         }
