@@ -18,14 +18,13 @@ function getShipmentColumnsMap() {
 }
 
 function addShipment(orderData, options) {
-  options = options || {}
-  if(orderData.order_number) {
-    checkOrderNumberUnique(orderData.order_number, {...{throwIfNotUnique: true}, ...options})
-  }
+  options = options || {}  
+
+  let orderNumber = generateOrderNumber(orderData.order_number, options)
 
   shipmentsSheet.appendRow([
     orderData.date_of_adoption,    
-    prepareOrderNumber(orderData.order_number),
+    prepareValue(orderNumber),
     orderData.diameter,
     orderData.length_min,
     orderData.length_max,

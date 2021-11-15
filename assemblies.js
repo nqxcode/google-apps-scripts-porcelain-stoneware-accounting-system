@@ -36,10 +36,7 @@ function getAssemblyRowByIndex(orderIndex) {
 function addAssembly(assemblyData, options)
 {  
   options = options || {}  
-  if(assemblyData.order_number) {
-    checkOrderNumberUnique(assemblyData.order_number, {...{throwIfNotUnique: true}, ...options})
-  }
-
+  let orderNumber = generateOrderNumber(assemblyData.order_number, options)
   let assemblyColumnsMap = getAssemblyColumnsMap()
 
   let hasAnyFilled = false
@@ -57,7 +54,7 @@ function addAssembly(assemblyData, options)
 
   assembliesSheet.appendRow([
     assemblyData.date_of_adoption,    
-    prepareOrderNumber(assemblyData.order_number),
+    prepareValue(orderNumber),
     assemblyData.diameter,
     assemblyData.length_min,
     assemblyData.length_max,
@@ -66,7 +63,6 @@ function addAssembly(assemblyData, options)
     assemblyData.stone_color
   ]);
 }
-
 
 function updateAssembly(orderIndex, assemblyData) {
   let assemblyRow = getAssemblyRowByIndex(orderIndex)

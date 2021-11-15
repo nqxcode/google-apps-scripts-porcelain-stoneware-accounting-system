@@ -30,15 +30,14 @@ function findNeedRow(orderNumber) {
   return null
 }
 
-function addNeed(orderData) {  
-  if(orderData.order_number) {
-    checkOrderNumberUnique(orderData.order_number, {throwIfNotUnique: true})
-  }
+function addNeed(orderData, options) {    
+  options = options || {}  
+  let orderNumber = generateOrderNumber(orderData.order_number, options)
 
   needsSheet.appendRow([
     orderData.date_of_adoption,
     orderData.date_of_shipping,
-    prepareOrderNumber(orderData.order_number),
+    prepareValue(orderNumber),
     orderData.diameter,
     orderData.length_min,
     orderData.length_max,

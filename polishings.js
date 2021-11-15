@@ -41,11 +41,9 @@ function checkPolishingOrderNumberUnique(orderNumber) {
 
 function addPolishing(polishingData, options)
 {  
-  options = options || {}
-  if(polishingData.order_number) {
-    checkOrderNumberUnique(polishingData.order_number, {...{throwIfNotUnique: true}, ...options})
-  }
+  options = options || {}  
 
+  let orderNumber = generateOrderNumber(polishingData.order_number, options)
   let polishingColumnsMap = getPolishingColumnsMap()
 
   let hasAnyFilled = false
@@ -62,7 +60,7 @@ function addPolishing(polishingData, options)
 
   polishingsSheet.appendRow([
     polishingData.date_of_adoption,    
-    prepareOrderNumber(polishingData.order_number),
+    prepareValue(orderNumber),
     polishingData.diameter,
     polishingData.length_min,
     polishingData.length_max,
