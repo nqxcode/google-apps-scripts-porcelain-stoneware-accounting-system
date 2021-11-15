@@ -148,7 +148,7 @@ function generateOrderNumber(orderNumber, options)
       try { 
         checkOrderNumberUnique(newOrderNumber, {...options, ...{throwIfNotUnique: true}})
       } catch(Error) {
-        newOrderNumber = `${orderNumber}-${attempt}`
+        newOrderNumber = `${orderNumber}-${attempt + 1}`
         attempt++
         continue
       }
