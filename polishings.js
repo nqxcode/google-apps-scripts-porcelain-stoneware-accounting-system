@@ -228,7 +228,7 @@ function getPolishings()
   let data = polishingsSheet
     .getRange(getPolishingOffset(), 1, polishingsSheet.getLastRow(), 8)
     .getValues()
-    .filter(v => v.filter(c => c).length)
+    .filter(filterRow)
     .map((polishing, polishingIndex) => preparePolishing(polishing, polishingIndex));    
 
   return data;

@@ -86,7 +86,7 @@ function getFormRules()
     {field: 'length_max', stoneShapes: ['бочка', 'овал', 'стадион', 'прямоугольник', 'раздвижной стол']},
     {field: 'length_min', stoneShapes: ['раздвижной стол']},                            
     {field: 'width', stoneShapes: ['бочка', 'овал', 'стадион', 'прямоугольник', 'раздвижной стол']},
-    {field: 'diameter', stoneShapes: ['круг', 'сектора']}              
+    {field: 'diameter', stoneShapes: ['круг', 'сектора', 'крутилка']}              
   ]
 
   return rules
@@ -158,4 +158,8 @@ function generateOrderNumber(orderNumber, options)
   }
 
   return orderNumber
+}
+
+function filterRow(row) {
+  return row.filter(cell => cell !== '').length;
 }

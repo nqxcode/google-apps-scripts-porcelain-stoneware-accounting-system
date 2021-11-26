@@ -8,10 +8,13 @@
   <form id="assembly">  
     <div class="form-row mt-2 head-row">
           <div class="form-group col">
-              <label for="date_of_adoption">Дата принятия керамогранита в работу</label>            
+              <label for="order_number">Номер заказа</label>            
           </div>
           <div class="form-group col">
-              <label for="order_number">Номер заказа</label>            
+              <label for="stone_shape">Форма камня</label>            
+          </div>     
+          <div class="form-group col">
+              <label for="stone_color">Цвет камня</label>            
           </div>
           <div class="form-group col">
               <label for="diameter">Диаметр</label>            
@@ -24,13 +27,10 @@
           </div>
           <div class="form-group col">
               <label for="width">Ширина</label>            
-          </div>       
+          </div>               
           <div class="form-group col">
-              <label for="stone_shape">Форма камня</label>            
-          </div>     
-          <div class="form-group col">
-              <label for="stone_color">Цвет камня</label>            
-          </div>                                                    
+              <label for="date_of_adoption">Дата принятия керамогранита в работу</label>            
+          </div>                                            
 
           <div class="form-group col-lg-3 d-flex actions">
               <label>Действия</label>
@@ -38,14 +38,18 @@
       </div>
 
       <div class="form-row controls-row">
-          <div class="form-group col">
-              <label for="date_of_adoption">Дата принятия керамогранита в работу</label>                        
-              <input type="date" class="form-control" name="date_of_adoption" placeholder="Дата принятия керамогранита в работу">
-          </div>
           <div class="form-group col">       
               <label for="order_number">Номер заказа</label>     
               <input type="text" class="form-control" name="order_number" placeholder="Номер заказа">
           </div>
+          <div class="form-group col">  
+              <label for="stone_shape">Форма камня</label>          
+              <select class="form-control" name="stone_shape" placeholder="Форма камня"></select>                                
+          </div>     
+          <div class="form-group col">     
+              <label for="stone_color">Цвет камня</label>       
+              <select class="form-control" name="stone_color" placeholder="Цвет камня"></select>
+          </div> 
           <div class="form-group col"> 
               <label for="diameter">Диаметр</label>           
               <input type="text" class="form-control" name="diameter" placeholder="Диаметр">
@@ -61,15 +65,11 @@
           <div class="form-group col">  
               <label for="width">Ширина</label>           
               <input type="text" class="form-control" name="width" placeholder="Ширина">
-          </div>       
-          <div class="form-group col">  
-              <label for="stone_shape">Форма камня</label>          
-              <select class="form-control" name="stone_shape" placeholder="Форма камня"></select>                                
-          </div>     
-          <div class="form-group col">     
-              <label for="stone_color">Цвет камня</label>       
-              <select class="form-control" name="stone_color" placeholder="Цвет камня"></select>
-          </div>                                                    
+          </div>                                                          
+          <div class="form-group col">
+              <label for="date_of_adoption">Дата принятия керамогранита в работу</label>                        
+              <input type="date" class="form-control" name="date_of_adoption" placeholder="Дата принятия керамогранита в работу">
+          </div>
 
           <div class="form-group col-lg-3 d-flex buttons-container actions">    
             <div>        

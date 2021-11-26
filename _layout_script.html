@@ -67,7 +67,7 @@
 
             let handleInputs = function(rules) {
               stoneShapeElement.change(function(){
-                    let value = stoneShapeElement.val()
+                    let value = String(stoneShapeElement.val()).toLowerCase()
 
                     let allStoneShapes = rules
                       .map(rule => rule.stoneShapes)

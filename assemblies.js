@@ -49,11 +49,10 @@ function addAssembly(assemblyData, options)
 
   if (!hasAnyFilled) {
     throw new Error(`Чтобы добавить заказ в сборку, нужно заполнить хотя бы одно поле`)
-  }
-  
+  }  
 
   assembliesSheet.appendRow([
-    assemblyData.date_of_adoption,    
+    assemblyData.date_of_adoption ? assemblyData.date_of_adoption : formatDate(Date.now()),    
     prepareValue(orderNumber),
     assemblyData.diameter,
     assemblyData.length_min,
@@ -222,7 +221,7 @@ function getAssemblies()
   let data = assembliesSheet
     .getRange(getAssemblyOffset(), 1, assembliesSheet.getLastRow(), 8)
     .getValues()
-    .filter(v => v.filter(c => c).length)
+    .filter(filterRow)
     .map((assembly, assemblyIndex) => prepareAssembly(assembly, assemblyIndex));    
 
   return data;

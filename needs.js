@@ -212,7 +212,7 @@ function getNeeds()
   var data = needsSheet
     .getRange(getNeedOffset(), 1, needsSheet.getLastRow(), 9)
     .getValues()
-    .filter(v => v.filter(c => c).length)
+    .filter(filterRow)
     .map(need => prepareNeed(need));    
 
   return data;

@@ -1,27 +1,8 @@
 <div data-element="free" data-order-number="<?= order_number ?>" class="row controls-row">
     <div class="col d-flex">  
-      <label for="diameter">Диаметр</label>      
-      <div class="mt-auto mb-auto" data-name="diameter"><?= diameter ?></div>
-      <input type="text" class="form-control" name="diameter" placeholder="Диаметр" style="display: none;" value="<?= diameter ?>" >                
+      <label for="order_number">Номер в списке</label>      
+      <div class="mt-auto mb-auto" data-name="order_number"><?= ("#" + order_number) ?></div>                   
     </div>
-
-    <div class="col d-flex">  
-      <label for="length_min">Длина Min</label>      
-      <div class="mt-auto mb-auto" data-name="length_min"><?= length_min ?></div>
-      <input type="text" class="form-control" name="length_min" placeholder="Длина Min" style="display: none;" value="<?= length_min ?>" >                
-    </div>
-
-    <div class="col d-flex">  
-      <label for="length_max">Длина Max</label>      
-      <div class="mt-auto mb-auto" data-name="length_max"><?= length_max ?></div>
-      <input type="text" class="form-control" name="length_max" placeholder="Длина Max" style="display: none;" value="<?= length_max ?>" >                
-    </div>
-
-    <div class="col d-flex">        
-        <label for="width">Ширина</label>      
-        <div class="mt-auto mb-auto" data-name="width"><?= width ?></div>                        
-        <input type="text" class="form-control" name="width" placeholder="Ширина" style="display: none;" value="<?= width ?>" >
-    </div>       
 
     <div class="col d-flex">
       <label for="stone_shape">Форма камня</label>      
@@ -47,7 +28,31 @@
               </option>
           <? } ?>
         </select>                         
-    </div>       
+    </div>  
+    
+    <div class="col d-flex">  
+      <label for="diameter">Диаметр</label>      
+      <div class="mt-auto mb-auto" data-name="diameter"><?= diameter ?></div>
+      <input type="text" class="form-control" name="diameter" placeholder="Диаметр" style="display: none;" value="<?= diameter ?>" >                
+    </div>
+
+    <div class="col d-flex">  
+      <label for="length_min">Длина Min</label>      
+      <div class="mt-auto mb-auto" data-name="length_min"><?= length_min ?></div>
+      <input type="text" class="form-control" name="length_min" placeholder="Длина Min" style="display: none;" value="<?= length_min ?>" >                
+    </div>
+
+    <div class="col d-flex">  
+      <label for="length_max">Длина Max</label>      
+      <div class="mt-auto mb-auto" data-name="length_max"><?= length_max ?></div>
+      <input type="text" class="form-control" name="length_max" placeholder="Длина Max" style="display: none;" value="<?= length_max ?>" >                
+    </div>
+
+    <div class="col d-flex">        
+        <label for="width">Ширина</label>      
+        <div class="mt-auto mb-auto" data-name="width"><?= width ?></div>                        
+        <input type="text" class="form-control" name="width" placeholder="Ширина" style="display: none;" value="<?= width ?>" >
+    </div>            
     
     <div class="col-lg-3 d-flex buttons-container actions"> 
       <button type="button" data-action="free.set-change-mode" data-order-number="<?= order_number ?>" class="btn btn-outline-primary btn-sm">         

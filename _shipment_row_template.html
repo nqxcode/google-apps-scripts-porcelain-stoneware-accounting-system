@@ -1,14 +1,34 @@
-<div data-element="shipment" data-order-number="<?= order_number ?>" class="row controls-row">
-    <div class="col d-flex"> 
-        <label for="date_of_adoption">Дата принятия керамогранита на отгрузку</label>      
-        <div class="mt-auto mb-auto" data-name="date_of_adoption"><?= date_of_adoption ?></div>
-        <input type="date" class="form-control" name="date_of_adoption" placeholder="Дата принятия керамогранита на отгрузку" style="display: none;" value="<?= date_of_adoption ?>" >
-    </div>
-        
+<div data-element="shipment" data-order-number="<?= order_number ?>" class="row controls-row">       
     <div class="col d-flex">      
       <label for="order_number">Номер заказа</label>      
       <div class="mt-auto mb-auto" data-name="order_number"><?= order_number ?></div>         
       <input type="text" class="form-control" name="order_number" placeholder="Номер заказа" style="display: none;" value="<?= order_number ?>">
+    </div>
+
+    <div class="col d-flex">
+      <label for="stone_shape">Форма камня</label>      
+      <div class="mt-auto mb-auto" data-name="stone_shape"><?= stone_shape ?></div>  
+      <select class="form-control" name="stone_shape" placeholder="Форма камня" style="display: none;" value="<?= stone_shape ?>" >        
+        <option value=""></option>
+        <? for (var i = 0; i < stone_shapes.length; i++) { ?>
+            <option <? if (stone_shapes[i] === stone_shape) { ?> selected="selected" <? } ?> 
+                    value="<?= stone_shapes[i] ?>"><?= stone_shapes[i] ?>
+            </option>
+        <? } ?>
+      </select>                       
+    </div>     
+
+    <div class="col d-flex">        
+        <label for="stone_color">Цвет камня</label>      
+        <div class="mt-auto mb-auto" data-name="stone_color"><?= stone_color ?></div>       
+        <select class="form-control" name="stone_color" placeholder="Цвет камня" style="display: none;" value="<?= stone_color ?>" >
+          <option value=""></option>
+          <? for (var i = 0; i < stone_colors.length; i++) { ?>
+              <option <? if (stone_colors[i] === stone_color) { ?> selected="selected" <? } ?> 
+                      value="<?= stone_colors[i] ?>"><?= stone_colors[i] ?>
+              </option>
+          <? } ?>
+        </select>                         
     </div>
 
     <div class="col d-flex">  
@@ -35,32 +55,12 @@
         <input type="text" class="form-control" name="width" placeholder="Ширина" style="display: none;" value="<?= width ?>" >
     </div>       
 
-    <div class="col d-flex">
-      <label for="stone_shape">Форма камня</label>      
-      <div class="mt-auto mb-auto" data-name="stone_shape"><?= stone_shape ?></div>  
-      <select class="form-control" name="stone_shape" placeholder="Форма камня" style="display: none;" value="<?= stone_shape ?>" >        
-        <option value=""></option>
-        <? for (var i = 0; i < stone_shapes.length; i++) { ?>
-            <option <? if (stone_shapes[i] === stone_shape) { ?> selected="selected" <? } ?> 
-                    value="<?= stone_shapes[i] ?>"><?= stone_shapes[i] ?>
-            </option>
-        <? } ?>
-      </select>                       
-    </div>     
+    <div class="col d-flex"> 
+        <label for="date_of_adoption">Дата принятия керамогранита на отгрузку</label>      
+        <div class="mt-auto mb-auto" data-name="date_of_adoption"><?= date_of_adoption ?></div>
+        <input type="date" class="form-control" name="date_of_adoption" placeholder="Дата принятия керамогранита на отгрузку" style="display: none;" value="<?= date_of_adoption ?>" >
+    </div>
 
-    <div class="col d-flex">        
-        <label for="stone_color">Цвет камня</label>      
-        <div class="mt-auto mb-auto" data-name="stone_color"><?= stone_color ?></div>       
-        <select class="form-control" name="stone_color" placeholder="Цвет камня" style="display: none;" value="<?= stone_color ?>" >
-          <option value=""></option>
-          <? for (var i = 0; i < stone_colors.length; i++) { ?>
-              <option <? if (stone_colors[i] === stone_color) { ?> selected="selected" <? } ?> 
-                      value="<?= stone_colors[i] ?>"><?= stone_colors[i] ?>
-              </option>
-          <? } ?>
-        </select>                         
-    </div>       
-    
     <div class="col-lg-3 d-flex buttons-container actions">
       <button type="button" data-action="shipments.set-change-mode" data-order-number="<?= order_number ?>" class="btn btn-outline-primary btn-sm">         
           Изменить
