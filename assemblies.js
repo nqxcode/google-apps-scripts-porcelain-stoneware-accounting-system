@@ -67,20 +67,15 @@ function updateAssembly(orderIndex, assemblyData) {
   let assemblyRow = getAssemblyRowByIndex(orderIndex)
   let assemblyColumnsMap = getAssemblyColumnsMap()
 
-  for(column = 0; column < assemblyColumnsMap.length; column++) {
-    let field = assemblyColumnsMap[column]
-    let value = assemblyData[field]
-
-    if (field === 'order_number' && value) {
-      checkOrderNumberUnique(value, {throwIfNotUnique: true})
-    } 
-  }
 
   for(column = 0; column < assemblyColumnsMap.length; column++) {
     let field = assemblyColumnsMap[column]    
     let value = prepareFormFieldValue(field, assemblyData)
 
-    if (value !== undefined) {
+    if (value !== undefined) { 
+      if (field === 'order_number' && value) {
+        value = prepareValue(generateOrderNumber(value))      
+      } 
       assembliesSheet.getRange(assemblyRow, column).setValue(value);     
     }
   }

@@ -77,19 +77,13 @@ function updatePolishing(orderIndex, polishingData) {
 
   for(column = 0; column < polishingColumnsMap.length; column++) {
     let field = polishingColumnsMap[column]
-    let value = polishingData[field]
-
-    if (field === 'order_number' && value) {
-      checkOrderNumberUnique(value, {throwIfNotUnique: true})
-    } 
-  }
-
-  for(column = 0; column < polishingColumnsMap.length; column++) {
-    let field = polishingColumnsMap[column]
     let value = prepareFormFieldValue(field, polishingData)
     
     if (value !== undefined) {
-      polishingsSheet.getRange(polishingRow, column).setValue(value);     
+        if (field === 'order_number' && value) {
+            value = prepareValue(generateOrderNumber(value))
+        }
+        polishingsSheet.getRange(polishingRow, column).setValue(value);
     }
   }
 }

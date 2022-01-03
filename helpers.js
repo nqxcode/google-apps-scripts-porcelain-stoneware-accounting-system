@@ -13,9 +13,9 @@ function formatDate(date) {
   return formattedDate
 }
 
-function prepareValue(orderNumber)
+function prepareValue(value)
 {
-  return orderNumber ? ("'" + orderNumber) : undefined
+  return value ? ("'" + value) : undefined
 }
 
 function checkOrderNumberUnique(orderNumber, options) { 
