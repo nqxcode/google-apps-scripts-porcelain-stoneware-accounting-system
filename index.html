@@ -12,19 +12,7 @@
         <div class="container-fluid">
           <?!= include('_navbar'); ?>
 
-          <div class="tab-content" id="myTabContent">            
-            <div class="tab-pane fade show active" id="need" role="tabpanel" aria-labelledby="need-tab">
-              <div class="row">
-                  <div class="col-12">
-                    <?!= include('_need_form'); ?>
-                  </div>
-              </div>      
-              <div class="row">
-                  <div class="col-12">
-                    <?!= include('_need_list'); ?>
-                  </div>
-              </div>             
-            </div>
+          <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade" id="assembly" role="tabpanel" aria-labelledby="assembly-tab">
               <div class="row">
                   <div class="col-12">
@@ -73,7 +61,7 @@
                   <a class="nav-link" id="stone-shape-tab" data-toggle="tab" href="#stone_shape_tab" role="tab" aria-controls="profile" aria-selected="false">Форма камня</a>
                 </li>
               </ul>
-              <div class="tab-content" id="myTabContent">
+              <div class="tab-content" id="myTabContent2">
                 <div class="tab-pane fade show active" id="stone_color_tab" role="tabpanel" aria-labelledby="stone-color-tab">
                   <div class="row">
                       <div class="col-12">
@@ -106,8 +94,7 @@
         </div>
             
         <!-- Inject embedded js templates -->
-        <script>          
-          window.needRowTemplate = <?!= JSON.stringify(getContent('_need_row_template')) ?>; 
+        <script>
           window.assemblyRowTemplate = <?!= JSON.stringify(getContent('_assembly_row_template')) ?>;  
           window.shipmentRowTemplate = <?!= JSON.stringify(getContent('_shipment_row_template')) ?>;                     
           window.freeRowTemplate = <?!= JSON.stringify(getContent('_free_row_template')) ?>;
@@ -120,10 +107,7 @@
         </script>
         
         <!-- Include modals templates -->
-        <?!= include('_message'); ?> 
-        <?!= include('_need_move_to_assembly_confirmation'); ?>
-        <?!= include('_need_move_to_shipment_confirmation'); ?>                          
-        <?!= include('_need_move_to_free_confirmation'); ?>      
+        <?!= include('_message'); ?>
         <?!= include('_assembly_move_to_shipment_confirmation'); ?>
         <?!= include('_assembly_move_to_free_confirmation'); ?>        
         <?!= include('_shipment_remove_confirmation'); ?> 
@@ -139,8 +123,7 @@
         <?!= include('_ejs_script'); ?>
 
         <!-- Include custom scripts -->
-        <?!= include('_layout_script'); ?>  
-        <?!= include('_need_script'); ?>
+        <?!= include('_layout_script'); ?>
         <?!= include('_assembly_script'); ?>
         <?!= include('_shipment_script'); ?>
         <?!= include('_free_script'); ?>

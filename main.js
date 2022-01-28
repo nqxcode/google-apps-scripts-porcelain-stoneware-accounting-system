@@ -1,6 +1,5 @@
 let spreadSheet = SpreadsheetApp.openByUrl(spreadSheetUrl)
 
-let needsSheet = spreadSheet.getSheetByName("Потребность")
 let assembliesSheet = spreadSheet.getSheetByName("Сборка")
 let shipmentsSheet = spreadSheet.getSheetByName("Отгрузка")
 let freeSheet = spreadSheet.getSheetByName("Свободные")

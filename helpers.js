@@ -24,24 +24,12 @@ function checkOrderNumberUnique(orderNumber, options) {
   let defaultOptions = {
     throwIfNotUnique: false,
     checkOrderNumberUnique: {
-      needs: true,
       assemblies: true,
       shipments: true
     }
   }  
 
   options = {...defaultOptions, ...options};
-
-  if (options.checkOrderNumberUnique.needs) {
-    let needRow = findNeedRow(orderNumber)
-    if (needRow !== null) {
-      if (options.throwIfNotUnique) {
-        throw new Error(`Заказ с номером ${orderNumber} уже существует в потребности`)
-      }
-
-      return false
-    }
-  }
 
   if (options.checkOrderNumberUnique.assemblies) {
     let assemblyRow = findAssemblyRow(orderNumber)  

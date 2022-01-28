@@ -123,7 +123,6 @@ function moveShipmentToAssembly(orderNumber)
     },
     {
       checkOrderNumberUnique: {
-        needs: false,
         assemblies: true,
         shipments: false
       }
