@@ -101,7 +101,6 @@ function moveAssemblyToShipment(orderNumber)
     },
     {
       checkOrderNumberUnique: {
-        needs: false,
         assemblies: false,
         shipments: true
       }

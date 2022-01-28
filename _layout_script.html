@@ -1,6 +1,5 @@
 <script>        
-      $(function() {           
-        window.needListElement = $('#need_list')
+      $(function() {
         window.assemblyListElement = $('#assembly_list') 
         window.shipmentListElement = $('#shipment_list') 
         window.freeListElement = $('#free_list')
@@ -104,10 +103,9 @@
         }          
 
         let initForms = function() {
-          let needForm = $('form#need');
           let assemblyForm = $('form#assembly');
 
-          let forms = [needForm, assemblyForm]
+          let forms = [assemblyForm]
 
           forms.forEach(function(form){
               initFormControls(form)
@@ -130,7 +128,6 @@
             }
 
             let tabsElements = [
-              {tab: $('#need-tab'), elements: $('#need_list [data-element="need"]')},
               {tab: $('#assembly-tab'), elements: $('#assembly_list [data-element="assembly"]')},              
               {tab: $('#shipment-tab'), elements: $('#shipment_list [data-element="shipment"]')},                            
               {tab: $('#free-tab'), elements: $('#free_list [data-element="free"]')},                            
