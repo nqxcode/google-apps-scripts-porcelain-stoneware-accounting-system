@@ -50,6 +50,16 @@
             }).getStoneShapes();
         }
 
+        function getFormRules() {
+          return new Promise((resolve, reject) => {
+              google.script.run.withSuccessHandler(response => {
+                  resolve(response)
+              }).withFailureHandler(error => {
+                  reject(error)
+              }).getFormRules();
+          })
+        }
+
         let formRules;
         window.initFormControls = function(form) {
             let stoneShapeElement = form.find('[name="stone_shape"]')                    
