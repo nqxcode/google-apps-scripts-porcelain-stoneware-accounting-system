@@ -102,7 +102,6 @@ function moveAssemblyToShipment(orderNumber)
     {
       checkOrderNumberUnique: {
         needs: false,
-        polishings: false,
         assemblies: false,
         shipments: true
       }
@@ -112,40 +111,6 @@ function moveAssemblyToShipment(orderNumber)
   let isRemovedFromAssembly = removeAssembly(orderNumber)
   if (!isRemovedFromAssembly) {
     throw new Error(`Заказ с номером ${orderNumber} не был удален из сборки`)
-  }
-}
-
-function moveAssemblyToPolishing(orderIndex)
-{
-  let orderData = getAssemblyByIndex(orderIndex)
-  if (!orderData) {
-    throw new Error(`Заказа с номером по порядку ${orderIndex + 1} не существует в сборке`)
-  }
-
-  addPolishing(
-    {
-      date_of_adoption: formatDate(Date.now()),
-      order_number: orderData.order_number,
-      diameter: orderData.diameter,
-      length_min: orderData.length_min,
-      length_max: orderData.length_max,
-      width: orderData.width,
-      stone_shape: orderData.stone_shape,
-      stone_color: orderData.stone_color
-    },
-    {
-      checkOrderNumberUnique: {
-        needs: false,
-        polishings: true,
-        assemblies: false,
-        shipments: false
-      }
-    }
-  )
-
-  let isRemovedFromAssembly = removeAssemblyByIndex(orderIndex)
-  if (!isRemovedFromAssembly) {
-    throw new Error(`Заказ с номером по порядку ${orderIndex + 1} не был удален из сборки`)
   }
 }
 

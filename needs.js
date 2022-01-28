@@ -68,41 +68,7 @@ function moveNeedToAssembly(orderNumber) {
     {
       checkOrderNumberUnique: {
         needs: false,
-        polishings: false,
         assemblies: true,
-        shipments: false
-      }
-    }
-  )
-
-  let isRemovedFromNeed = removeNeed(orderNumber)
-  if (!isRemovedFromNeed) {  
-    throw new Error(`Заказ с номером ${orderNumber} не был удален из потребностей`)  
-  }
-}
-
-function moveNeedToPolishing(orderNumber) {
-  let orderData = findNeed(orderNumber)
-    if (!orderData) {
-    throw new Error(`Заказа с номером ${orderNumber} не существует в потребностях`)
-  }
-
-  addPolishing(
-    {
-      date_of_adoption: formatDate(Date.now()),
-      order_number: orderData.order_number,
-      diameter: orderData.diameter,
-      length_min: orderData.length_min,
-      length_max: orderData.length_max,
-      width: orderData.width,
-      stone_shape: orderData.stone_shape,
-      stone_color: orderData.stone_color
-    },
-    {
-      checkOrderNumberUnique: {
-        needs: false,
-        polishings: true,
-        assemblies: false,
         shipments: false
       }
     }
@@ -134,7 +100,6 @@ function moveNeedToShipment(orderNumber) {
     {
       checkOrderNumberUnique: {
         needs: false,
-        polishings: false,
         assemblies: false,
         shipments: true
       }

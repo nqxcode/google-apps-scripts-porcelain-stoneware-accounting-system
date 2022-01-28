@@ -74,29 +74,6 @@ function moveFreeToAssembly(orderNumber)
   }
 }
 
-function moveFreeToPolishing(orderNumber)
-{
-  let freeData = findFree(orderNumber)
-  if (!freeData) {    
-    throw new Error(`Не найдена свободная позиция c номером ${orderNumber}`)
-  }
-
-  addPolishing({
-    date_of_adoption: formatDate(Date.now()),
-    diameter: freeData.diameter,
-    length_min: freeData.length_min,
-    length_max: freeData.length_max,
-    width: freeData.width,
-    stone_shape: freeData.stone_shape,
-    stone_color: freeData.stone_color
-  })
-
-  let isRemovedFromFree = removeFree(orderNumber)
-  if (!isRemovedFromFree) {
-    throw new Error(`Свободная позиция с номером ${orderNumber} не была удалена`)
-  }
-}
-
 function findFree(orderNumber)
 {
   let freeList = getFree()  

@@ -71,16 +71,6 @@
           })
         }
 
-        function moveShipmentToPolishing(orderNumber) {
-          return new Promise((resolve, reject) => {
-            google.script.run.withSuccessHandler(response => {              
-              resolve(response)
-            }).withFailureHandler(error => {
-                reject(error)
-            }).moveShipmentToPolishing(orderNumber);
-          })          
-        }
-
         function getOrderNumber(shipmentElement) {
           return shipmentElement.data('orderNumber') 
         }
@@ -93,7 +83,6 @@
             let orderNumberInput = shipmentElement.find('[name="order_number"]')
             let setChangeModeButton = shipmentElement.find('button[data-action="shipments.set-change-mode"]')
             let moveToAssemblyButton = shipmentElement.find('button[data-action="shipments.show-move-to-assembly-confirmation"]')
-            let moveToPolishingButton = shipmentElement.find('button[data-action="shipments.show-move-to-polishing-confirmation"]')
             let moveToFreeButton = shipmentElement.find('button[data-action="shipments.show-move-to-free-confirmation"]')
 
             if (orderNumberInput.val() != '') {
@@ -101,8 +90,7 @@
               orderNumberInput.prop('disabled', true)
               setChangeModeButton.prop('disabled', false)
               setChangeModeButton.show();
-              moveToAssemblyButton.prop('disabled', false)                             
-              moveToPolishingButton.prop('disabled', false)    
+              moveToAssemblyButton.prop('disabled', false)
               moveToFreeButton.prop('disabled', false)    
 
             } else {
@@ -110,8 +98,7 @@
               orderNumberInput.prop('disabled', false)
               setChangeModeButton.prop('disabled', false)
               setChangeModeButton.show();
-              moveToAssemblyButton.prop('disabled', true)      
-              moveToPolishingButton.prop('disabled', true)   
+              moveToAssemblyButton.prop('disabled', true)
               moveToFreeButton.prop('disabled', true)    
                     
             }
@@ -324,52 +311,6 @@
           var modal = $(this)
           modal.find('[data-element="order-number"]').text(orderNumber)
           modal.find('button[data-action="shipments.move-to-assembly"]').data('orderNumber', orderNumber)
-        })
-
-        $(document).on('click', 'button[data-action="shipments.move-to-polishing"]', function(e) {                    
-          if (!shipmentListElement.data('block')) {
-            shipmentListElement.data('block', true)
-
-            let shipmentList = shipmentListElement.find('[data-element="assembly"]').has(this)            
-
-            let orderNumber = $(this).data('orderNumber')                    
-            let loader = $(this).find('[data-element="loader"]')
-            let shipmentMoveToPolishingModal = $('#shipmentMoveToPolishingModal')            
-            
-            loader.show()
-
-            moveShipmentToPolishing(orderNumber)
-              .then(
-                () => {              
-                  loadShipments().then(() => {
-                    polishingListElement.trigger('refresh')                  
-                    loader.hide()
-                    shipmentMoveToPolishingModal.modal('hide')
-                    shipmentListElement.data('block', false)   
-                  })
-                },
-                error => {           
-                  loadShipments().then(() => {                    
-                    messageModal.data('message', prepareError(error))
-                    messageModal.modal('show')      
-                   
-                    polishingListElement.trigger('refresh')                  
-                    loader.hide()
-                    shipmentMoveToPolishingModal.modal('hide')
-                    shipmentListElement.data('block', false)   
-                  })                                    
-                }
-              )   
-          }
-        })
-
-        $('#shipmentMoveToPolishingModal').on('show.bs.modal', function (e) {
-          var button = $(e.relatedTarget) 
-          var orderNumber = button.data('orderNumber') 
-
-          var modal = $(this)
-          modal.find('[data-element="order-number"]').text(orderNumber)
-          modal.find('button[data-action="shipments.move-to-polishing"]').data('orderNumber', orderNumber)
         })
 
         $(document).on('click', 'button[data-action="shipments.remove"]', function(e) {                    

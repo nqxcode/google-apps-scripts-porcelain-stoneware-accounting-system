@@ -4,7 +4,6 @@
         window.assemblyListElement = $('#assembly_list') 
         window.shipmentListElement = $('#shipment_list') 
         window.freeListElement = $('#free_list')
-        window.polishingListElement = $('#polishing_list')  
         window.stoneColorListElement = $('#stone_color_list')
         window.stoneShapeListElement = $('#stone_shape_list')
         window.messageModal = $('#messageModal')        
@@ -49,16 +48,6 @@
                 })                
               })
             }).getStoneShapes();
-        }
-
-        function getFormRules(orderNumber, polishingData) {     
-          return new Promise((resolve, reject) => {
-            google.script.run.withSuccessHandler(response => {
-              resolve(response)                                 
-            }).withFailureHandler(error => {
-                reject(error)
-            }).getFormRules();
-          })
         }
 
         let formRules;
@@ -107,9 +96,8 @@
         let initForms = function() {
           let needForm = $('form#need');
           let assemblyForm = $('form#assembly');
-          let polishingForm = $('form#polishing');
 
-          let forms = [needForm, assemblyForm, polishingForm]
+          let forms = [needForm, assemblyForm]
 
           forms.forEach(function(form){
               initFormControls(form)
@@ -133,7 +121,6 @@
 
             let tabsElements = [
               {tab: $('#need-tab'), elements: $('#need_list [data-element="need"]')},
-              {tab: $('#polishing-tab'), elements: $('#polishing_list [data-element="polishing"]')},
               {tab: $('#assembly-tab'), elements: $('#assembly_list [data-element="assembly"]')},              
               {tab: $('#shipment-tab'), elements: $('#shipment_list [data-element="shipment"]')},                            
               {tab: $('#free-tab'), elements: $('#free_list [data-element="free"]')},                            

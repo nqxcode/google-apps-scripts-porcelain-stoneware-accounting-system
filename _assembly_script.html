@@ -51,16 +51,6 @@
           })
         }
 
-        function moveAssemblyToPolishing(orderIndex) {
-          return new Promise((resolve, reject) => {
-            google.script.run.withSuccessHandler(response => {              
-              resolve(response)
-            }).withFailureHandler(error => {
-                reject(error)
-            }).moveAssemblyToPolishing(orderIndex);
-          })          
-        }
-
         function moveAssemblyToFree(orderIndex) {
           return new Promise((resolve, reject) => {
             google.script.run.withSuccessHandler(response => {              
@@ -83,7 +73,6 @@
             let orderNumberInput = assemblyElement.find('[name="order_number"]')
             let setChangeModeButton = assemblyElement.find('button[data-action="assemblies.set-change-mode"]')
             let moveToShipmentButton = assemblyElement.find('button[data-action="assemblies.show-move-to-shipment-confirmation"]')
-            let moveToPolishingButton = assemblyElement.find('button[data-action="assemblies.show-move-to-polishing-confirmation"]')
             let moveToFreeButton = assemblyElement.find('button[data-action="assemblies.show-move-to-free-confirmation"]')
 
             if (orderNumberInput.val() != '') {
@@ -91,8 +80,7 @@
               orderNumberInput.prop('disabled', true)
               setChangeModeButton.prop('disabled', false)
               setChangeModeButton.show();
-              moveToShipmentButton.prop('disabled', false)                             
-              moveToPolishingButton.prop('disabled', false)    
+              moveToShipmentButton.prop('disabled', false)
               moveToFreeButton.prop('disabled', false)
 
             } else {
@@ -100,8 +88,7 @@
               orderNumberInput.prop('disabled', false)
               setChangeModeButton.prop('disabled', false)
               setChangeModeButton.show();
-              moveToShipmentButton.prop('disabled', true)      
-              moveToPolishingButton.prop('disabled', false)    
+              moveToShipmentButton.prop('disabled', true)
               moveToFreeButton.prop('disabled', false)   
                     
             }
@@ -308,55 +295,6 @@
 
         assemblyListElement.on('refresh', function() {
           loadAssemblies() 
-        })
-
-        $(document).on('click', 'button[data-action="assemblies.move-to-polishing"]', function(e) {                    
-          if (!assemblyListElement.data('block')) {
-            assemblyListElement.data('block', true)       
-
-            let orderIndex = $(this).data('orderIndex')                    
-            let loader = $(this).find('[data-element="loader"]')
-            let assemblyMoveToPolishingModal = $('#assemblyMoveToPolishingModal')             
-            
-            loader.show()
-
-            moveAssemblyToPolishing(orderIndex)
-              .then(
-                () => {                    
-                  loadAssemblies().then(() => {
-                    polishingListElement.trigger('refresh')
-                    loader.hide()
-                    assemblyMoveToPolishingModal.modal('hide')
-                    assemblyListElement.data('block', false)
-                  })
-                },
-                error => {
-                  loadAssemblies().then(() => {
-                    messageModal.data('message', prepareError(error))
-                    messageModal.modal('show')
-
-                    polishingListElement.trigger('refresh')
-                    loader.hide()
-                    assemblyMoveToPolishingModal.modal('hide')
-                    assemblyListElement.data('block', false)
-                  })                  
-                }
-              )   
-          }
-        })
-
-        $('#assemblyMoveToPolishingModal').on('show.bs.modal', function (e) {
-          var button = $(e.relatedTarget) 
-          var orderNumber = button.data('orderNumber') 
-          var orderIndex = button.data('orderIndex') 
-
-          var modal = $(this)
-          modal.find('[data-element="order-number"]').text(orderNumber || (orderIndex + 1))
-          modal.find('[data-element="sequential-number-info"]').css('display', orderNumber ? 'none' : 'inline')
-
-          moveAssemblyToPolishingButton = modal.find('button[data-action="assemblies.move-to-polishing"]')
-          moveAssemblyToPolishingButton.data('orderNumber', orderNumber)
-          moveAssemblyToPolishingButton.data('orderIndex', orderIndex)
         })
 
         $(document).on('click', 'button[data-action="assemblies.move-to-free"]', function(e) {                    

@@ -4,7 +4,6 @@ let needsSheet = spreadSheet.getSheetByName("Потребность")
 let assembliesSheet = spreadSheet.getSheetByName("Сборка")
 let shipmentsSheet = spreadSheet.getSheetByName("Отгрузка")
 let freeSheet = spreadSheet.getSheetByName("Свободные")
-let polishingsSheet = spreadSheet.getSheetByName("Полировка")
 let propertiesSheet = spreadSheet.getSheetByName("Свойства")
 
 function doGet(e) {    

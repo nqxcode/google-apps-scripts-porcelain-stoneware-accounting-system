@@ -25,7 +25,6 @@ function checkOrderNumberUnique(orderNumber, options) {
     throwIfNotUnique: false,
     checkOrderNumberUnique: {
       needs: true,
-      polishings: true,
       assemblies: true,
       shipments: true
     }
@@ -38,17 +37,6 @@ function checkOrderNumberUnique(orderNumber, options) {
     if (needRow !== null) {
       if (options.throwIfNotUnique) {
         throw new Error(`Заказ с номером ${orderNumber} уже существует в потребности`)
-      }
-
-      return false
-    }
-  }
-
-  if (options.checkOrderNumberUnique.polishings) {
-    let polishingRow = findPolishingRow(orderNumber)
-    if (polishingRow !== null) {
-      if (options.throwIfNotUnique) {
-        throw new Error(`Заказ с номером ${orderNumber} уже существует в полировке`)
       }
 
       return false
