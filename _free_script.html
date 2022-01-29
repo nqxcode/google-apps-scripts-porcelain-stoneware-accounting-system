@@ -185,7 +185,7 @@
               .then(
                 () => {              
                   loadFree().then(() => {
-                    assemblyListElement.trigger('refresh')                  
+                    assemblyListTabContent.trigger('refresh')                  
                     loader.hide()
                     freeMoveToAssemblyModal.modal('hide')
                     freeListElement.data('block', false)   
@@ -196,7 +196,7 @@
                     messageModal.data('message', prepareError(error))
                     messageModal.modal('show')      
                    
-                    assemblyListElement.trigger('refresh')                  
+                    assemblyListTabContent.trigger('refresh')                  
                     loader.hide()
                     freeMoveToAssemblyModal.modal('hide')
                     freeListElement.data('block', false)   

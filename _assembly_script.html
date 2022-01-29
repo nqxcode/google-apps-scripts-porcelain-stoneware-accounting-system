@@ -1,9 +1,11 @@
 <script>
       $(function() {
         function Filter () {
-            this.params = {};
+            this.params = {
+              stoneShape: 'Все'
+            };
+
             this.all = function () {
-                console.log('filter', this.params)
                 return this.params
             }
         }
@@ -16,36 +18,51 @@
                 },
                 set: function (value) {
                     filter.params.stoneShape = value
-                    showListLoader()
-                    loadAssemblies()
+                    console.log('filter', this.params)
                 }
             }
         })
 
-        function initAssembliesFilter() {
-            filter.stoneShape = 'Все'
-        }
-
-        function showListLoader() {
-            let listLoaderHtml = ejs.render(listLoaderTemplate, {}, {delimiter: '?'})
-            assemblyListElement.empty()
-            assemblyListElement.append(listLoaderHtml)
-        }
-
         function loadAssemblies () {
           return new Promise((resolve, reject) => {
-            google.script.run.withSuccessHandler(content => {                            
-              let assemblies = JSON.parse(content)                              
-              assemblyListElement.empty()
+            google.script.run.withSuccessHandler(content => {
+              let assembliesData = JSON.parse(content)
 
-              assemblies.forEach(assembly => {
-                let assemblyRowHtml = ejs.render(assemblyRowTemplate, assembly, {delimiter: '?'});
-                assemblyListElement.append(assemblyRowHtml)
+              let assemblyStoneShapes = assembliesData.assemblyStoneShapes
+              let assemblies = assembliesData.assemblies
+
+              console.log(assembliesData)
+
+              assemblyStoneShapesTabListElement.empty();
+              assemblyStoneShapes.forEach((stoneShape, stoneShapeIndex) => {
+                  let assemblyStoneShapesTabHtml = ejs.render(assemblyStoneShapeTabTemplate, {name: stoneShape, index: stoneShapeIndex}, {delimiter: '?'});
+                  assemblyStoneShapesTabListElement.append(assemblyStoneShapesTabHtml)
+              })
+
+              assemblyListTabContent.empty()
+
+              Object.keys(assemblies).forEach((stoneShape, stoneShapeIndex) => {
+                  let assemblyListTabHtml = ejs.render(assemblyListTabTemplate, {index: stoneShapeIndex}, {delimiter: '?'})
+                  let assemblyListHtml = ejs.render(assemblyListTemplate, {index: stoneShapeIndex}, {delimiter: '?'})
+
+                  let assemblyListTabElement = $(assemblyListTabHtml)
+                  let assemblyListElement = $(assemblyListHtml)
+
+                  assemblyListTabElement.append(assemblyListElement)
+
+                  assemblyListElement.empty()
+
+                  assemblies[stoneShape].forEach(assembly => {
+                      let assemblyRowHtml = ejs.render(assemblyRowTemplate, assembly, {delimiter: '?'});
+                      assemblyListElement.append(assemblyRowHtml)
+                  })
+
+                  assemblyListTabContent.append(assemblyListTabElement)
               })
 
               initButtonsState()
               $(document).trigger('search.refresh')
-                                        
+
               resolve(content)
             }).withFailureHandler(error => {
               reject(error)
@@ -53,48 +70,30 @@
           })
         }
 
-        function loadAssemblyStoneShapes() {
-            return new Promise((resolve, reject) => {
-                google.script.run.withSuccessHandler(content => {
-                    let assemblyStoneShapes = JSON.parse(content)
-                    assemblyStoneShapesTabListElement.empty();
-
-                    assemblyStoneShapes.forEach(stoneShape => {
-                        let assemblyStoneShapesTabHtml = ejs.render(assemblyStoneShapeTabTemplate, stoneShape, {delimiter: '?'});
-                        assemblyStoneShapesTabListElement.append(assemblyStoneShapesTabHtml)
-                    })
-
-                    resolve(content)
-                }).withFailureHandler(error => {
-                    reject(error)
-                }).getAssemblyStoneShapesStringified();
-            })
-        }
-
         function addAssembly(formObject) {
           return new Promise((resolve, reject) => {
-            google.script.run.withSuccessHandler(response => {              
+            google.script.run.withSuccessHandler(response => {
               resolve(response)
             }).withFailureHandler(error => {
                 reject(error)
             }).addAssembly(formObject);
-          })          
+          })
         }
 
         function moveAssemblyToShipment(orderNumber) {
           return new Promise((resolve, reject) => {
-            google.script.run.withSuccessHandler(response => {              
+            google.script.run.withSuccessHandler(response => {
               resolve(response)
             }).withFailureHandler(error => {
                 reject(error)
             }).moveAssemblyToShipment(orderNumber);
-          })          
+          })
         }
 
-        function updateAssembly(orderNumber, assemblyData) {     
+        function updateAssembly(orderNumber, assemblyData) {
           return new Promise((resolve, reject) => {
             google.script.run.withSuccessHandler(response => {
-              resolve(response)                                 
+              resolve(response)
             }).withFailureHandler(error => {
                 reject(error)
             }).updateAssembly(orderNumber, assemblyData);
@@ -103,12 +102,12 @@
 
         function moveAssemblyToFree(orderIndex) {
           return new Promise((resolve, reject) => {
-            google.script.run.withSuccessHandler(response => {              
+            google.script.run.withSuccessHandler(response => {
               resolve(response)
             }).withFailureHandler(error => {
                 reject(error)
             }).moveAssemblyToFree(orderIndex);
-          })          
+          })
         }
 
         function getOrderNumber(assemblyElement) {
@@ -116,10 +115,10 @@
         }
 
         function initButtonsState() {
-          let assemblyElements = assemblyListElement.find('[data-element="assembly"]')
+          let assemblyElements = assemblyListTabContent.find('[data-element="assembly"]')
 
           assemblyElements.each(function() {
-            let assemblyElement = $(this)            
+            let assemblyElement = $(this)
             let orderNumberInput = assemblyElement.find('[name="order_number"]')
             let setChangeModeButton = assemblyElement.find('button[data-action="assemblies.set-change-mode"]')
             let moveToShipmentButton = assemblyElement.find('button[data-action="assemblies.show-move-to-shipment-confirmation"]')
@@ -139,38 +138,37 @@
               setChangeModeButton.prop('disabled', false)
               setChangeModeButton.show();
               moveToShipmentButton.prop('disabled', true)
-              moveToFreeButton.prop('disabled', false)   
-                    
+              moveToFreeButton.prop('disabled', false)
+
             }
           })
         }
 
-        loadAssemblyStoneShapes()
-        initAssembliesFilter()
+        loadAssemblies()
 
         let formValidator = $('form#assembly').validate({
-          rules: {            
+          rules: {
           },
-          messages: {            
+          messages: {
           }
         });
 
-        $('form#assembly').on('submit', function(e) {   
-          e.preventDefault();    
-  
+        $('form#assembly').on('submit', function(e) {
+          e.preventDefault();
+
           if ($(this).valid()) {
             let form = $(this).get(0)
             let loader = $(this).find('[data-element="loader"]')
-            
+
             loader.show();
 
             addAssembly(form)
               .then(
-                () => {    
+                () => {
                   loadAssemblies().then(response => {
                     form.reset();
                     loader.hide();
-                  })                     
+                  })
                 },
                 error => {
                   formValidator.showErrors({
@@ -178,20 +176,20 @@
                   });
                   loader.hide();
                 }
-              )  
+              )
           }
-        })    
+        })
 
-        $(document).on('click', 'button[data-action="assemblies.set-change-mode"]', function(e) {     
-          if (assemblyListElement.data('block')) {
+        $(document).on('click', 'button[data-action="assemblies.set-change-mode"]', function(e) {
+          if (assemblyListTabContent.data('block')) {
             return
           }
-        
-          let assemblyElements = assemblyListElement.find('[data-element="assembly"]')          
-          let assemblyElement = assemblyElements.has(this)          
-          
+
+          let assemblyElements = assemblyListTabContent.find('[data-element="assembly"]')
+          let assemblyElement = assemblyElements.has(this)
+
           let otherAssemblyElements = assemblyElements.filter(function() { return getOrderNumber($(this)) != getOrderNumber(assemblyElement) })
-          
+
           function getButtons(assemblyElement) {
             let setChangeModeButton = assemblyElement.find('button[data-action="assemblies.set-change-mode"]')
             let saveChangesButton = assemblyElement.find('button[data-action="assemblies.save-changes"]')
@@ -229,7 +227,7 @@
             } else {
               buttons.setChangeModeButton.hide()
             }
-            
+
             buttons.moveToShipmentButton.show()
             buttons.saveChangesButton.hide()
             buttons.cancelChangesButton.hide()
@@ -237,52 +235,52 @@
         })
 
         $(document).on('click', 'button[data-action="assemblies.save-changes"]', function(e) {
-          if (!assemblyListElement.data('block')) {
-            assemblyListElement.data('block', true)
+          if (!assemblyListTabContent.data('block')) {
+            assemblyListTabContent.data('block', true)
 
-            let assemblyElement = assemblyListElement.find('[data-element="assembly"]').has(this)
+            let assemblyElement = assemblyListTabContent.find('[data-element="assembly"]').has(this)
             let orderNumber = getOrderNumber(assemblyElement)
 
-            let saveChangesButton = $(this)                               
+            let saveChangesButton = $(this)
             let setChangeModeButton = assemblyElement.find('button[data-action="assemblies.set-change-mode"]')
             let cancelChangesButton = assemblyElement.find('button[data-action="assemblies.cancel-changes"]')
 
             let loader = $(this).find('[data-element="loader"]')
 
             let form = assemblyElement.find('[name]')
-            let assemblyData = getFormData(form)       
+            let assemblyData = getFormData(form)
 
-            loader.show()            
+            loader.show()
             updateAssembly(orderNumber, assemblyData)
             .then(
               () => {
-                loadAssemblies().then(() => {              
+                loadAssemblies().then(() => {
                   loader.hide()
-                  assemblyListElement.data('block', false)
-                })     
+                  assemblyListTabContent.data('block', false)
+                })
               },
-              error => {                                
-                loadAssemblies().then(() => {              
+              error => {
+                loadAssemblies().then(() => {
                   messageModal.data('message', prepareError(error))
                   messageModal.modal('show')
 
                   loader.hide()
-                  assemblyListElement.data('block', false)
+                  assemblyListTabContent.data('block', false)
                 })
               }
             )
           }
         })
-        
-        $(document).on('click', 'button[data-action="assemblies.cancel-changes"]', function(e) {         
-          if (assemblyListElement.data('block')) {
+
+        $(document).on('click', 'button[data-action="assemblies.cancel-changes"]', function(e) {
+          if (assemblyListTabContent.data('block')) {
             return
           }
-          
-          let assemblyElement = assemblyListElement.find('[data-element="assembly"]').has(this)
-          let orderNumber = $(this).data('orderNumber')                          
 
-          let cancelChangesButton = $(this)          
+          let assemblyElement = assemblyListTabContent.find('[data-element="assembly"]').has(this)
+          let orderNumber = $(this).data('orderNumber')
+
+          let cancelChangesButton = $(this)
           let setChangeModeButton = assemblyElement.find('button[data-action="assemblies.set-change-mode"]')
           let saveChangesButton = assemblyElement.find('button[data-action="assemblies.save-changes"]')
           let moveToShipmentButton = assemblyElement.find('button[data-action="assemblies.show-move-to-shipment-confirmation"]')
@@ -293,30 +291,30 @@
           setChangeModeButton.show()
           moveToShipmentButton.show()
           saveChangesButton.hide()
-          cancelChangesButton.hide()                    
-        })   
+          cancelChangesButton.hide()
+        })
 
 
-        $(document).on('click', 'button[data-action="assemblies.move-to-shipment"]', function(e) {                    
-          if (!assemblyListElement.data('block')) {
-            assemblyListElement.data('block', true)
+        $(document).on('click', 'button[data-action="assemblies.move-to-shipment"]', function(e) {
+          if (!assemblyListTabContent.data('block')) {
+            assemblyListTabContent.data('block', true)
 
-            let assemblyElement = assemblyListElement.find('[data-element="assembly"]').has(this)            
+            let assemblyElement = assemblyListTabContent.find('[data-element="assembly"]').has(this)
 
-            let orderNumber = $(this).data('orderNumber')                    
+            let orderNumber = $(this).data('orderNumber')
             let loader = $(this).find('[data-element="loader"]')
-            let assemblyMoveToShipmentModal = $('#assemblyMoveToShipmentModal')            
-            
+            let assemblyMoveToShipmentModal = $('#assemblyMoveToShipmentModal')
+
             loader.show()
 
             moveAssemblyToShipment(orderNumber)
               .then(
-                () => {                    
+                () => {
                   loadAssemblies().then(() => {
                     shipmentListElement.trigger('refresh')
                     loader.hide()
                     assemblyMoveToShipmentModal.modal('hide')
-                    assemblyListElement.data('block', false)
+                    assemblyListTabContent.data('block', false)
                   })
                 },
                 error => {
@@ -327,44 +325,44 @@
                     shipmentListElement.trigger('refresh')
                     loader.hide()
                     assemblyMoveToShipmentModal.modal('hide')
-                    assemblyListElement.data('block', false)
-                  })                  
+                    assemblyListTabContent.data('block', false)
+                  })
                 }
-              )   
+              )
           }
         })
 
         $('#assemblyMoveToShipmentModal').on('show.bs.modal', function (e) {
-          var button = $(e.relatedTarget) 
-          var orderNumber = button.data('orderNumber') 
+          var button = $(e.relatedTarget)
+          var orderNumber = button.data('orderNumber')
 
           var modal = $(this)
           modal.find('[data-element="order-number"]').text(orderNumber)
           modal.find('button[data-action="assemblies.move-to-shipment"]').data('orderNumber', orderNumber)
         })
 
-        assemblyListElement.on('refresh', function() {
-          loadAssemblies() 
+        assemblyListTabContent.on('refresh', function() {
+          loadAssemblies()
         })
 
-        $(document).on('click', 'button[data-action="assemblies.move-to-free"]', function(e) {                    
-          if (!assemblyListElement.data('block')) {
-            assemblyListElement.data('block', true)           
+        $(document).on('click', 'button[data-action="assemblies.move-to-free"]', function(e) {
+          if (!assemblyListTabContent.data('block')) {
+            assemblyListTabContent.data('block', true)
 
             let orderIndex =  $(this).data('orderIndex')
             let loader = $(this).find('[data-element="loader"]')
-            let assemblyMoveToFreeModal = $('#assemblyMoveToFreeModal')             
-            
+            let assemblyMoveToFreeModal = $('#assemblyMoveToFreeModal')
+
             loader.show()
 
             moveAssemblyToFree(orderIndex)
               .then(
-                () => {                    
+                () => {
                   loadAssemblies().then(() => {
                     freeListElement.trigger('refresh')
                     loader.hide()
                     assemblyMoveToFreeModal.modal('hide')
-                    assemblyListElement.data('block', false)
+                    assemblyListTabContent.data('block', false)
                   })
                 },
                 error => {
@@ -375,15 +373,15 @@
                     freeListElement.trigger('refresh')
                     loader.hide()
                     assemblyMoveToFreeModal.modal('hide')
-                    assemblyListElement.data('block', false)
-                  })                  
+                    assemblyListTabContent.data('block', false)
+                  })
                 }
-              )   
+              )
           }
         })
 
         $('#assemblyMoveToFreeModal').on('show.bs.modal', function (e) {
-          var button = $(e.relatedTarget) 
+          var button = $(e.relatedTarget)
 
           var orderNumber = button.data('orderNumber')
           var orderIndex = button.data('orderIndex')
@@ -402,9 +400,7 @@
         })
 
         $(document).on('shapes.refresh', function (e) {
-            loadAssemblyStoneShapes().then(() => {
-                loadAssemblies()
-            })
+            loadAssemblies()
         })
       })
 </script>

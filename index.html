@@ -18,8 +18,7 @@
               <ul class="nav nav-tabs" id="assembly_stone_shapes_tab_list" role="tablist"></ul>
 
               <div class="tab-content" id="assembly_stones_tab_content">
-                <div class="tab-pane fade active show" role="tabpanel" aria-labelledby="assembly-tab">
-                </div>
+                <div class="tab-pane fade active show" role="tabpanel" aria-labelledby="assembly-tab"></div>
               </div>
 
               <div class="row">
@@ -29,7 +28,7 @@
               </div>
               <div class="row">
                   <div class="col-12">
-                    <?!= include('_assembly_list'); ?>
+                    <?!= include('_assembly_list_tab_content'); ?>
                   </div>
               </div>
             </div>
@@ -64,10 +63,10 @@
 
               <ul class="nav nav-tabs" id="propertiesTabList" role="tablist">
                 <li class="nav-item" role="presentation">
-                  <a class="nav-link active" id="stone-color-tab" data-toggle="tab" href="#stone_color_tab" role="tab" aria-controls="stone_color" aria-selected="true">Цвет камня</a>
+                  <a class="nav-link active" id="stone-color-tab" data-toggle="tab" href="#stone_color_tab" role="tab" aria-controls="stone_color_tab" aria-selected="true">Цвет камня</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                  <a class="nav-link" id="stone-shape-tab" data-toggle="tab" href="#stone_shape_tab" role="tab" aria-controls="profile" aria-selected="false">Форма камня</a>
+                  <a class="nav-link" id="stone-shape-tab" data-toggle="tab" href="#stone_shape_tab" role="tab" aria-controls="stone_shape_tab" aria-selected="false">Форма камня</a>
                 </li>
               </ul>
               <div class="tab-content" id="propertiesTabContent">
@@ -105,13 +104,15 @@
         <!-- Inject embedded js templates -->
         <script>
           window.assemblyRowTemplate = <?!= JSON.stringify(getContent('_assembly_row_template')) ?>;
+          window.assemblyStoneShapeTabTemplate = <?!= JSON.stringify(getContent('_assembly_stone_shape_tab_template')) ?>;
+          window.assemblyListTabContentTemplate = <?!= JSON.stringify(getContent('_assembly_list_tab_content')) ?>;
+          window.assemblyListTabTemplate = <?!= JSON.stringify(getContent('_assembly_list_tab')) ?>;
+          window.assemblyListTemplate = <?!= JSON.stringify(getContent('_assembly_list')) ?>;
+
           window.shipmentRowTemplate = <?!= JSON.stringify(getContent('_shipment_row_template')) ?>;                     
           window.freeRowTemplate = <?!= JSON.stringify(getContent('_free_row_template')) ?>;
           window.stoneColorRowTemplate = <?!= JSON.stringify(getContent('_stone_color_row_template')) ?>;  
           window.stoneShapeRowTemplate = <?!= JSON.stringify(getContent('_stone_shape_row_template')) ?>;
-
-          window.assemblyStoneShapeTabTemplate = <?!= JSON.stringify(getContent('_assembly_stone_shape_tab_template')) ?>;
-          window.listLoaderTemplate = <?!= JSON.stringify(getContent('_list_loader')) ?>;
         </script>
 
         <script> 

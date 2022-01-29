@@ -283,7 +283,7 @@
               .then(
                 () => {              
                   loadShipments().then(() => {
-                    assemblyListElement.trigger('refresh')                  
+                    assemblyListTabContent.trigger('refresh')                  
                     loader.hide()
                     shipmentMoveToAssemblyModal.modal('hide')
                     shipmentListElement.data('block', false)   
@@ -294,7 +294,7 @@
                     messageModal.data('message', prepareError(error))
                     messageModal.modal('show')      
                    
-                    assemblyListElement.trigger('refresh')                  
+                    assemblyListTabContent.trigger('refresh')                  
                     loader.hide()
                     shipmentMoveToAssemblyModal.modal('hide')
                     shipmentListElement.data('block', false)   

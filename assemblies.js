@@ -22,7 +22,7 @@ function getAssemblyColumnsMap() {
 }
 
 function findAssemblyRow(orderNumber) {
-  let assemblies = getAssemblies()  
+  let assemblies = getAssemblies()
 
   for(assemblyIndex = 0; assemblyIndex < assemblies.length; assemblyIndex++) {
     if (assemblies[assemblyIndex].order_number == orderNumber) {
@@ -33,13 +33,13 @@ function findAssemblyRow(orderNumber) {
   return null
 }
 
-function getAssemblyRowByIndex(orderIndex) { 
+function getAssemblyRowByIndex(orderIndex) {
   return getAssemblyOffset() + orderIndex
 }
 
 function addAssembly(assemblyData, options)
-{  
-  options = options || {}  
+{
+  options = options || {}
   let orderNumber = generateOrderNumber(assemblyData.order_number, options)
   let assemblyColumnsMap = getAssemblyColumnsMap()
 
@@ -53,10 +53,10 @@ function addAssembly(assemblyData, options)
 
   if (!hasAnyFilled) {
     throw new Error(`Чтобы добавить заказ в сборку, нужно заполнить хотя бы одно поле`)
-  }  
+  }
 
   assembliesSheet.appendRow([
-    assemblyData.date_of_adoption ? assemblyData.date_of_adoption : formatDate(Date.now()),    
+    assemblyData.date_of_adoption ? assemblyData.date_of_adoption : formatDate(Date.now()),
     prepareValue(orderNumber),
     assemblyData.diameter,
     assemblyData.length_min,
@@ -73,14 +73,14 @@ function updateAssembly(orderIndex, assemblyData) {
 
 
   for(column = 0; column < assemblyColumnsMap.length; column++) {
-    let field = assemblyColumnsMap[column]    
+    let field = assemblyColumnsMap[column]
     let value = prepareFormFieldValue(field, assemblyData)
 
-    if (value !== undefined) { 
+    if (value !== undefined) {
       if (field === 'order_number' && value) {
-        value = prepareValue(generateOrderNumber(value))      
-      } 
-      assembliesSheet.getRange(assemblyRow, column).setValue(value);     
+        value = prepareValue(generateOrderNumber(value))
+      }
+      assembliesSheet.getRange(assemblyRow, column).setValue(value);
     }
   }
 }
@@ -126,7 +126,7 @@ function moveAssemblyToFree(orderIndex)
 
   addFree(
     {
-      date_of_adoption: formatDate(Date.now()),      
+      date_of_adoption: formatDate(Date.now()),
       diameter: orderData.diameter,
       length_min: orderData.length_min,
       length_max: orderData.length_max,
@@ -144,7 +144,7 @@ function moveAssemblyToFree(orderIndex)
 
 function findAssembly(orderNumber)
 {
-  let assemblies = getAssemblies()  
+  let assemblies = getAssemblies()
   let assembly = assemblies.find((assembly) => assembly.order_number == orderNumber)
 
   return assembly;
@@ -152,7 +152,7 @@ function findAssembly(orderNumber)
 
 function getAssemblyByIndex(orderIndex)
 {
-  let assemblies = getAssemblies()  
+  let assemblies = getAssemblies()
   let assembly = assemblies[orderIndex] || null
 
   return assembly;
@@ -202,7 +202,7 @@ function filterAssembly(filter) {
       return true
     }
 
-    return assemblyObj.stone_shape == filter.stoneShape
+    return assemblyObj.stone_shape === filter.stoneShape
   }
 }
 
@@ -221,7 +221,7 @@ function prepareAssembly(assemblyData, orderIndex)
       assemblyObj[field] = value
     }
   })
-    
+
 
   assemblyObj.stone_colors = stoneColors
   assemblyObj.stone_shapes = stoneShapes
@@ -231,17 +231,23 @@ function prepareAssembly(assemblyData, orderIndex)
 
 function getAssembliesStringified(filter)
 {
-  let orders = getAssemblies(filter)
+  filter = filter || {}
+  let assemblyStoneShapes = getAssemblyStoneShapes()
 
-  return JSON.stringify(orders)
+  let assemblies = {}
+  assemblyStoneShapes.forEach((stoneShape) => {
+      assemblies[stoneShape] = getAssemblies({...filter, ...{stoneShape: stoneShape}})
+  })
+
+  return JSON.stringify({
+    assemblyStoneShapes: assemblyStoneShapes,
+    assemblies: assemblies
+  })
 }
 
-function getAssemblyStoneShapesStringified()
-{
+function getAssemblyStoneShapes() {
+  let allVariant = getAllStoneShapeFilterValue()
   let stoneShapes = getStoneShapes()
-      .map((stoneShape, stoneShapeIndex) => ({'name': stoneShape, 'index': stoneShapeIndex + 1}))
 
-  stoneShapes = [{'name': getAllStoneShapeFilterValue(), 'index': 0}].concat(stoneShapes)
-
-  return JSON.stringify(stoneShapes);
+  return [allVariant].concat(stoneShapes)
 }
