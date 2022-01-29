@@ -129,7 +129,7 @@
             }
 
             let tabsElements = [
-              {tab: $('#assembly-tab'), elements: $('#assembly_list_tab_content [data-list-type="filtered-by-stone-shape"] [data-element="assembly"]')},
+              {tab: $('#assembly-tab'), elements: $('#assembly_list_tab_content [data-element="assembly"]')},
               {tab: $('#shipment-tab'), elements: $('#shipment_list [data-element="shipment"]')},                            
               {tab: $('#free-tab'), elements: $('#free_list [data-element="free"]')},                            
               {tab: $('#properties-tab'), elements: $('#stone_color_list [data-element="stone_color"], #stone_shape_list [data-element="stone_shape"]')},                            
@@ -138,7 +138,11 @@
             tabsElements.forEach(obj => {
               obj.elements.filter(filter);
               
-              obj.tab.find('sup').text(obj.elements.filter(function() { return $(this).css('display') !== 'none' }).length)
+              obj.tab.find('sup').text(obj.elements.filter(function() {
+                let parent = $('[data-element="assembly_list"]').has(this)
+
+                return $(this).css('display') !== 'none' && parent.data('listType') !== 'full';
+              }).length)
             })
             
         }
