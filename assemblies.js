@@ -215,3 +215,11 @@ function getAssembliesStringified()
 
   return JSON.stringify(orders)
 }
+
+function getAssemblyStoneShapesStringified()
+{
+  let stoneShapes = getStoneShapes()
+      .map((stoneShape, stoneShapeIndex) => ({'name': stoneShape, 'index': stoneShapeIndex}))
+
+  return JSON.stringify(stoneShapes);
+}

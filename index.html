@@ -12,19 +12,28 @@
         <div class="container-fluid">
           <?!= include('_navbar'); ?>
 
-          <div class="tab-content" id="myTabContent">
+          <div class="tab-content" id="assemblies_tab_content">
             <div class="tab-pane fade active show" id="assembly" role="tabpanel" aria-labelledby="assembly-tab">
+
+              <ul class="nav nav-tabs" id="assembly_stone_shapes_tab_list" role="tablist"></ul>
+
+              <div class="tab-content" id="assembly_stones_tab_content">
+                <div class="tab-pane fade active show" role="tabpanel" aria-labelledby="assembly-tab">
+                </div>
+              </div>
+
               <div class="row">
                   <div class="col-12">
                     <?!= include('_assembly_form'); ?>
                   </div>
-              </div>      
+              </div>
               <div class="row">
                   <div class="col-12">
                     <?!= include('_assembly_list'); ?>
                   </div>
-              </div> 
+              </div>
             </div>
+
             <div class="tab-pane fade" id="shipment" role="tabpanel" aria-labelledby="shipment-tab">
               <div class="row">
                   <div class="col-12">
@@ -53,7 +62,7 @@
 
             <div class="tab-pane fade" id="properties" role="tabpanel" aria-labelledby="properties-tab">
 
-              <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <ul class="nav nav-tabs" id="propertiesTabList" role="tablist">
                 <li class="nav-item" role="presentation">
                   <a class="nav-link active" id="stone-color-tab" data-toggle="tab" href="#stone_color_tab" role="tab" aria-controls="stone_color" aria-selected="true">Цвет камня</a>
                 </li>
@@ -61,7 +70,7 @@
                   <a class="nav-link" id="stone-shape-tab" data-toggle="tab" href="#stone_shape_tab" role="tab" aria-controls="profile" aria-selected="false">Форма камня</a>
                 </li>
               </ul>
-              <div class="tab-content" id="myTabContent2">
+              <div class="tab-content" id="propertiesTabContent">
                 <div class="tab-pane fade show active" id="stone_color_tab" role="tabpanel" aria-labelledby="stone-color-tab">
                   <div class="row">
                       <div class="col-12">
@@ -95,11 +104,14 @@
             
         <!-- Inject embedded js templates -->
         <script>
-          window.assemblyRowTemplate = <?!= JSON.stringify(getContent('_assembly_row_template')) ?>;  
+          window.assemblyRowTemplate = <?!= JSON.stringify(getContent('_assembly_row_template')) ?>;
           window.shipmentRowTemplate = <?!= JSON.stringify(getContent('_shipment_row_template')) ?>;                     
           window.freeRowTemplate = <?!= JSON.stringify(getContent('_free_row_template')) ?>;
           window.stoneColorRowTemplate = <?!= JSON.stringify(getContent('_stone_color_row_template')) ?>;  
-          window.stoneShapeRowTemplate = <?!= JSON.stringify(getContent('_stone_shape_row_template')) ?>;            
+          window.stoneShapeRowTemplate = <?!= JSON.stringify(getContent('_stone_shape_row_template')) ?>;
+
+          window.assemblyStoneShapeTabTemplate = <?!= JSON.stringify(getContent('_assembly_stone_shape_tab_template')) ?>;
+          window.listLoaderTemplate = <?!= JSON.stringify(getContent('_list_loader')) ?>;
         </script>
 
         <script> 

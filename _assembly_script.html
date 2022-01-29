@@ -1,5 +1,33 @@
 <script>
-      $(function() {                         
+      $(function() {
+        function Filter () {
+            this.params = {};
+            this.all = function () {
+                console.log('filter', this.params)
+                return this.params
+            }
+        }
+
+        let filter = new Filter();
+        Object.defineProperties(filter, {
+            stoneShape: {
+                get: function () {
+                    return filter.params.stoneShape
+                },
+                set: function (value) {
+                    filter.params.stoneShape = value
+                    showListLoader()
+                    loadAssemblies()
+                }
+            }
+        })
+
+        function showListLoader() {
+            let listLoaderHtml = ejs.render(listLoaderTemplate, {}, {delimiter: '?'})
+            assemblyListElement.empty()
+            assemblyListElement.append(listLoaderHtml)
+        }
+
         function loadAssemblies () {
           return new Promise((resolve, reject) => {
             google.script.run.withSuccessHandler(content => {                            
@@ -17,8 +45,26 @@
               resolve(content)
             }).withFailureHandler(error => {
               reject(error)
-            }).getAssembliesStringified();
+            }).getAssembliesStringified(filter.all());
           })
+        }
+
+        function loadAssemblyStoneShapes() {
+            return new Promise((resolve, reject) => {
+                google.script.run.withSuccessHandler(content => {
+                    let assemblyStoneShapes = JSON.parse(content)
+                    assemblyStoneShapesTabListElement.empty();
+
+                    assemblyStoneShapes.forEach(stoneShape => {
+                        let assemblyStoneShapesTabHtml = ejs.render(assemblyStoneShapeTabTemplate, stoneShape, {delimiter: '?'});
+                        assemblyStoneShapesTabListElement.append(assemblyStoneShapesTabHtml)
+                    })
+
+                    resolve(content)
+                }).withFailureHandler(error => {
+                    reject(error)
+                }).getAssemblyStoneShapesStringified();
+            })
         }
 
         function addAssembly(formObject) {
@@ -96,7 +142,7 @@
         }
 
         loadAssemblies()
-        
+        loadAssemblyStoneShapes()
 
         let formValidator = $('form#assembly').validate({
           rules: {            
@@ -345,6 +391,16 @@
           moveAssemblyToFreeButton = modal.find('button[data-action="assemblies.move-to-free"]')
           moveAssemblyToFreeButton.data('orderNumber', orderNumber)
           moveAssemblyToFreeButton.data('orderIndex', orderIndex)
+        })
+
+        $(document).on('click', 'a[data-element="assembly-stone-shape-tab"]', function(e) {
+            filter.stoneShape = $(this).data('name')
+        })
+
+        $(document).on('shapes.refresh', function (e) {
+            loadAssemblyStoneShapes().then(() => {
+                loadAssemblies()
+            })
         })
       })
 </script>
