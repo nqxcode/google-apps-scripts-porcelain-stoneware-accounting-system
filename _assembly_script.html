@@ -35,14 +35,16 @@
 
               assemblyStoneShapesTabListElement.empty();
               assemblyStoneShapes.forEach((stoneShape, stoneShapeIndex) => {
-                  let assemblyStoneShapesTabHtml = ejs.render(assemblyStoneShapeTabTemplate, {name: stoneShape, index: stoneShapeIndex}, {delimiter: '?'});
+                  let active = filter.stoneShape === stoneShape;
+                  let assemblyStoneShapesTabHtml = ejs.render(assemblyStoneShapeTabTemplate, {name: stoneShape, active: active, index: stoneShapeIndex}, {delimiter: '?'});
                   assemblyStoneShapesTabListElement.append(assemblyStoneShapesTabHtml)
               })
 
               assemblyListTabContent.empty()
 
               Object.keys(assemblies).forEach((stoneShape, stoneShapeIndex) => {
-                  let assemblyListTabHtml = ejs.render(assemblyListTabTemplate, {index: stoneShapeIndex}, {delimiter: '?'})
+                  let active = filter.stoneShape === stoneShape;
+                  let assemblyListTabHtml = ejs.render(assemblyListTabTemplate, {active: active, index: stoneShapeIndex}, {delimiter: '?'})
                   let assemblyListHtml = ejs.render(assemblyListTemplate, {index: stoneShapeIndex}, {delimiter: '?'})
 
                   let assemblyListTabElement = $(assemblyListTabHtml)
@@ -185,7 +187,11 @@
             return
           }
 
-          let assemblyElements = assemblyListTabContent.find('[data-element="assembly"]')
+          let assemblyElements = assemblyListTabContent
+              .find('[data-element="assembly_list"]')
+              .has(this)
+              .find('[data-element="assembly"]')
+
           let assemblyElement = assemblyElements.has(this)
 
           let otherAssemblyElements = assemblyElements.filter(function() { return getOrderNumber($(this)) != getOrderNumber(assemblyElement) })
@@ -238,7 +244,12 @@
           if (!assemblyListTabContent.data('block')) {
             assemblyListTabContent.data('block', true)
 
-            let assemblyElement = assemblyListTabContent.find('[data-element="assembly"]').has(this)
+            let assemblyElement = assemblyListTabContent
+                .find('[data-element="assembly_list"]')
+                .has(this)
+                .find('[data-element="assembly"]')
+                .has(this)
+
             let orderNumber = getOrderNumber(assemblyElement)
 
             let saveChangesButton = $(this)
@@ -277,7 +288,12 @@
             return
           }
 
-          let assemblyElement = assemblyListTabContent.find('[data-element="assembly"]').has(this)
+          let assemblyElement = assemblyListTabContent
+              .find('[data-element="assembly_list"]')
+              .has(this)
+              .find('[data-element="assembly"]')
+              .has(this)
+
           let orderNumber = $(this).data('orderNumber')
 
           let cancelChangesButton = $(this)
@@ -299,7 +315,11 @@
           if (!assemblyListTabContent.data('block')) {
             assemblyListTabContent.data('block', true)
 
-            let assemblyElement = assemblyListTabContent.find('[data-element="assembly"]').has(this)
+            let assemblyElement = assemblyListTabContent
+                .find('[data-element="assembly_list"]')
+                .has(this)
+                .find('[data-element="assembly"]')
+                .has(this)
 
             let orderNumber = $(this).data('orderNumber')
             let loader = $(this).find('[data-element="loader"]')
