@@ -110,7 +110,7 @@ function getFree()
   let data = freeSheet
     .getRange(getFreeOffset(), 1, freeSheet.getLastRow(), 8)
     .getValues()
-    .filter(filterRow)
+    .filter(filterEmptyRow)
     .map((free, freeIndex) => prepareFree(free, freeIndex + 1));    
 
   return data;

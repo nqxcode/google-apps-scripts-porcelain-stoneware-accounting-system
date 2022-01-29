@@ -20,7 +20,7 @@ function getStoneColors()
   return propertiesSheet
     .getRange(getPropertyRowOffset(), getColorColumnOffset(), propertiesSheet.getLastRow())
     .getValues()
-    .filter(filterRow)
+    .filter(filterEmptyRow)
     .map(v => v[0])
 }
 
@@ -29,7 +29,7 @@ function getStoneShapes()
   return propertiesSheet
     .getRange(getPropertyRowOffset(), getShapeColumnOffset(), propertiesSheet.getLastRow())
     .getValues()
-    .filter(filterRow)
+    .filter(filterEmptyRow)
     .map(v => v[0])
 }
 

@@ -140,7 +140,7 @@ function getShipments()
   let data = shipmentsSheet
     .getRange(getShipmentOffset(), 1, shipmentsSheet.getLastRow(), 8)
     .getValues()
-    .filter(filterRow)
+    .filter(filterEmptyRow)
     .map(shipment => prepareShipment(shipment));    
 
   return data;

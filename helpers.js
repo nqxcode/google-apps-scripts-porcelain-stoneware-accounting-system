@@ -136,6 +136,12 @@ function generateOrderNumber(orderNumber, options)
   return orderNumber
 }
 
-function filterRow(row) {
+function filterEmptyRow(row) {
   return row.filter(cell => cell !== '').length;
+}
+
+function filterRow(row) {
+  let test = this;
+
+  return true;
 }

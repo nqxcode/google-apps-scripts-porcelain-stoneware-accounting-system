@@ -2,6 +2,10 @@ function getAssemblyOffset() {
   return 4
 }
 
+function getAllStoneShapeFilterValue() {
+  return 'Все';
+}
+
 function getAssemblyColumnsMap() {
     let columnsMap = []
 
@@ -174,16 +178,32 @@ function removeAssemblyByIndex(orderIndex) {
   return false
 }
 
-
-function getAssemblies()
+function getAssemblies(filter)
 {
+  filter = filter || {}
+
   let data = assembliesSheet
     .getRange(getAssemblyOffset(), 1, assembliesSheet.getLastRow(), 8)
     .getValues()
-    .filter(filterRow)
-    .map((assembly, assemblyIndex) => prepareAssembly(assembly, assemblyIndex));    
+    .filter(filterEmptyRow)
+    .map((assembly, assemblyIndex) => prepareAssembly(assembly, assemblyIndex))
+    .filter(filterAssembly(filter));
 
   return data;
+}
+
+function filterAssembly(filter) {
+  return function(assemblyObj) {
+    if (Object.keys(filter).length === 0) {
+      return true
+    }
+
+    if (filter.stoneShape === getAllStoneShapeFilterValue()) {
+      return true
+    }
+
+    return assemblyObj.stone_shape == filter.stoneShape
+  }
 }
 
 function prepareAssembly(assemblyData, orderIndex)
@@ -209,9 +229,9 @@ function prepareAssembly(assemblyData, orderIndex)
   return assemblyObj
 }
 
-function getAssembliesStringified() 
+function getAssembliesStringified(filter)
 {
-  let orders = getAssemblies()  
+  let orders = getAssemblies(filter)
 
   return JSON.stringify(orders)
 }
@@ -219,7 +239,9 @@ function getAssembliesStringified()
 function getAssemblyStoneShapesStringified()
 {
   let stoneShapes = getStoneShapes()
-      .map((stoneShape, stoneShapeIndex) => ({'name': stoneShape, 'index': stoneShapeIndex}))
+      .map((stoneShape, stoneShapeIndex) => ({'name': stoneShape, 'index': stoneShapeIndex + 1}))
+
+  stoneShapes = [{'name': getAllStoneShapeFilterValue(), 'index': 0}].concat(stoneShapes)
 
   return JSON.stringify(stoneShapes);
 }

@@ -22,6 +22,10 @@
             }
         })
 
+        function initAssembliesFilter() {
+            filter.stoneShape = 'Все'
+        }
+
         function showListLoader() {
             let listLoaderHtml = ejs.render(listLoaderTemplate, {}, {delimiter: '?'})
             assemblyListElement.empty()
@@ -141,8 +145,8 @@
           })
         }
 
-        loadAssemblies()
         loadAssemblyStoneShapes()
+        initAssembliesFilter()
 
         let formValidator = $('form#assembly').validate({
           rules: {            
