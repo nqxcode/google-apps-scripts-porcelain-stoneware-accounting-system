@@ -173,9 +173,7 @@
             loadAssemblies()
                 .then(
                     () => {
-                      loadAssemblies().then(response => {
-                        loader.hide();
-                      })
+                      loader.hide();
                     },
                     error => {
                       loader.hide();

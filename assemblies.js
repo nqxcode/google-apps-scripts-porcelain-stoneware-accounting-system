@@ -7,24 +7,24 @@ function getAllStoneShapeFilterValue() {
 }
 
 function getAssemblyColumnsMap() {
-    let columnsMap = []
+  let columnsMap = []
 
-    columnsMap[1] = 'date_of_adoption'
-    columnsMap[2] = 'order_number'
-    columnsMap[3] = 'diameter'
-    columnsMap[4] = 'length_min'
-    columnsMap[5] = 'length_max'
-    columnsMap[6] = 'width'
-    columnsMap[7] = 'stone_shape'
-    columnsMap[8] = 'stone_color'
+  columnsMap[1] = 'date_of_adoption'
+  columnsMap[2] = 'order_number'
+  columnsMap[3] = 'diameter'
+  columnsMap[4] = 'length_min'
+  columnsMap[5] = 'length_max'
+  columnsMap[6] = 'width'
+  columnsMap[7] = 'stone_shape'
+  columnsMap[8] = 'stone_color'
 
-    return columnsMap;
+  return columnsMap;
 }
 
 function findAssemblyRow(orderNumber) {
   let assemblies = getAssemblies()
 
-  for(assemblyIndex = 0; assemblyIndex < assemblies.length; assemblyIndex++) {
+  for (assemblyIndex = 0; assemblyIndex < assemblies.length; assemblyIndex++) {
     if (assemblies[assemblyIndex].order_number == orderNumber) {
       return getAssemblyOffset() + assemblyIndex
     }
@@ -37,14 +37,13 @@ function getAssemblyRowByIndex(orderIndex) {
   return getAssemblyOffset() + orderIndex
 }
 
-function addAssembly(assemblyData, options)
-{
+function addAssembly(assemblyData, options) {
   options = options || {}
   let orderNumber = generateOrderNumber(assemblyData.order_number, options)
   let assemblyColumnsMap = getAssemblyColumnsMap()
 
   let hasAnyFilled = false
-  for(column = 1; column <= assemblyColumnsMap.length; column++) {
+  for (column = 1; column <= assemblyColumnsMap.length; column++) {
     let field = assemblyColumnsMap[column]
     let value = assemblyData[field]
 
@@ -72,7 +71,7 @@ function updateAssembly(orderIndex, assemblyData) {
   let assemblyColumnsMap = getAssemblyColumnsMap()
 
 
-  for(column = 0; column < assemblyColumnsMap.length; column++) {
+  for (column = 0; column < assemblyColumnsMap.length; column++) {
     let field = assemblyColumnsMap[column]
     let value = prepareFormFieldValue(field, assemblyData)
 
@@ -85,30 +84,29 @@ function updateAssembly(orderIndex, assemblyData) {
   }
 }
 
-function moveAssemblyToShipment(orderNumber)
-{
+function moveAssemblyToShipment(orderNumber) {
   let orderData = findAssembly(orderNumber)
   if (!orderData) {
     throw new Error(`Заказа с номером ${orderNumber} не существует в сборке`)
   }
 
   addShipment(
-    {
-      date_of_adoption: formatDate(Date.now()),
-      order_number: orderData.order_number,
-      diameter: orderData.diameter,
-      length_min: orderData.length_min,
-      length_max: orderData.length_max,
-      width: orderData.width,
-      stone_shape: orderData.stone_shape,
-      stone_color: orderData.stone_color
-    },
-    {
-      checkOrderNumberUnique: {
-        assemblies: false,
-        shipments: true
+      {
+        date_of_adoption: formatDate(Date.now()),
+        order_number: orderData.order_number,
+        diameter: orderData.diameter,
+        length_min: orderData.length_min,
+        length_max: orderData.length_max,
+        width: orderData.width,
+        stone_shape: orderData.stone_shape,
+        stone_color: orderData.stone_color
+      },
+      {
+        checkOrderNumberUnique: {
+          assemblies: false,
+          shipments: true
+        }
       }
-    }
   )
 
   let isRemovedFromAssembly = removeAssembly(orderNumber)
@@ -117,23 +115,22 @@ function moveAssemblyToShipment(orderNumber)
   }
 }
 
-function moveAssemblyToFree(orderIndex)
-{
+function moveAssemblyToFree(orderIndex) {
   let orderData = getAssemblyByIndex(orderIndex)
   if (!orderData) {
     throw new Error(`Заказа с номером по порядку ${orderIndex + 1} не существует в сборке`)
   }
 
   addFree(
-    {
-      date_of_adoption: formatDate(Date.now()),
-      diameter: orderData.diameter,
-      length_min: orderData.length_min,
-      length_max: orderData.length_max,
-      width: orderData.width,
-      stone_shape: orderData.stone_shape,
-      stone_color: orderData.stone_color
-    }
+      {
+        date_of_adoption: formatDate(Date.now()),
+        diameter: orderData.diameter,
+        length_min: orderData.length_min,
+        length_max: orderData.length_max,
+        width: orderData.width,
+        stone_shape: orderData.stone_shape,
+        stone_color: orderData.stone_color
+      }
   )
 
   let isRemovedFromAssembly = removeAssemblyByIndex(orderIndex)
@@ -142,16 +139,14 @@ function moveAssemblyToFree(orderIndex)
   }
 }
 
-function findAssembly(orderNumber)
-{
+function findAssembly(orderNumber) {
   let assemblies = getAssemblies()
   let assembly = assemblies.find((assembly) => assembly.order_number == orderNumber)
 
   return assembly;
 }
 
-function getAssemblyByIndex(orderIndex)
-{
+function getAssemblyByIndex(orderIndex) {
   let assemblies = getAssemblies()
   let assembly = assemblies[orderIndex] || null
 
@@ -178,36 +173,94 @@ function removeAssemblyByIndex(orderIndex) {
   return false
 }
 
-function getAssemblies(filter)
-{
+function getAssemblies(filter) {
   filter = filter || {}
 
   let data = assembliesSheet
-    .getRange(getAssemblyOffset(), 1, assembliesSheet.getLastRow(), 8)
-    .getValues()
-    .filter(filterEmptyRow)
-    .map((assembly, assemblyIndex) => prepareAssembly(assembly, assemblyIndex))
-    .filter(filterAssembly(filter));
+      .getRange(getAssemblyOffset(), 1, assembliesSheet.getLastRow(), 8)
+      .getValues()
+      .filter(filterEmptyRow)
+      .map((assembly, assemblyIndex) => prepareAssembly(assembly, assemblyIndex))
+      .filter(filterAssembly(filter));
 
   return data;
 }
 
 function filterAssembly(filter) {
-  return function(assemblyObj) {
+  return function (assemblyObj) {
     if (Object.keys(filter).length === 0) {
       return true
     }
 
-    if (filter.stone_shape === getAllStoneShapeFilterValue()) {
-      return true
-    }
+    let isMatch = true;
 
-    return assemblyObj.stone_shape === filter.stone_shape
+    Object.keys(filter).forEach(name => {
+      switch (name) {
+        case 'stone_shape':
+          if (filter[name] !== getAllStoneShapeFilterValue()) {
+            isMatch = isMatch && filter[name] === assemblyObj[name]
+          }
+
+          break
+        case 'date_of_adoption':
+          if ((filter.date_of_adoption.from || filter.date_of_adoption.to) && !assemblyObj[name]) {
+            isMatch = false
+            break
+          }
+
+          if (filter.date_of_adoption.from) {
+            const date = new Date(assemblyObj[name])
+            const fromDate = new Date(filter.date_of_adoption.from)
+
+            isMatch = isMatch && date >= fromDate
+          }
+
+          if (filter.date_of_adoption.to) {
+            const date = new Date(assemblyObj[name])
+            const toDate = new Date(filter.date_of_adoption.to)
+
+            isMatch = isMatch && date >= toDate
+          }
+
+          break
+        default:
+          if (filter[name]) {
+            isMatch = isMatch && filter[name] === assemblyObj[name]
+          }
+      }
+    })
+
+    return isMatch
   }
 }
 
-function prepareAssembly(assemblyData, orderIndex)
-{
+function test_filterAssembly() {
+  filter = {
+    "order_number": "",
+    "stone_shape": "овал",
+    "stone_color": "",
+    "diameter": "",
+    "length_min": "",
+    "length_max": "",
+    "width": 1000,
+    "date_of_adoption": {
+      "from": null,
+      "to": null
+    }
+  }
+
+  let data = assembliesSheet
+      .getRange(getAssemblyOffset(), 1, assembliesSheet.getLastRow(), 8)
+      .getValues()
+      .filter(filterEmptyRow)
+      .map((assembly, assemblyIndex) => prepareAssembly(assembly, assemblyIndex))
+
+  let test = data.filter(filterAssembly(filter));
+
+  return
+}
+
+function prepareAssembly(assemblyData, orderIndex) {
   let assemblyObj = {}
 
   assemblyObj.order_index = orderIndex;
@@ -229,14 +282,13 @@ function prepareAssembly(assemblyData, orderIndex)
   return assemblyObj
 }
 
-function getAssembliesStringified(filter)
-{
+function getAssembliesStringified(filter) {
   filter = filter || {}
   let assemblyStoneShapes = getAssemblyStoneShapes()
 
   let assemblies = {}
   assemblyStoneShapes.forEach((stoneShape) => {
-      assemblies[stoneShape] = getAssemblies({...filter, ...{stone_shape: stoneShape}})
+    assemblies[stoneShape] = getAssemblies({...filter, ...{stone_shape: stoneShape}})
   })
 
   return JSON.stringify({
