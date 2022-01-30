@@ -1,0 +1,27 @@
+<script>
+      $(function() {
+        function Filter () {
+            this.params = {
+              stoneShape: 'Все'
+            };
+
+            this.all = function () {
+                return this.params
+            }
+        }
+
+        window.filter = new Filter();
+
+        Object.defineProperties(filter, {
+            stoneShape: {
+                get: function () {
+                    return filter.params.stoneShape
+                },
+                set: function (value) {
+                    filter.params.stoneShape = value
+                    console.log('filter', this.params)
+                }
+            }
+        })
+      })
+</script>

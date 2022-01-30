@@ -1,28 +1,5 @@
 <script>
       $(function() {
-        function Filter () {
-            this.params = {
-              stoneShape: 'Все'
-            };
-
-            this.all = function () {
-                return this.params
-            }
-        }
-
-        let filter = new Filter();
-        Object.defineProperties(filter, {
-            stoneShape: {
-                get: function () {
-                    return filter.params.stoneShape
-                },
-                set: function (value) {
-                    filter.params.stoneShape = value
-                    console.log('filter', this.params)
-                }
-            }
-        })
-
         function loadAssemblies () {
           return new Promise((resolve, reject) => {
             google.script.run.withSuccessHandler(content => {
@@ -424,7 +401,7 @@
         })
 
         $(document).on('shapes.refresh', function (e) {
-            loadAssemblies()
+          loadAssemblies()
         })
       })
 </script>

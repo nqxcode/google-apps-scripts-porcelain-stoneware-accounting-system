@@ -1,4 +1,4 @@
-function checkOrderNumberUnique(orderNumber, options) { 
+function checkOrderNumberUnique(orderNumber, options) {
   options = options || {}
 
   let defaultOptions = {
@@ -7,20 +7,20 @@ function checkOrderNumberUnique(orderNumber, options) {
       assemblies: true,
       shipments: true
     }
-  }  
+  }
 
   options = {...defaultOptions, ...options};
 
   if (options.checkOrderNumberUnique.assemblies) {
-    let assemblyRow = findAssemblyRow(orderNumber)  
+    let assemblyRow = findAssemblyRow(orderNumber)
     if (assemblyRow !== null) {
       if (options.throwIfNotUnique) {
         throw new Error(`Заказ с номером ${orderNumber} уже существует в сборке`)
       }
 
       return false
-    }  
-  }  
+    }
+  }
 
   if (options.checkOrderNumberUnique.shipments) {
     let shipmentRow = findShipmentRow(orderNumber)
@@ -38,14 +38,12 @@ function checkOrderNumberUnique(orderNumber, options) {
 
 function getFormRules()
 {
-  let rules = [
+  return [
     {field: 'length_max', stoneShapes: ['бочка', 'овал', 'стадион', 'прямоугольник', 'раздвижной стол']},
-    {field: 'length_min', stoneShapes: ['раздвижной стол']},                            
+    {field: 'length_min', stoneShapes: ['раздвижной стол']},
     {field: 'width', stoneShapes: ['бочка', 'овал', 'стадион', 'прямоугольник', 'раздвижной стол']},
-    {field: 'diameter', stoneShapes: ['круг', 'сектора']}              
+    {field: 'diameter', stoneShapes: ['круг', 'сектора', 'крутилка']}
   ]
-
-  return rules
 }
 
 function getFormRule(field)
@@ -71,24 +69,51 @@ function getAllStoneShapes()
 
 function prepareFormFieldValue(field, formData)
 {
-    let value = formData[field]
-    
-    let rule = getFormRule(field)
-    if (rule) {
-      let stoneShape = formData['stone_shape']
-      if (stoneShape) {
-        let isNeedToReset = false
-        
-        let allStoneShapes = getAllStoneShapes()
-        if (allStoneShapes.includes(stoneShape)) {        
-          isNeedToReset = !rule.stoneShapes.includes(stoneShape)
-        }        
+  let value = formData[field]
 
-        if (isNeedToReset) {
-            value = null
-        }
-      }      
+  let rule = getFormRule(field)
+  if (rule) {
+    let stoneShape = formData['stone_shape']
+    if (stoneShape) {
+      let isNeedToReset = false
+
+      let allStoneShapes = getAllStoneShapes()
+      if (allStoneShapes.includes(stoneShape)) {
+        isNeedToReset = !rule.stoneShapes.includes(stoneShape)
+      }
+
+      if (isNeedToReset) {
+        value = null
+      }
     }
+  }
 
-    return value
+  return value
+}
+
+function generateOrderNumber(orderNumber, options)
+{
+  options = options || {}
+
+  if(orderNumber) {
+    let attempt = 1
+    let newOrderNumber = orderNumber
+    while(true) {
+      try {
+        checkOrderNumberUnique(newOrderNumber, {...options, ...{throwIfNotUnique: true}})
+      } catch(Error) {
+        newOrderNumber = `${orderNumber}-${attempt + 1}`
+        attempt++
+        continue
+      }
+      orderNumber = newOrderNumber
+      break
+    }
+  }
+
+  return orderNumber
+}
+
+function filterEmptyRow(row) {
+  return row.filter(cell => cell !== '').length;
 }
