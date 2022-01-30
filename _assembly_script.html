@@ -166,24 +166,22 @@
         $('form#assembly-filter').on('submit', function(e) {
           e.preventDefault();
 
-          if ($(this).valid()) {
-            let form = $(this).get(0)
-            let loader = $(this).find('[data-element="apply-button"] [data-element="loader"]')
+          let form = $(this).get(0)
+          let loader = $(this).find('[data-element="apply-button"] [data-element="loader"]')
 
-            filter.load($(form).serializeArray())
+          filter.load($('form#assembly-filter').serializeArray())
 
-            loader.show();
+          loader.show();
 
-            loadAssemblies()
-                .then(
-                    () => {
-                      loader.hide();
-                    },
-                    error => {
-                      loader.hide();
-                    }
-                )
-          }
+          loadAssemblies()
+              .then(
+                  () => {
+                    loader.hide();
+                  },
+                  error => {
+                    loader.hide();
+                  }
+              )
         })
 
 
@@ -191,10 +189,13 @@
           e.preventDefault();
 
           let loader = $(this).find('[data-element="loader"]')
+          let filterForm = $('form#assembly-filter')
+          let activeStoneShapeTab = $('a[data-element="assembly-stone-shape-tab"].active');
 
-          filter.reset()
+          filterForm.get(0).reset()
+          activeStoneShapeTab.click()
 
-          $('form#assembly-filter').get(0).reset()
+          filter.load(filterForm.serializeArray())
 
           loader.show();
 
