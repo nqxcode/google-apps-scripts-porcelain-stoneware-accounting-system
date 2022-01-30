@@ -2,9 +2,7 @@ function getAssemblyOffset() {
   return 4
 }
 
-function getAllStoneShapeFilterValue() {
-  return 'Все';
-}
+const all = 'Все'
 
 function getAssemblyColumnsMap() {
   let columnsMap = []
@@ -282,7 +280,7 @@ function prepareAssembly(assemblyData, orderIndex) {
   return assemblyObj
 }
 
-function getAssembliesStringified(filter) {
+function getAssembliesStringified(filter, senderTab) {
   filter = filter || {}
   let assemblyStoneShapes = getAssemblyStoneShapes()
 
@@ -290,7 +288,7 @@ function getAssembliesStringified(filter) {
   assemblyStoneShapes.forEach((stoneShape) => {
     assemblies[stoneShape] = getAssemblies({
       ...filter,
-      ...{stone_shape: stoneShape === getAllStoneShapeFilterValue() ? filter.stone_shape : stoneShape}
+      ...{stone_shape: stoneShape === all ? (senderTab === stoneShape ? filter.stone_shape : null) : stoneShape}
     })
   })
 
@@ -301,7 +299,7 @@ function getAssembliesStringified(filter) {
 }
 
 function getAssemblyStoneShapes() {
-  let allVariant = getAllStoneShapeFilterValue()
+  let allVariant = all
   let stoneShapes = getStoneShapes()
 
   return [allVariant].concat(stoneShapes)

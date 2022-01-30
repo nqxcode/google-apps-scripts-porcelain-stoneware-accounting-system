@@ -1,5 +1,7 @@
 <script>
       $(function() {
+        let senderTab = null
+
         function loadAssemblies () {
           return new Promise((resolve, reject) => {
             google.script.run.withSuccessHandler(content => {
@@ -42,10 +44,12 @@
               initButtonsState()
               $(document).trigger('search.refresh')
 
+              senderTab = null
               resolve(content)
             }).withFailureHandler(error => {
+              senderTab = null
               reject(error)
-            }).getAssembliesStringified(filter.all());
+            }).getAssembliesStringified(filter.all(), senderTab);
           })
         }
 
@@ -182,12 +186,15 @@
           }
         })
 
+
         $('form#assembly-filter [data-element="reset-button"]').on('click', function(e) {
           e.preventDefault();
 
           let loader = $(this).find('[data-element="loader"]')
 
           filter.reset()
+
+          $('form#assembly-filter').get(0).reset()
 
           loader.show();
 
@@ -437,10 +444,13 @@
 
         $(document).on('click', 'a[data-element="assembly-stone-shape-tab"]', function(e) {
           let stoneShape =  $(this).data('name')
+
           let isAllTab = stoneShape === 'Все'
           let value = isAllTab ? '' : stoneShape;
           let stoneShapeElement = $('form#assembly-filter select[name="stone_shape"]')
+
           stoneShapeElement.val(value)
+          senderTab = stoneShape
         })
 
         $(document).on('colors.refresh', function (e) {

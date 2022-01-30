@@ -1,7 +1,7 @@
 <script>
       $(function() {
         function Filter () {
-            let defaultParams = {
+            const defaultParams = {
               order_number: null,
               stone_shape: null,
               stone_color: null,
@@ -63,9 +63,6 @@
             stone_shape: {
                 get: function () {
                     return filter.params.stone_shape
-                },
-                set: function (value) {
-                    filter.params.stone_shape = value
                 }
             }
         })
