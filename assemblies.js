@@ -198,11 +198,11 @@ function filterAssembly(filter) {
       return true
     }
 
-    if (filter.stoneShape === getAllStoneShapeFilterValue()) {
+    if (filter.stone_shape === getAllStoneShapeFilterValue()) {
       return true
     }
 
-    return assemblyObj.stone_shape === filter.stoneShape
+    return assemblyObj.stone_shape === filter.stone_shape
   }
 }
 
@@ -236,7 +236,7 @@ function getAssembliesStringified(filter)
 
   let assemblies = {}
   assemblyStoneShapes.forEach((stoneShape) => {
-      assemblies[stoneShape] = getAssemblies({...filter, ...{stoneShape: stoneShape}})
+      assemblies[stoneShape] = getAssemblies({...filter, ...{stone_shape: stoneShape}})
   })
 
   return JSON.stringify({

@@ -12,7 +12,7 @@
 
               assemblyStoneShapesTabListElement.empty();
               assemblyStoneShapes.forEach((stoneShape, stoneShapeIndex) => {
-                  let active = filter.stoneShape === stoneShape;
+                  let active = filter.stone_shape === stoneShape;
                   let assemblyStoneShapesTabHtml = ejs.render(assemblyStoneShapeTabTemplate, {name: stoneShape, active: active, index: stoneShapeIndex}, {delimiter: '?'});
                   assemblyStoneShapesTabListElement.append(assemblyStoneShapesTabHtml)
               })
@@ -20,7 +20,7 @@
               assemblyListTabContent.empty()
 
               Object.keys(assemblies).forEach((stoneShape, stoneShapeIndex) => {
-                  let active = filter.stoneShape === stoneShape;
+                  let active = filter.stone_shape === stoneShape;
                   let assemblyListTabHtml = ejs.render(assemblyListTabTemplate, {active: active, index: stoneShapeIndex}, {delimiter: '?'})
                   let assemblyListHtml = ejs.render(assemblyListTemplate, {index: stoneShapeIndex}, {delimiter: '?'})
 
@@ -158,6 +158,32 @@
               )
           }
         })
+
+        $('form#assembly-filter').on('submit', function(e) {
+          e.preventDefault();
+
+          if ($(this).valid()) {
+            let form = $(this).get(0)
+            let loader = $(this).find('[data-element="loader"]')
+
+            filter.load($(form).serializeArray())
+
+            loader.show();
+
+            loadAssemblies()
+                .then(
+                    () => {
+                      loadAssemblies().then(response => {
+                        loader.hide();
+                      })
+                    },
+                    error => {
+                      loader.hide();
+                    }
+                )
+          }
+        })
+
 
         $(document).on('click', 'button[data-action="assemblies.set-change-mode"]', function(e) {
           if (assemblyListTabContent.data('block')) {
@@ -393,7 +419,7 @@
         })
 
         $(document).on('click', 'a[data-element="assembly-stone-shape-tab"]', function(e) {
-            filter.stoneShape = $(this).data('name')
+            filter.stone_shape = $(this).data('name')
         })
 
         $(document).on('colors.refresh', function (e) {

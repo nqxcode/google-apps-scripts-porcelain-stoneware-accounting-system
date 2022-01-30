@@ -1,0 +1,84 @@
+<div class="toggle-form-container">
+  <a class="toggle-form" data-toggle="collapse" href=".filter-form-container" role="button" aria-expanded="false" aria-controls="filter-form-container">
+    <span class="show">Показать фильтр</span>
+    <span class="hide">Скрыть фильтр</span>
+  </a>
+</div>
+<div class="collapse show filter-form-container">
+  <form id="assembly-filter">
+    <div class="form-row mt-2 head-row">
+      <div class="form-group col">
+        <label for="order_number">Номер заказа</label>
+      </div>
+      <div class="form-group col">
+        <label for="stone_color">Цвет камня</label>
+      </div>
+      <div class="form-group col">
+        <label for="diameter">Диаметр</label>
+      </div>
+      <div class="form-group col">
+        <label for="length">Длина Min</label>
+      </div>
+      <div class="form-group col">
+        <label for="length">Длина Max</label>
+      </div>
+      <div class="form-group col">
+        <label for="width">Ширина</label>
+      </div>
+      <div class="form-group col-lg-3">
+        <label for="date_of_adoption">Дата принятия керамогранита в работу</label>
+      </div>
+
+      <div class="form-group col-lg-1 d-flex actions">
+        <label>Действия</label>
+      </div>
+    </div>
+
+    <div class="form-row controls-row">
+      <div class="form-group col">
+        <label for="order_number">Номер заказа</label>
+        <input type="text" class="form-control" name="order_number" placeholder="Номер заказа">
+      </div>
+      <div class="form-group col">
+        <label for="stone_color">Цвет камня</label>
+        <select class="form-control" name="stone_color" placeholder="Цвет камня"></select>
+      </div>
+      <div class="form-group col">
+        <label for="diameter">Диаметр</label>
+        <input type="text" class="form-control" name="diameter" placeholder="Диаметр">
+      </div>
+      <div class="form-group col">
+        <label for="length">Длина Min</label>
+        <input type="text" class="form-control" name="length_min" placeholder="Длина Min">
+      </div>
+      <div class="form-group col">
+        <label for="length">Длина Max</label>
+        <input type="text" class="form-control" name="length_max" placeholder="Длина Max">
+      </div>
+      <div class="form-group col">
+        <label for="width">Ширина</label>
+        <input type="text" class="form-control" name="width" placeholder="Ширина">
+      </div>
+
+      <div class="form-group col-lg-3">
+        <label for="date_of_adoption">Дата принятия керамогранита в работу</label>
+        <div class="form-inline">
+          <label class="d-inline-block" for="date_of_adoption[from]">от</label>
+          <input type="date" class="form-control" name="date_of_adoption][from]" placeholder="Дата принятия керамогранита в работу (от)">
+          &nbsp;
+          <label class="d-inline-block" for="date_of_adoption[to]">до</label>
+          <input type="date" class="form-control" name="date_of_adoption][to]" placeholder="Дата принятия керамогранита в работу (до)">
+        </div>
+      </div>
+
+      <div class="form-group col-lg-1 d-flex buttons-container actions">
+        <div>
+          <button type="submit" data-action="assemblies.filter" class="btn btn-primary">
+            <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+            Фильтровать
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

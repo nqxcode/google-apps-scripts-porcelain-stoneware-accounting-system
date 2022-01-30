@@ -2,10 +2,40 @@
       $(function() {
         function Filter () {
             this.params = {
-              stoneShape: 'Все'
+              order_number: null,
+              stone_shape: 'Все',
+              stone_color: null,
+              diameter: null,
+              length_min: null,
+              length_max: null,
+              width: null,
+              date_of_adoption: {
+                from: null,
+                to: null
+              },
             };
 
+            this.load = function (formData) {
+              formData.forEach((inputData) => {
+
+                let name = inputData.name;
+                let value = inputData.value;
+
+                switch(name) {
+                  case 'date_of_adoption[from]':
+                    this.params.date_of_adoption.from = value
+                    break
+                  case 'date_of_adoption[to]':
+                    this.params.date_of_adoption.to = value
+                    break
+                  default:
+                    this.params[name] = value
+                }
+              })
+            }
+
             this.all = function () {
+                console.log('filter', this.params)
                 return this.params
             }
         }
@@ -13,13 +43,12 @@
         window.filter = new Filter();
 
         Object.defineProperties(filter, {
-            stoneShape: {
+            stone_shape: {
                 get: function () {
-                    return filter.params.stoneShape
+                    return filter.params.stone_shape
                 },
                 set: function (value) {
-                    filter.params.stoneShape = value
-                    console.log('filter', this.params)
+                    filter.params.stone_shape = value
                 }
             }
         })
