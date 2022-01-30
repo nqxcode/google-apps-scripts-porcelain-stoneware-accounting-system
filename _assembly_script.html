@@ -164,7 +164,7 @@
 
           if ($(this).valid()) {
             let form = $(this).get(0)
-            let loader = $(this).find('[data-element="loader"]')
+            let loader = $(this).find('[data-element="apply-button"] [data-element="loader"]')
 
             filter.load($(form).serializeArray())
 
@@ -180,6 +180,25 @@
                     }
                 )
           }
+        })
+
+        $('form#assembly-filter [data-element="reset-button"]').on('click', function(e) {
+          e.preventDefault();
+
+          let loader = $(this).find('[data-element="loader"]')
+
+          filter.reset()
+
+          loader.show();
+
+          loadAssemblies().then(
+              () => {
+                loader.hide();
+              },
+              error => {
+                loader.hide();
+              }
+          )
         })
 
 

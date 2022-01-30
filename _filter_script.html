@@ -1,7 +1,7 @@
 <script>
       $(function() {
         function Filter () {
-            this.params = {
+            let defaultParams = {
               order_number: null,
               stone_shape: null,
               stone_color: null,
@@ -13,12 +13,20 @@
                 from: null,
                 to: null
               },
-            };
+            }
+
+            let cloneDefaultParameters = function () {
+              return JSON.parse(JSON.stringify(defaultParams))
+            }
+
+            this.params = cloneDefaultParameters()
 
             this.load = function (data) {
+              this.reset()
+
               data.forEach(row => {
-                let name = row.name;
-                let value = row.value;
+                let name = row.name
+                let value = row.value
 
                 switch(name) {
                   case 'diameter':
@@ -37,6 +45,10 @@
                     this.params[name] = value ? value : null
                 }
               })
+            }
+
+            this.reset = function () {
+              this.params = cloneDefaultParameters()
             }
 
             this.all = function () {
