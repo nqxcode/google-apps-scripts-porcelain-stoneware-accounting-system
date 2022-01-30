@@ -219,7 +219,7 @@ function filterAssembly(filter) {
             const date = new Date(assemblyObj[name])
             const toDate = new Date(filter.date_of_adoption.to)
 
-            isMatch = isMatch && date >= toDate
+            isMatch = isMatch && date <= toDate
           }
 
           break

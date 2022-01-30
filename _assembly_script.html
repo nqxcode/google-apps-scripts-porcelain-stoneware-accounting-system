@@ -421,9 +421,7 @@
           let isAllTab = stoneShape === 'Все'
           let value = isAllTab ? '' : stoneShape;
           let stoneShapeElement = $('form#assembly-filter select[name="stone_shape"]')
-
           stoneShapeElement.val(value)
-          //stoneShapeElement.prop('disabled', !isAllTab)
         })
 
         $(document).on('colors.refresh', function (e) {

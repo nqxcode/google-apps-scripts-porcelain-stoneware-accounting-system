@@ -28,11 +28,11 @@
       <div class="form-group col">
         <label for="width">Ширина</label>
       </div>
-      <div class="form-group col-lg-3">
+      <div class="form-group col">
         <label for="date_of_adoption">Дата принятия керамогранита в работу</label>
       </div>
 
-      <div class="form-group col d-flex actions">
+      <div class="form-group col-lg-2 d-flex actions">
         <label>Действия</label>
       </div>
     </div>
@@ -66,24 +66,34 @@
         <input type="text" class="form-control" name="width" placeholder="Ширина">
       </div>
 
-      <div class="form-group col-lg-3">
+      <div class="form-group col">
         <label for="date_of_adoption">Дата принятия керамогранита в работу</label>
-        <div class="form-inline">
-          <label class="d-inline-block" for="date_of_adoption[from]">от</label>
-          <input type="date" class="form-control" name="date_of_adoption[from]" placeholder="Дата принятия керамогранита в работу (от)">
-          &nbsp;
-          <label class="d-inline-block" for="date_of_adoption[to]">до</label>
-          <input type="date" class="form-control" name="date_of_adoption[to]" placeholder="Дата принятия керамогранита в работу (до)">
+        <div class="form-group">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="date_of_adoption_from_addon">от</span>
+            </div>
+            <input type="date" class="form-control" name="date_of_adoption[from]" placeholder="Дата принятия керамогранита в работу (от)" aria-describedby="date_of_adoption_from_addon">
+          </div>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="date_of_adoption_to_addon">до</span>
+            </div>
+            <input type="date" class="form-control" name="date_of_adoption[to]" placeholder="Дата принятия керамогранита в работу (до)" aria-describedby="date_of_adoption_to_addon">
+          </div>
+
         </div>
       </div>
 
-      <div class="form-group col d-flex buttons-container actions">
-        <div>
-          <button type="submit" data-action="assemblies.filter" class="btn btn-primary">
-            <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
-            Фильтровать
-          </button>
-        </div>
+      <div class="form-group col-lg-2 d-flex buttons-container actions">
+        <button type="button" data-action="assemblies.filter.reset" class="btn btn-outline-secondary btn w-50">
+          <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+          Сбросить
+        </button>
+        <button type="submit" data-action="assemblies.filter.apply" class="btn btn-primary btn w-50">
+          <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+          Фильтровать
+        </button>
       </div>
     </div>
   </form>
