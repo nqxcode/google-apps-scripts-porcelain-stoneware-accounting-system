@@ -288,7 +288,7 @@ function getAssembliesStringified(filter, senderTab) {
   assemblyStoneShapes.forEach((stoneShape) => {
     assemblies[stoneShape] = getAssemblies({
       ...filter,
-      ...{stone_shape: stoneShape === all ? (senderTab === stoneShape ? filter.stone_shape : null) : stoneShape}
+      ...{stone_shape: stoneShape === all ? (senderTab === all ? filter.stone_shape : null) : stoneShape}
     })
   })
 
