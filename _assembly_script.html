@@ -12,7 +12,7 @@
 
               assemblyStoneShapesTabListElement.empty();
               assemblyStoneShapes.forEach((stoneShape, stoneShapeIndex) => {
-                  let active = filter.stone_shape === stoneShape;
+                  let active = stoneShape === 'Все' ? !filter.stone_shape : filter.stone_shape === stoneShape
                   let assemblyStoneShapesTabHtml = ejs.render(assemblyStoneShapeTabTemplate, {name: stoneShape, active: active, index: stoneShapeIndex}, {delimiter: '?'});
                   assemblyStoneShapesTabListElement.append(assemblyStoneShapesTabHtml)
               })
@@ -20,7 +20,7 @@
               assemblyListTabContent.empty()
 
               Object.keys(assemblies).forEach((stoneShape, stoneShapeIndex) => {
-                  let active = filter.stone_shape === stoneShape;
+                  let active = stoneShape === 'Все' ? !filter.stone_shape : filter.stone_shape === stoneShape
                   let assemblyListTabHtml = ejs.render(assemblyListTabTemplate, {active: active, index: stoneShapeIndex}, {delimiter: '?'})
                   let assemblyListHtml = ejs.render(assemblyListTemplate, {index: stoneShapeIndex}, {delimiter: '?'})
 
@@ -417,7 +417,13 @@
         })
 
         $(document).on('click', 'a[data-element="assembly-stone-shape-tab"]', function(e) {
-            filter.stone_shape = $(this).data('name')
+          let stoneShape =  $(this).data('name')
+          let isAllTab = stoneShape === 'Все'
+          let value = isAllTab ? '' : stoneShape;
+          let stoneShapeElement = $('form#assembly-filter select[name="stone_shape"]')
+
+          stoneShapeElement.val(value)
+          //stoneShapeElement.prop('disabled', !isAllTab)
         })
 
         $(document).on('colors.refresh', function (e) {

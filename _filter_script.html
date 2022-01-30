@@ -3,7 +3,7 @@
         function Filter () {
             this.params = {
               order_number: null,
-              stone_shape: 'Все',
+              stone_shape: null,
               stone_color: null,
               diameter: null,
               length_min: null,
@@ -34,7 +34,7 @@
                     this.params.date_of_adoption.to = value
                     break
                   default:
-                    this.params[name] = value
+                    this.params[name] = value ? value : null
                 }
               })
             }

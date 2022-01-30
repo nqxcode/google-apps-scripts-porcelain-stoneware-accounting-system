@@ -197,7 +197,7 @@ function filterAssembly(filter) {
     Object.keys(filter).forEach(name => {
       switch (name) {
         case 'stone_shape':
-          if (filter[name] !== getAllStoneShapeFilterValue()) {
+          if (filter[name]) {
             isMatch = isMatch && filter[name] === assemblyObj[name]
           }
 
@@ -288,7 +288,10 @@ function getAssembliesStringified(filter) {
 
   let assemblies = {}
   assemblyStoneShapes.forEach((stoneShape) => {
-    assemblies[stoneShape] = getAssemblies({...filter, ...{stone_shape: stoneShape}})
+    assemblies[stoneShape] = getAssemblies({
+      ...filter,
+      ...{stone_shape: stoneShape === getAllStoneShapeFilterValue() ? filter.stone_shape : stoneShape}
+    })
   })
 
   return JSON.stringify({
