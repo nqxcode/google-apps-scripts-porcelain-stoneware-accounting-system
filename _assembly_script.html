@@ -171,6 +171,7 @@
                 () => {
                   loadAssemblies().then(response => {
                     form.reset();
+                    initActiveStoneShapeTab()
                     loader.hide();
                   })
                 },
@@ -212,7 +213,6 @@
           let filterForm = $('form#assembly-filter')
 
           filterForm.get(0).reset()
-
           initActiveStoneShapeTab()
 
           filter.load(filterForm.serializeArray())
