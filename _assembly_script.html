@@ -95,6 +95,16 @@
           })
         }
 
+        function removeAssemblyByIndex(orderIndex) {
+          return new Promise((resolve, reject) => {
+            google.script.run.withSuccessHandler(() => {
+              resolve()
+            }).withFailureHandler(error => {
+              reject(error)
+            }).removeAssemblyByIndex(orderIndex);
+          })
+        }
+
         function getOrderNumber(assemblyElement) {
           return assemblyElement.data('orderIndex')
         }
@@ -453,6 +463,44 @@
         })
 
         $(document).on('click', 'a[data-element="assembly-stone-shape-tab"]', handleActiveStoneShapeTab)
+
+        $(document).on('click', 'button[data-action="assemblies.remove"]', function(e) {
+          if (!assemblyListTabContent.data('block')) {
+            assemblyListTabContent.data('block', true)
+
+            let assemblyElement = assemblyListTabContent.find('[data-element="assembly"]').has(this)
+            let orderIndex =  $(this).data('orderIndex')
+            let loader = $(this).find('[data-element="loader"]')
+            let assemblyRemoveModal = $('#assemblyRemoveModal')
+
+            loader.show()
+
+            removeAssemblyByIndex(orderIndex)
+                .then(response => {
+                  loadAssemblies().then(response => {
+                    loader.hide()
+                    assemblyRemoveModal.modal('hide')
+                    assemblyListTabContent.data('block', false)
+                  })
+                })
+          }
+        })
+
+
+        $('#assemblyRemoveModal').on('show.bs.modal', function (e) {
+          let button = $(e.relatedTarget)
+          let orderNumber = button.data('orderNumber')
+          let orderIndex = button.data('orderIndex')
+
+          let modal = $(this)
+          modal.find('[data-element="order-number"]').text(orderNumber || (orderIndex + 1))
+          modal.find('[data-element="sequential-number-info"]').css('display', orderNumber ? 'none' : 'inline')
+
+          let removeAssemblyButton = modal.find('button[data-action="assemblies.remove"]')
+
+          removeAssemblyButton.data('orderNumber', orderNumber)
+          removeAssemblyButton.data('orderIndex', orderIndex)
+        })
 
         $(document).on('colors.refresh', function (e) {
           loadAssemblies()
