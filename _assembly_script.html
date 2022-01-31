@@ -148,6 +148,23 @@
           return $('a[data-element="assembly-stone-shape-tab"].active')
         }
 
+        function getButtons(assemblyElement) {
+          let setChangeModeButton = assemblyElement.find('button[data-action="assemblies.set-change-mode"]')
+          let saveChangesButton = assemblyElement.find('button[data-action="assemblies.save-changes"]')
+          let cancelChangesButton = assemblyElement.find('button[data-action="assemblies.cancel-changes"]')
+          let moveToShipmentButton = assemblyElement.find('button[data-action="assemblies.show-move-to-shipment-confirmation"]')
+          let showRemoveConfirmationButton = assemblyElement.find('button[data-action="assemblies.show-remove-confirmation"]')
+
+          return {
+            setChangeModeButton: setChangeModeButton,
+            saveChangesButton: saveChangesButton,
+            cancelChangesButton: cancelChangesButton,
+            moveToShipmentButton: moveToShipmentButton,
+            showRemoveConfirmationButton: showRemoveConfirmationButton,
+          }
+        }
+
+
         loadAssemblies()
 
         let formValidator = $('form#assembly').validate({
@@ -171,7 +188,7 @@
                 () => {
                   loadAssemblies().then(response => {
                     form.reset();
-                    handleActiveStoneShapeTab.apply($('a[data-element="assembly-stone-shape-tab"].active'))
+                    handleActiveStoneShapeTab.apply(getActiveStoneShapeTab())
                     loader.hide();
                   })
                 },
@@ -211,7 +228,7 @@
           let filterForm = $('form#assembly-filter')
 
           filterForm.get(0).reset()
-          handleActiveStoneShapeTab.apply($('a[data-element="assembly-stone-shape-tab"].active'))
+          handleActiveStoneShapeTab.apply(getActiveStoneShapeTab())
 
           loader.show();
 
@@ -224,7 +241,6 @@
               }
           )
         })
-
 
         $(document).on('click', 'button[data-action="assemblies.set-change-mode"]', function(e) {
           if (assemblyListTabContent.data('block')) {
@@ -240,27 +256,13 @@
 
           let otherAssemblyElements = assemblyElements.filter(function() { return getOrderNumber($(this)) != getOrderNumber(assemblyElement) })
 
-          function getButtons(assemblyElement) {
-            let setChangeModeButton = assemblyElement.find('button[data-action="assemblies.set-change-mode"]')
-            let saveChangesButton = assemblyElement.find('button[data-action="assemblies.save-changes"]')
-            let cancelChangesButton = assemblyElement.find('button[data-action="assemblies.cancel-changes"]')
-            let moveToShipmentButton = assemblyElement.find('button[data-action="assemblies.show-move-to-shipment-confirmation"]')
-
-            return {
-              setChangeModeButton: setChangeModeButton,
-              saveChangesButton: saveChangesButton,
-              cancelChangesButton: cancelChangesButton,
-              moveToShipmentButton: moveToShipmentButton
-            }
-          }
-
           assemblyElement.find('[data-name]').hide()
           assemblyElement.find('[name]').show()
           initFormControls(assemblyElement)
 
           let buttons = getButtons(assemblyElement)
           buttons.setChangeModeButton.hide()
-          buttons.moveToShipmentButton.hide()
+          buttons.showRemoveConfirmationButton.hide()
           buttons.saveChangesButton.show()
           buttons.cancelChangesButton.show()
 
@@ -278,7 +280,7 @@
               buttons.setChangeModeButton.hide()
             }
 
-            buttons.moveToShipmentButton.show()
+            buttons.showRemoveConfirmationButton.show()
             buttons.saveChangesButton.hide()
             buttons.cancelChangesButton.hide()
           })
@@ -295,10 +297,6 @@
                 .has(this)
 
             let orderNumber = getOrderNumber(assemblyElement)
-
-            let saveChangesButton = $(this)
-            let setChangeModeButton = assemblyElement.find('button[data-action="assemblies.set-change-mode"]')
-            let cancelChangesButton = assemblyElement.find('button[data-action="assemblies.cancel-changes"]')
 
             let loader = $(this).find('[data-element="loader"]')
 
@@ -338,20 +336,15 @@
               .find('[data-element="assembly"]')
               .has(this)
 
-          let orderNumber = $(this).data('orderNumber')
-
-          let cancelChangesButton = $(this)
-          let setChangeModeButton = assemblyElement.find('button[data-action="assemblies.set-change-mode"]')
-          let saveChangesButton = assemblyElement.find('button[data-action="assemblies.save-changes"]')
-          let moveToShipmentButton = assemblyElement.find('button[data-action="assemblies.show-move-to-shipment-confirmation"]')
+          let buttons = getButtons(assemblyElement)
 
           assemblyElement.find('[data-name]').show()
           assemblyElement.find('[name]').hide()
 
-          setChangeModeButton.show()
-          moveToShipmentButton.show()
-          saveChangesButton.hide()
-          cancelChangesButton.hide()
+          buttons.setChangeModeButton.show()
+          buttons.showRemoveConfirmationButton.show()
+          buttons.saveChangesButton.hide()
+          buttons.cancelChangesButton.hide()
         })
 
 
@@ -445,16 +438,16 @@
         })
 
         $('#assemblyMoveToFreeModal').on('show.bs.modal', function (e) {
-          var button = $(e.relatedTarget)
+          let button = $(e.relatedTarget)
 
-          var orderNumber = button.data('orderNumber')
-          var orderIndex = button.data('orderIndex')
+          let orderNumber = button.data('orderNumber')
+          let orderIndex = button.data('orderIndex')
 
-          var modal = $(this)
+          let modal = $(this)
           modal.find('[data-element="order-number"]').text(orderNumber || (orderIndex + 1))
           modal.find('[data-element="sequential-number-info"]').css('display', orderNumber ? 'none' : 'inline')
 
-          moveAssemblyToFreeButton = modal.find('button[data-action="assemblies.move-to-free"]')
+          let moveAssemblyToFreeButton = modal.find('button[data-action="assemblies.move-to-free"]')
           moveAssemblyToFreeButton.data('orderNumber', orderNumber)
           moveAssemblyToFreeButton.data('orderIndex', orderIndex)
         })

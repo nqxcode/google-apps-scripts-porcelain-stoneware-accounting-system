@@ -1,62 +1,62 @@
 <div data-element="assembly" data-order-number="<?= order_number ?>" data-order-index="<?= order_index ?>" class="row controls-row">
-    <div class="col d-flex">      
-      <label for="order_number">Номер заказа</label>      
-      <div class="mt-auto mb-auto" data-name="order_number"><?= order_number ?></div>         
+    <div class="col d-flex">
+      <label for="order_number">Номер заказа</label>
+      <div class="mt-auto mb-auto" data-name="order_number"><?= order_number ?></div>
       <input type="text" class="form-control" name="order_number" placeholder="Номер заказа" style="display: none;" value="<?= order_number ?>">
     </div>
-    
+
     <div class="col d-flex">
-      <label for="stone_shape">Форма камня</label>           
-      <div class="mt-auto mb-auto" data-name="stone_shape"><?= stone_shape ?></div>  
-      <select class="form-control" name="stone_shape" placeholder="Форма камня" style="display: none;" value="<?= stone_shape ?>" >        
+      <label for="stone_shape">Форма камня</label>
+      <div class="mt-auto mb-auto" data-name="stone_shape"><?= stone_shape ?></div>
+      <select class="form-control" name="stone_shape" placeholder="Форма камня" style="display: none;" value="<?= stone_shape ?>" >
         <option value=""></option>
         <? for (var i = 0; i < stone_shapes.length; i++) { ?>
-            <option <? if (stone_shapes[i] === stone_shape) { ?> selected="selected" <? } ?> 
+            <option <? if (stone_shapes[i] === stone_shape) { ?> selected="selected" <? } ?>
                     value="<?= stone_shapes[i] ?>"><?= stone_shapes[i] ?>
             </option>
         <? } ?>
-      </select>                       
-    </div>     
+      </select>
+    </div>
 
-    <div class="col d-flex">        
-        <label for="stone_color">Цвет камня</label>           
-        <div class="mt-auto mb-auto" data-name="stone_color"><?= stone_color ?></div>       
+    <div class="col d-flex">
+        <label for="stone_color">Цвет камня</label>
+        <div class="mt-auto mb-auto" data-name="stone_color"><?= stone_color ?></div>
         <select class="form-control" name="stone_color" placeholder="Цвет камня" style="display: none;" value="<?= stone_color ?>" >
           <option value=""></option>
           <? for (var i = 0; i < stone_colors.length; i++) { ?>
-              <option <? if (stone_colors[i] === stone_color) { ?> selected="selected" <? } ?> 
+              <option <? if (stone_colors[i] === stone_color) { ?> selected="selected" <? } ?>
                       value="<?= stone_colors[i] ?>"><?= stone_colors[i] ?>
               </option>
           <? } ?>
-        </select>                         
-    </div>      
+        </select>
+    </div>
 
-    <div class="col d-flex">  
-      <label for="diameter">Диаметр</label>      
+    <div class="col d-flex">
+      <label for="diameter">Диаметр</label>
       <div class="mt-auto mb-auto" data-name="diameter"><?= diameter ?></div>
-      <input type="text" class="form-control" name="diameter" placeholder="Диаметр" style="display: none;" value="<?= diameter ?>" >                
+      <input type="text" class="form-control" name="diameter" placeholder="Диаметр" style="display: none;" value="<?= diameter ?>" >
     </div>
 
-    <div class="col d-flex">  
-      <label for="length_min">Длина Min</label>      
+    <div class="col d-flex">
+      <label for="length_min">Длина Min</label>
       <div class="mt-auto mb-auto" data-name="length_min"><?= length_min ?></div>
-      <input type="text" class="form-control" name="length_min" placeholder="Длина Min" style="display: none;" value="<?= length_min ?>" >                
+      <input type="text" class="form-control" name="length_min" placeholder="Длина Min" style="display: none;" value="<?= length_min ?>" >
     </div>
 
-    <div class="col d-flex">  
-      <label for="length_max">Длина Max</label>      
+    <div class="col d-flex">
+      <label for="length_max">Длина Max</label>
       <div class="mt-auto mb-auto" data-name="length_max"><?= length_max ?></div>
-      <input type="text" class="form-control" name="length_max" placeholder="Длина Max" style="display: none;" value="<?= length_max ?>" >                
+      <input type="text" class="form-control" name="length_max" placeholder="Длина Max" style="display: none;" value="<?= length_max ?>" >
     </div>
 
-    <div class="col d-flex">   
-        <label for="width">Ширина</label>           
-        <div class="mt-auto mb-auto" data-name="width"><?= width ?></div>                        
+    <div class="col d-flex">
+        <label for="width">Ширина</label>
+        <div class="mt-auto mb-auto" data-name="width"><?= width ?></div>
         <input type="text" class="form-control" name="width" placeholder="Ширина" style="display: none;" value="<?= width ?>" >
-    </div>       
-                                          
-    <div class="col d-flex">  
-        <label for="date_of_adoption">Дата принятия в производство</label>      
+    </div>
+
+    <div class="col d-flex">
+        <label for="date_of_adoption">Дата принятия в производство</label>
         <div class="mt-auto mb-auto" data-name="date_of_adoption"><?= date_of_adoption ?></div>
         <input type="date" class="form-control" name="date_of_adoption" placeholder="Дата принятия в производство" style="display: none;" value="<?= date_of_adoption ?>" >
     </div>
@@ -67,22 +67,25 @@
       <textarea rows="1" class="form-control" name="comment" placeholder="Комментарий" style="display: none;"><?= comment ?></textarea>
     </div>
 
-    <div class="col-lg-2 d-flex buttons-container actions">
-      <button type="button" data-action="assemblies.set-change-mode" data-order-number="<?= order_number ?>" class="btn btn-outline-primary btn-sm">         
-        Изменить
-      </button>
-      <button type="button" data-action="assemblies.save-changes" data-order-number="<?= order_number ?>" class="btn btn-outline-primary btn-sm" style="display: none;">    
-        <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>     
-        Сохранить
-      </button>
-      <button type="button" data-action="assemblies.cancel-changes" data-order-number="<?= order_number ?>" class="btn btn-outline-secondary btn-sm" style="display: none;">
-        Отменить
-      </button>
-      <button type="button" data-action="assemblies.show-move-to-shipment-confirmation" data-order-number="<?= order_number ?>" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#assemblyMoveToShipmentModal">
+    <div class="col-lg-3 d-flex buttons-container actions">
+      <button type="button" data-action="assemblies.show-move-to-shipment-confirmation" data-order-number="<?= order_number ?>" class="btn btn-outline-success btn-sm w-100" data-toggle="modal" data-target="#assemblyMoveToShipmentModal">
         В&nbsp;отгрузку
       </button>
-      <button type="button" data-action="assemblies.show-move-to-free-confirmation" data-order-number="<?= order_number ?>" data-order-index="<?= order_index ?>" class="btn btn-outline-warning btn-sm" data-toggle="modal" data-target="#assemblyMoveToFreeModal">
-        В&nbsp;свободные 
+      <button type="button" data-action="assemblies.show-move-to-free-confirmation" data-order-number="<?= order_number ?>" data-order-index="<?= order_index ?>" class="btn btn-outline-warning btn-sm w-100" data-toggle="modal" data-target="#assemblyMoveToFreeModal">
+        В&nbsp;свободные
+      </button>
+      <button type="button" data-action="assemblies.set-change-mode" data-order-number="<?= order_number ?>" class="btn btn-outline-primary btn-sm w-100">
+        Изменить
+      </button>
+      <button type="button" data-action="assemblies.save-changes" data-order-number="<?= order_number ?>" class="btn btn-outline-primary btn-sm w-100" style="display: none;">
+        <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+        Сохранить
+      </button>
+      <button type="button" data-action="assemblies.cancel-changes" data-order-number="<?= order_number ?>" class="btn btn-outline-secondary btn-sm w-100" style="display: none;">
+        Отменить
+      </button>
+      <button type="button" data-action="assemblies.show-remove-confirmation" data-order-number="<?= order_number ?>" class="btn btn-outline-danger btn-sm w-100" data-toggle="modal" data-target="#assemblyRemoveModal">
+        Удалить
       </button>
     </div>
 </div>    

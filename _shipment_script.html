@@ -95,6 +95,23 @@
           })
         }
 
+        function getButtons(shipmentElement) {
+          let setChangeModeButton = shipmentElement.find('button[data-action="shipments.set-change-mode"]')
+          let saveChangesButton = shipmentElement.find('button[data-action="shipments.save-changes"]')
+          let cancelChangesButton = shipmentElement.find('button[data-action="shipments.cancel-changes"]')
+          let moveToFreeButton = shipmentElement.find('button[data-action="shipments.show-move-to-free-confirmation"]')
+          let showRemoveConfirmButton = shipmentElement.find('button[data-action="shipments.show-remove-confirmation"]')
+
+          return {
+            setChangeModeButton: setChangeModeButton,
+            saveChangesButton: saveChangesButton,
+            cancelChangesButton: cancelChangesButton,
+            moveToFreeButton: moveToFreeButton,
+            showRemoveConfirmButton: showRemoveConfirmButton
+          }
+        }
+
+
         loadShipments()
 
         $(document).on('click', 'button[data-action="shipments.set-change-mode"]', function(e) {     
@@ -106,29 +123,14 @@
           let shipmentElement = shipmentElements.has(this)          
           
           let otherShipmentElements = shipmentElements.filter(function() { return getOrderNumber($(this)) != getOrderNumber(shipmentElement) })
-          
-          function getButtons(shipmentElement) {
-            let setChangeModeButton = shipmentElement.find('button[data-action="shipments.set-change-mode"]')
-            let saveChangesButton = shipmentElement.find('button[data-action="shipments.save-changes"]')
-            let cancelChangesButton = shipmentElement.find('button[data-action="shipments.cancel-changes"]')
-            let moveToFreeButton = shipmentElement.find('button[data-action="shipments.show-move-to-free-confirmation"]')
-
-            return {
-              setChangeModeButton: setChangeModeButton,
-              saveChangesButton: saveChangesButton,
-              cancelChangesButton: cancelChangesButton,
-              moveToFreeButton: moveToFreeButton
-            }
-          }
 
           shipmentElement.find('[data-name]').hide()
-          shipmentElement.find('[name]').parents('[data-element="control-container"]').show()
           shipmentElement.find('[name]').show()
           initFormControls(shipmentElement)
 
           let buttons = getButtons(shipmentElement)
           buttons.setChangeModeButton.hide()
-          buttons.moveToFreeButton.hide()
+          buttons.showRemoveConfirmButton.hide()
           buttons.saveChangesButton.show()
           buttons.cancelChangesButton.show()
 
@@ -136,7 +138,6 @@
             let shipmentElement = $(this);
 
             shipmentElement.find('[data-name]').show()
-            shipmentElement.find('[name]').parents('[data-element="control-container"]').hide()
             shipmentElement.find('[name]').hide()
 
             let buttons = getButtons(shipmentElement)
@@ -147,7 +148,7 @@
               buttons.setChangeModeButton.hide()
             }
             
-            buttons.moveToFreeButton.show()
+            buttons.showRemoveConfirmButton.show()
             buttons.saveChangesButton.hide()
             buttons.cancelChangesButton.hide()
           })
@@ -159,10 +160,6 @@
 
             let shipmentElement = shipmentListElement.find('[data-element="shipment"]').has(this)
             let orderNumber = getOrderNumber(shipmentElement)
-
-            let saveChangesButton = $(this)                               
-            let setChangeModeButton = shipmentElement.find('button[data-action="shipments.set-change-mode"]')
-            let cancelChangesButton = shipmentElement.find('button[data-action="shipments.cancel-changes"]')
 
             let loader = $(this).find('[data-element="loader"]')
 
@@ -201,19 +198,15 @@
           let shipmentElement = shipmentListElement.find('[data-element="shipment"]').has(this)
           let orderNumber = $(this).data('orderNumber')                          
 
-          let cancelChangesButton = $(this)          
-          let setChangeModeButton = shipmentElement.find('button[data-action="shipments.set-change-mode"]')
-          let saveChangesButton = shipmentElement.find('button[data-action="shipments.save-changes"]')
-          let moveToFreeButton = shipmentElement.find('button[data-action="shipments.show-move-to-free-confirmation"]')
+          let buttons = getButtons(shipmentElement)
 
           shipmentElement.find('[data-name]').show()
-          shipmentElement.find('[name]').parents('[data-element="control-container"]').hide()
           shipmentElement.find('[name]').hide()
 
-          setChangeModeButton.show()
-          moveToFreeButton.show()
-          saveChangesButton.hide()
-          cancelChangesButton.hide()                    
+          buttons.setChangeModeButton.show()
+          buttons.showRemoveConfirmButton.show()
+          buttons.saveChangesButton.hide()
+          buttons.cancelChangesButton.hide()
         })   
 
         $(document).on('click', 'button[data-action="shipments.move-to-free"]', function(e) {                    
@@ -333,10 +326,10 @@
 
 
         $('#shipmentRemoveModal').on('show.bs.modal', function (e) {
-          var button = $(e.relatedTarget) 
-          var orderNumber = button.data('orderNumber') 
+          let button = $(e.relatedTarget)
+          let orderNumber = button.data('orderNumber')
 
-          var modal = $(this)
+          let modal = $(this)
           modal.find('[data-element="order-number"]').text(orderNumber)
           modal.find('button[data-action="shipments.remove"]').data('orderNumber', orderNumber)          
         })

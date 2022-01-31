@@ -54,6 +54,22 @@
           return freeElement.data('orderNumber') 
         }
 
+        function getButtons(freeElement) {
+          let setChangeModeButton = freeElement.find('button[data-action="free.set-change-mode"]')
+          let saveChangesButton = freeElement.find('button[data-action="free.save-changes"]')
+          let cancelChangesButton = freeElement.find('button[data-action="free.cancel-changes"]')
+          let moveToAssemblyButton = freeElement.find('button[data-action="free.show-move-to-assembly-confirmation"]')
+          let showRemoveConfirmationButton = freeElement.find('button[data-action="free.show-remove-confirmation"]')
+
+          return {
+            setChangeModeButton: setChangeModeButton,
+            saveChangesButton: saveChangesButton,
+            cancelChangesButton: cancelChangesButton,
+            moveToAssemblyButton: moveToAssemblyButton,
+            showRemoveConfirmationButton: showRemoveConfirmationButton
+          }
+        }
+
         loadFree()
         
 
@@ -66,29 +82,15 @@
           let freeElement = freeElements.has(this)          
           
           let otherfreeElements = freeElements.filter(function() { return getOrderNumber($(this)) != getOrderNumber(freeElement) })
-          
-          function getButtons(freeElement) {
-            let setChangeModeButton = freeElement.find('button[data-action="free.set-change-mode"]')
-            let saveChangesButton = freeElement.find('button[data-action="free.save-changes"]')
-            let cancelChangesButton = freeElement.find('button[data-action="free.cancel-changes"]')
-            let moveToAssemblyButton = freeElement.find('button[data-action="free.show-move-to-assembly-confirmation"]')
 
-            return {
-              setChangeModeButton: setChangeModeButton,
-              saveChangesButton: saveChangesButton,
-              cancelChangesButton: cancelChangesButton,
-              moveToAssemblyButton: moveToAssemblyButton
-            }
-          }
 
           freeElement.find('[data-name]').hide()
-          freeElement.find('[name]').parents('[data-element="control-container"]').show()
           freeElement.find('[name]').show()
           initFormControls(freeElement)
 
           let buttons = getButtons(freeElement)
           buttons.setChangeModeButton.hide()
-          buttons.moveToAssemblyButton.hide()
+          buttons.showRemoveConfirmationButton.hide()
           buttons.saveChangesButton.show()
           buttons.cancelChangesButton.show()
 
@@ -96,7 +98,6 @@
             let freeElement = $(this);
 
             freeElement.find('[data-name]').show()
-            freeElement.find('[name]').parents('[data-element="control-container"]').hide()
             freeElement.find('[name]').hide()
 
             let buttons = getButtons(freeElement)
@@ -107,7 +108,7 @@
               buttons.setChangeModeButton.hide()
             }
             
-            buttons.moveToAssemblyButton.show()
+            buttons.showRemoveConfirmationButton.show()
             buttons.saveChangesButton.hide()
             buttons.cancelChangesButton.hide()
           })
@@ -159,19 +160,15 @@
           let freeElement = freeListElement.find('[data-element="free"]').has(this) 
           let orderNumber = $(this).data('orderNumber')                          
 
-          let cancelChangesButton = $(this)          
-          let setChangeModeButton = freeElement.find('button[data-action="free.set-change-mode"]')
-          let saveChangesButton = freeElement.find('button[data-action="free.save-changes"]')
-          let moveToAssemblyButton = freeElement.find('button[data-action="free.show-move-to-assembly-confirmation"]')
+          let buttons = getButtons(freeElement)
 
           freeElement.find('[data-name]').show()
-          freeElement.find('[name]').parents('[data-element="control-container"]').hide()
           freeElement.find('[name]').hide()
 
-          setChangeModeButton.show()
-          moveToAssemblyButton.show()
-          saveChangesButton.hide()
-          cancelChangesButton.hide()                    
+          buttons.setChangeModeButton.show()
+          buttons.showRemoveConfirmationButton.show()
+          buttons.saveChangesButton.hide()
+          buttons.cancelChangesButton.hide()
         })  
 
         $(document).on('click', 'button[data-action="free.move-to-assembly"]', function(e) {                    

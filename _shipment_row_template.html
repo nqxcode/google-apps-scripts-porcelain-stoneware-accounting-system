@@ -63,12 +63,10 @@
 
     <div class="col d-flex justify-content-center">
       <label class="form-check-label" for="shipped">Отгружено</label>
-      <div class="mt-auto mb-auto" data-name="shipped">
+      <div class="mt-auto mb-auto">
         <? if (shipped === 'да') { ?>
-          <i class="bi bi-check"></i>
+          <i class="bi bi-check" data-name="shipped"></i>
         <? } ?>
-      </div>
-      <div class="form-check" data-element="control-container" style="display: none;">
         <input type="hidden" name="shipped" value="" />
         <input type="checkbox" class="form-check-input position-static" name="shipped" value="да" <? if (shipped === 'да') { ?> checked="checked" <? } ?> style="display: none;">
       </div>
@@ -76,35 +74,33 @@
 
     <div class="col d-flex justify-content-center">
       <label class="form-check-label" for="packed">Упакован</label>
-      <div class="mt-auto mb-auto" data-name="packed">
+      <div class="mt-auto mb-auto">
         <? if (packed === 'да') { ?>
-          <i class="bi bi-check"></i>
+          <i class="bi bi-check" data-name="packed"></i>
         <? } ?>
-      </div>
-      <div class="form-check" data-element="control-container" style="display: none;">
         <input type="hidden" name="packed" value="" />
         <input type="checkbox" class="form-check-input position-static" name="packed" value="да" <? if (packed === 'да') { ?> checked="checked" <? } ?> style="display: none;">
       </div>
     </div>
 
     <div class="col-lg-2 d-flex buttons-container actions">
-      <button type="button" data-action="shipments.set-change-mode" data-order-number="<?= order_number ?>" class="btn btn-outline-primary btn-sm">         
-          Изменить
-      </button>
-      <button type="button" data-action="shipments.save-changes" data-order-number="<?= order_number ?>" class="btn btn-outline-primary btn-sm" style="display: none;">    
-         <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>     
-          Сохранить
-      </button>
-      <button type="button" data-action="shipments.cancel-changes" data-order-number="<?= order_number ?>" class="btn btn-outline-secondary  btn-sm" style="display: none;">
-        Отменить
-      </button>  
-      <button type="button" data-action="shipments.show-move-to-free-confirmation" data-order-number="<?= order_number ?>" class="btn btn-outline-warning btn-sm" data-toggle="modal" data-target="#shipmentMoveToFreeModal">
-        В&nbsp;свободные
-      </button>
-      <button type="button" data-action="shipments.show-move-to-assembly-confirmation" data-order-number="<?= order_number ?>" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#shipmentMoveToAssemblyModal">
+      <button type="button" data-action="shipments.show-move-to-assembly-confirmation" data-order-number="<?= order_number ?>" class="btn btn-outline-success btn-sm w-100" data-toggle="modal" data-target="#shipmentMoveToAssemblyModal">
         В&nbsp;сборку
       </button>
-      <button type="button" data-action="shipments.show-remove-confirmation" data-order-number="<?= order_number ?>" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#shipmentRemoveModal">
+      <button type="button" data-action="shipments.show-move-to-free-confirmation" data-order-number="<?= order_number ?>" class="btn btn-outline-warning btn-sm w-100" data-toggle="modal" data-target="#shipmentMoveToFreeModal">
+        В&nbsp;свободные
+      </button>
+      <button type="button" data-action="shipments.set-change-mode" data-order-number="<?= order_number ?>" class="btn btn-outline-primary btn-sm w-100">
+        Изменить
+      </button>
+      <button type="button" data-action="shipments.save-changes" data-order-number="<?= order_number ?>" class="btn btn-outline-primary btn-sm w-100" style="display: none;">
+        <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+        Сохранить
+      </button>
+      <button type="button" data-action="shipments.cancel-changes" data-order-number="<?= order_number ?>" class="btn btn-outline-secondary  btn-sm w-100" style="display: none;">
+        Отменить
+      </button>
+      <button type="button" data-action="shipments.show-remove-confirmation" data-order-number="<?= order_number ?>" class="btn btn-outline-danger btn-sm w-100" data-toggle="modal" data-target="#shipmentRemoveModal">
         Удалить
       </button>
     </div>

@@ -62,32 +62,30 @@
 
     <div class="col d-flex justify-content-center">
       <label class="form-check-label" for="with_worktop">Со столешницей</label>
-      <div class="mt-auto mb-auto" data-name="with_worktop">
+      <div class="mt-auto mb-auto">
         <? if (with_worktop === 'да') { ?>
-        <i class="bi bi-check"></i>
+        <i class="bi bi-check" data-name="with_worktop"></i>
         <? } ?>
-      </div>
-      <div class="form-check" data-element="control-container" style="display: none;">
         <input type="hidden" name="with_worktop" value="" />
         <input type="checkbox" class="form-check-input position-static" name="with_worktop" value="да" <? if (with_worktop === 'да') { ?> checked="checked" <? } ?> style="display: none;">
       </div>
     </div>
 
     <div class="col-lg-2 d-flex buttons-container actions">
-      <button type="button" data-action="free.set-change-mode" data-order-number="<?= order_number ?>" class="btn btn-outline-primary btn-sm">         
-        Изменить
-      </button>
-      <button type="button" data-action="free.save-changes" data-order-number="<?= order_number ?>" class="btn btn-outline-primary btn-sm" style="display: none;">    
-        <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>     
-        Сохранить
-      </button>
-      <button type="button" data-action="free.cancel-changes" data-order-number="<?= order_number ?>" class="btn btn-outline-secondary btn-sm" style="display: none;">
-        Отменить
-      </button>
-      <button type="button" data-action="free.show-move-to-assembly-confirmation" data-order-number="<?= order_number ?>" class="btn btn-outline-success btn-sm show-move-to-assembly-confirmation-button" data-toggle="modal" data-target="#freeMoveToAssemblyModal">
+      <button type="button" data-action="free.show-move-to-assembly-confirmation" data-order-number="<?= order_number ?>" class="btn btn-outline-success btn-sm  show-move-to-assembly-confirmation-button w-100" data-toggle="modal" data-target="#freeMoveToAssemblyModal">
         В&nbsp;сборку
       </button>
-      <button type="button" data-action="free.show-remove-confirmation" data-order-number="<?= order_number ?>" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#freeRemoveModal">
+      <button type="button" data-action="free.set-change-mode" data-order-number="<?= order_number ?>" class="btn btn-outline-primary btn-sm w-100">
+        Изменить
+      </button>
+      <button type="button" data-action="free.save-changes" data-order-number="<?= order_number ?>" class="btn btn-outline-primary btn-sm w-100" style="display: none;">
+        <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+        Сохранить
+      </button>
+      <button type="button" data-action="free.cancel-changes" data-order-number="<?= order_number ?>" class="btn btn-outline-secondary btn-sm w-100" style="display: none;">
+        Отменить
+      </button>
+      <button type="button" data-action="free.show-remove-confirmation" data-order-number="<?= order_number ?>" class="btn btn-outline-danger btn-sm w-100" data-toggle="modal" data-target="#freeRemoveModal">
         Удалить
       </button>
     </div>
