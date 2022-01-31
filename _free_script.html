@@ -82,6 +82,7 @@
           }
 
           freeElement.find('[data-name]').hide()
+          freeElement.find('[name]').parents('[data-element="control-container"]').show()
           freeElement.find('[name]').show()
           initFormControls(freeElement)
 
@@ -95,6 +96,7 @@
             let freeElement = $(this);
 
             freeElement.find('[data-name]').show()
+            freeElement.find('[name]').parents('[data-element="control-container"]').hide()
             freeElement.find('[name]').hide()
 
             let buttons = getButtons(freeElement)
@@ -163,6 +165,7 @@
           let moveToAssemblyButton = freeElement.find('button[data-action="free.show-move-to-assembly-confirmation"]')
 
           freeElement.find('[data-name]').show()
+          freeElement.find('[name]').parents('[data-element="control-container"]').hide()
           freeElement.find('[name]').hide()
 
           setChangeModeButton.show()

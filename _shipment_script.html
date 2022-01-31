@@ -122,6 +122,7 @@
           }
 
           shipmentElement.find('[data-name]').hide()
+          shipmentElement.find('[name]').parents('[data-element="control-container"]').show()
           shipmentElement.find('[name]').show()
           initFormControls(shipmentElement)
 
@@ -135,6 +136,7 @@
             let shipmentElement = $(this);
 
             shipmentElement.find('[data-name]').show()
+            shipmentElement.find('[name]').parents('[data-element="control-container"]').hide()
             shipmentElement.find('[name]').hide()
 
             let buttons = getButtons(shipmentElement)
@@ -205,6 +207,7 @@
           let moveToFreeButton = shipmentElement.find('button[data-action="shipments.show-move-to-free-confirmation"]')
 
           shipmentElement.find('[data-name]').show()
+          shipmentElement.find('[name]').parents('[data-element="control-container"]').hide()
           shipmentElement.find('[name]').hide()
 
           setChangeModeButton.show()
