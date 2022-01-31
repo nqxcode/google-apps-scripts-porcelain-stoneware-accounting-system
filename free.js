@@ -12,6 +12,7 @@ function getFreeColumnsMap() {
     columnsMap[5] = 'stone_shape'
     columnsMap[6] = 'stone_color'
     columnsMap[7] = 'comment'
+    columnsMap[8] = 'with_worktop'
 
     return columnsMap;
 }
@@ -111,7 +112,7 @@ function findFreeRow(orderNumber) {
 function getFree()
 {
   let data = freeSheet
-    .getRange(getFreeOffset(), 1, freeSheet.getLastRow(), 9)
+    .getRange(getFreeOffset(), 1, freeSheet.getLastRow(), 10)
     .getValues()
     .filter(filterEmptyRow)
     .map((free, freeIndex) => prepareFree(free, freeIndex + 1));    
