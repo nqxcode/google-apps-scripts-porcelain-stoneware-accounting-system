@@ -128,7 +128,7 @@
         }
 
         function initActiveStoneShapeTab() {
-          let stoneShape = $('a[data-element="assembly-stone-shape-tab"].active')().data('name')
+          let stoneShape = $('a[data-element="assembly-stone-shape-tab"].active').data('name')
 
           let isAllTab = stoneShape === 'Все'
           let value = isAllTab ? '' : stoneShape;
