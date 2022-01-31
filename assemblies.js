@@ -128,7 +128,8 @@ function moveAssemblyToFree(orderIndex) {
         length_max: orderData.length_max,
         width: orderData.width,
         stone_shape: orderData.stone_shape,
-        stone_color: orderData.stone_color
+        stone_color: orderData.stone_color,
+        comment: orderData.comment
       }
   )
 

@@ -52,8 +52,14 @@
         <label for="width">Ширина</label>      
         <div class="mt-auto mb-auto" data-name="width"><?= width ?></div>                        
         <input type="text" class="form-control" name="width" placeholder="Ширина" style="display: none;" value="<?= width ?>" >
-    </div>            
-    
+    </div>
+
+    <div class="col d-flex">
+      <label for="comment">Комментарий</label>
+      <div class="mt-auto mb-auto" data-name="comment"><?= comment ?></div>
+      <textarea rows="1" class="form-control" name="comment" placeholder="Комментарий" style="display: none;"><?= comment ?></textarea>
+    </div>
+
     <div class="col-lg-3 d-flex buttons-container actions"> 
       <button type="button" data-action="free.set-change-mode" data-order-number="<?= order_number ?>" class="btn btn-outline-primary btn-sm">         
         Изменить
