@@ -3,6 +3,8 @@
         let calleeTab = null
 
         function loadAssemblies () {
+          filter.load($('form#assembly-filter').serializeArray())
+
           return new Promise((resolve, reject) => {
             google.script.run.withSuccessHandler(content => {
               let assembliesData = JSON.parse(content)
@@ -162,8 +164,6 @@
             let form = $(this).get(0)
             let loader = $(this).find('[data-element="loader"]')
 
-            filter.load($('form#assembly-filter').serializeArray())
-
             loader.show();
 
             addAssembly(form)
@@ -190,8 +190,6 @@
 
           let loader = $(this).find('[data-element="apply-button"] [data-element="loader"]')
 
-          filter.load($('form#assembly-filter').serializeArray())
-
           loader.show();
 
           loadAssemblies()
@@ -214,8 +212,6 @@
 
           filterForm.get(0).reset()
           handleActiveStoneShapeTab.apply($('a[data-element="assembly-stone-shape-tab"].active'))
-
-          filter.load(filterForm.serializeArray())
 
           loader.show();
 
