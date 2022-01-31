@@ -1,7 +1,6 @@
 function getAssemblyOffset() {
   return 4
 }
-
 const all = 'Все'
 
 function getAssemblyColumnsMap() {
@@ -15,6 +14,7 @@ function getAssemblyColumnsMap() {
   columnsMap[6] = 'width'
   columnsMap[7] = 'stone_shape'
   columnsMap[8] = 'stone_color'
+  columnsMap[9] = 'comment'
 
   return columnsMap;
 }
@@ -60,7 +60,8 @@ function addAssembly(assemblyData, options) {
     assemblyData.length_max,
     assemblyData.width,
     assemblyData.stone_shape,
-    assemblyData.stone_color
+    assemblyData.stone_color,
+    assemblyData.comment,
   ]);
 }
 
@@ -175,7 +176,7 @@ function getAssemblies(filter) {
   filter = filter || {}
 
   let data = assembliesSheet
-      .getRange(getAssemblyOffset(), 1, assembliesSheet.getLastRow(), 8)
+      .getRange(getAssemblyOffset(), 1, assembliesSheet.getLastRow(), 9)
       .getValues()
       .filter(filterEmptyRow)
       .map((assembly, assemblyIndex) => prepareAssembly(assembly, assemblyIndex))
