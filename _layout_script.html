@@ -10,6 +10,7 @@
 
         window.getFormData = function ($form){
             let data = $form.serializeArray();
+
             var result = {};
 
             $.map(data, function(v, i){

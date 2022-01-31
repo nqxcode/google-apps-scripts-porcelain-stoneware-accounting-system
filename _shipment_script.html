@@ -21,16 +21,6 @@
           })
         }
 
-        function updateShipment(orderNumber, assemblyData) {     
-          return new Promise((resolve, reject) => {
-            google.script.run.withSuccessHandler(response => {
-              resolve(response)                                 
-            }).withFailureHandler(error => {
-                reject(error)
-            }).updateShipment(orderNumber, assemblyData);
-          })
-        }
-
         function removeShipment (orderNumber) {
           return new Promise((resolve, reject) => {
             google.script.run.withSuccessHandler(() => {
@@ -175,7 +165,9 @@
             let loader = $(this).find('[data-element="loader"]')
 
             let form = shipmentElement.find('[name]')
-            let shipmentData = getFormData(form)       
+
+            let shipmentData = getFormData(form)
+
 
             loader.show()
             updateShipment(orderNumber, shipmentData)

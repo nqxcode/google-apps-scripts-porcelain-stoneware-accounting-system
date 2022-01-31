@@ -1,6 +1,9 @@
 function getShipmentOffset() {
   return 4
-}  
+}
+
+const yes = 'да'
+const no = 'нет'
 
 function getShipmentColumnsMap() {
     let columnsMap = []
@@ -13,6 +16,8 @@ function getShipmentColumnsMap() {
     columnsMap[6] = 'width'
     columnsMap[7] = 'stone_shape'
     columnsMap[8] = 'stone_color'
+    columnsMap[9] = 'shipped'
+    columnsMap[10] = 'packed'
 
     return columnsMap;
 }
@@ -30,7 +35,9 @@ function addShipment(orderData, options) {
     orderData.length_max,
     orderData.width,
     orderData.stone_shape,
-    orderData.stone_color
+    orderData.stone_color,
+    orderData.shipped,
+    orderData.packed,
   ]);
 }
 
@@ -138,7 +145,7 @@ function moveShipmentToAssembly(orderNumber)
 function getShipments()
 {
   let data = shipmentsSheet
-    .getRange(getShipmentOffset(), 1, shipmentsSheet.getLastRow(), 8)
+    .getRange(getShipmentOffset(), 1, shipmentsSheet.getLastRow(), 10)
     .getValues()
     .filter(filterEmptyRow)
     .map(shipment => prepareShipment(shipment));    
