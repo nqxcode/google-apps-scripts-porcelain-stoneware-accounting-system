@@ -73,7 +73,7 @@ function prepareFormFieldValue(field, formData)
 
   let rule = getFormRule(field)
   if (rule) {
-    let stoneShape = formData['stone_shape']
+    let stoneShape = String(formData['stone_shape']).toLowerCase()
     if (stoneShape) {
       let isNeedToReset = false
 
