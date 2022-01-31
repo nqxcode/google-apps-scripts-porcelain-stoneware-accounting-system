@@ -127,6 +127,25 @@
           })
         }
 
+        function initActiveStoneShapeTab() {
+          let stoneShape = $('a[data-element="assembly-stone-shape-tab"].active')().data('name')
+
+          let isAllTab = stoneShape === 'Все'
+          let value = isAllTab ? '' : stoneShape;
+
+          let filterStoneShapeElement = $('form#assembly-filter select[name="stone_shape"]')
+          let formStoneShapeElement = $('form#assembly select[name="stone_shape"]')
+
+          filterStoneShapeElement.val(value)
+          formStoneShapeElement.val(value)
+
+          calleeTab = stoneShape
+        }
+
+        function getActiveStoneShapeTab() {
+          return $('a[data-element="assembly-stone-shape-tab"].active')
+        }
+
         loadAssemblies()
 
         let formValidator = $('form#assembly').validate({
@@ -143,6 +162,8 @@
             let form = $(this).get(0)
             let loader = $(this).find('[data-element="loader"]')
 
+            filter.load($('form#assembly-filter').serializeArray())
+
             loader.show();
 
             addAssembly(form)
@@ -151,6 +172,8 @@
                   loadAssemblies().then(response => {
                     form.reset();
                     loader.hide();
+
+                    initActiveStoneShapeTab()
                   })
                 },
                 error => {
@@ -166,7 +189,6 @@
         $('form#assembly-filter').on('submit', function(e) {
           e.preventDefault();
 
-          let form = $(this).get(0)
           let loader = $(this).find('[data-element="apply-button"] [data-element="loader"]')
 
           filter.load($('form#assembly-filter').serializeArray())
@@ -190,10 +212,10 @@
 
           let loader = $(this).find('[data-element="loader"]')
           let filterForm = $('form#assembly-filter')
-          let activeStoneShapeTab = $('a[data-element="assembly-stone-shape-tab"].active');
 
           filterForm.get(0).reset()
-          activeStoneShapeTab.click()
+
+          initActiveStoneShapeTab()
 
           filter.load(filterForm.serializeArray())
 
@@ -443,15 +465,8 @@
           moveAssemblyToFreeButton.data('orderIndex', orderIndex)
         })
 
-        $(document).on('click', 'a[data-element="assembly-stone-shape-tab"]', function(e) {
-          let stoneShape =  $(this).data('name')
-
-          let isAllTab = stoneShape === 'Все'
-          let value = isAllTab ? '' : stoneShape;
-          let stoneShapeElement = $('form#assembly-filter select[name="stone_shape"]')
-
-          stoneShapeElement.val(value)
-          calleeTab = stoneShape
+        $(document).on('click', 'a[data-element="assembly-stone-shape-tab"]', function (e) {
+          initActiveStoneShapeTab()
         })
 
         $(document).on('colors.refresh', function (e) {
