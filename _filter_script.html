@@ -1,74 +1,80 @@
 <script>
   $(function () {
     function Filter() {
-      const defaultParams = {
-        order_number: null,
-        stone_shape: null,
-        stone_color: null,
-        diameter: null,
-        length_min: null,
-        length_max: null,
-        width: null,
-        date_of_adoption: {
-          from: null,
-          to: null
-        },
-      }
+      function Filter() {
+        const defaultParams = {
+          order_number: null,
+          stone_shape: null,
+          stone_color: null,
+          diameter: null,
+          length_min: null,
+          length_max: null,
+          width: null,
+          date_of_adoption: {
+            from: null,
+            to: null
+          },
+        }
 
-      function cloneDefaultParameters() {
-        return JSON.parse(JSON.stringify(defaultParams))
-      }
+        function cloneDefaultParameters() {
+          return JSON.parse(JSON.stringify(defaultParams))
+        }
 
-      let params = cloneDefaultParameters()
+        let params = cloneDefaultParameters()
 
-      this.load = function (data) {
-        this.reset()
+        this.load = function (data) {
+          this.reset()
 
-        data.forEach(row => {
-          let name = row.name
-          let value = row.value
+          data.forEach(row => {
+            let name = row.name
+            let value = row.value
 
-          switch (name) {
-            case 'diameter':
-            case 'length_min':
-            case 'length_max':
-            case 'width':
-              params[name] = value ? parseInt(value, 10) : null
-              break
-            case 'date_of_adoption[from]':
-              params.date_of_adoption.from = value
-              break
-            case 'date_of_adoption[to]':
-              params.date_of_adoption.to = value
-              break
-            default:
-              params[name] = value ? value : null
-          }
-        })
-      }
+            switch (name) {
+              case 'diameter':
+              case 'length_min':
+              case 'length_max':
+              case 'width':
+                params[name] = value ? parseInt(value, 10) : null
+                break
+              case 'date_of_adoption[from]':
+                params.date_of_adoption.from = value
+                break
+              case 'date_of_adoption[to]':
+                params.date_of_adoption.to = value
+                break
+              default:
+                params[name] = value ? value : null
+            }
+          })
+        }
 
-      this.reset = function () {
-        params = cloneDefaultParameters()
-      }
+        this.reset = function () {
+          params = cloneDefaultParameters()
+        }
 
-      this.get = function (name) {
-        return params[name]
-      }
+        this.get = function (name) {
+          return params[name]
+        }
 
-      this.all = function () {
-        console.log('filter', params)
-        return params
-      }
-    }
-
-    window.filter = new Filter();
-
-    Object.defineProperties(filter, {
-      stone_shape: {
-        get: function () {
-          return this.get('stone_shape')
+        this.all = function () {
+          console.log('filter', params)
+          return params
         }
       }
-    })
+
+      let filter = new Filter();
+
+      Object.defineProperties(filter, {
+        stone_shape: {
+          get: function () {
+            return this.get('stone_shape')
+          }
+        }
+      })
+
+      return filter
+    }
+
+    window.Filter = Filter
   })
 </script>
