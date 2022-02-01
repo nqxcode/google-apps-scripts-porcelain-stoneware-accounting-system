@@ -23,16 +23,10 @@
 
               <div class="row">
                   <div class="col-12">
-                    <div class="toggle-form-group">
-                      <ul class="list-group">
-                        <li class="list-group-item">
-                          <?!= include('_assembly_filter'); ?>
-                        </li>
-                        <li class="list-group-item">
-                          <?!= include('_assembly_form'); ?>
-                        </li>
-                      </ul>
-
+                    <div class="grid">
+                      <?!= include('_assembly_list_header'); ?>
+                      <?!= include('_assembly_filter'); ?>
+                      <?!= include('_assembly_form'); ?>
                     </div>
                   </div>
               </div>
@@ -47,7 +41,13 @@
             <div class="tab-pane fade" id="shipment" role="tabpanel" aria-labelledby="shipment-tab">
               <div class="row">
                   <div class="col-12">
-                    <?!= include('_shipment_form'); ?>
+                    <div class="list-header">
+                      <ul class="list-group">
+                        <li class="list-group-item">
+                          <?!= include('_shipment_filter'); ?>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
               </div>      
               <div class="row">
@@ -151,6 +151,7 @@
         <?!= include('_layout_script'); ?>
         <?!= include('_assembly_filter_script'); ?>
         <?!= include('_assembly_script'); ?>
+        <?!= include('_shipment_filter_script'); ?>
         <?!= include('_shipment_script'); ?>
         <?!= include('_free_script'); ?>
         <?!= include('_stone_color_script'); ?>        

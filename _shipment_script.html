@@ -1,6 +1,10 @@
 <script>
       $(function() {                         
         function loadShipments () {
+          let filter = new ShipmentFilter()
+
+          filter.load($('form#shipment-filter').serializeArray())
+
           return new Promise((resolve, reject) => {
             google.script.run.withSuccessHandler(content => {                            
               let shipments = JSON.parse(content)                              
@@ -17,7 +21,7 @@
               resolve(content)
             }).withFailureHandler(error => {
               reject(error)
-            }).getShipmentsStringified();
+            }).getShipmentsStringified(filter.all());
           })
         }
 

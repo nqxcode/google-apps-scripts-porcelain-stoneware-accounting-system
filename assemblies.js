@@ -181,57 +181,9 @@ function getAssemblies(filter) {
       .getValues()
       .filter(filterEmptyRow)
       .map((assembly, assemblyIndex) => prepareAssembly(assembly, assemblyIndex))
-      .filter(filterAssembly(filter));
+      .filter(makeOrderFilter(filter));
 
   return data;
-}
-
-function filterAssembly(filter) {
-  return function (assemblyObj) {
-    if (Object.keys(filter).length === 0) {
-      return true
-    }
-
-    let isMatch = true;
-
-    Object.keys(filter).forEach(name => {
-      switch (name) {
-        case 'stone_shape':
-          if (filter[name]) {
-            isMatch = isMatch && filter[name] === assemblyObj[name]
-          }
-
-          break
-        case 'date_of_adoption':
-          if ((filter.date_of_adoption.from || filter.date_of_adoption.to) && !assemblyObj[name]) {
-            isMatch = false
-            break
-          }
-
-          if (filter.date_of_adoption.from) {
-            const date = new Date(assemblyObj[name])
-            const fromDate = new Date(filter.date_of_adoption.from)
-
-            isMatch = isMatch && date >= fromDate
-          }
-
-          if (filter.date_of_adoption.to) {
-            const date = new Date(assemblyObj[name])
-            const toDate = new Date(filter.date_of_adoption.to)
-
-            isMatch = isMatch && date <= toDate
-          }
-
-          break
-        default:
-          if (filter[name]) {
-            isMatch = isMatch && filter[name] === assemblyObj[name]
-          }
-      }
-    })
-
-    return isMatch
-  }
 }
 
 function test_filterAssembly() {
@@ -255,7 +207,7 @@ function test_filterAssembly() {
       .filter(filterEmptyRow)
       .map((assembly, assemblyIndex) => prepareAssembly(assembly, assemblyIndex))
 
-  let test = data.filter(filterAssembly(filter));
+  let test = data.filter(makeOrderFilter(filter));
 
   return
 }

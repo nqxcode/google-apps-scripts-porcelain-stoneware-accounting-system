@@ -117,3 +117,51 @@ function generateOrderNumber(orderNumber, options)
 function filterEmptyRow(row) {
   return row.filter(cell => cell !== '').length;
 }
+
+function makeOrderFilter(filter) {
+  return function (orderObj) {
+    if (Object.keys(filter).length === 0) {
+      return true
+    }
+
+    let isMatch = true;
+
+    Object.keys(filter).forEach(name => {
+      switch (name) {
+        case 'stone_shape':
+          if (filter[name]) {
+            isMatch = isMatch && filter[name] === orderObj[name]
+          }
+
+          break
+        case 'date_of_adoption':
+          if ((filter.date_of_adoption.from || filter.date_of_adoption.to) && !orderObj[name]) {
+            isMatch = false
+            break
+          }
+
+          if (filter.date_of_adoption.from) {
+            const date = new Date(orderObj[name])
+            const fromDate = new Date(filter.date_of_adoption.from)
+
+            isMatch = isMatch && date >= fromDate
+          }
+
+          if (filter.date_of_adoption.to) {
+            const date = new Date(orderObj[name])
+            const toDate = new Date(filter.date_of_adoption.to)
+
+            isMatch = isMatch && date <= toDate
+          }
+
+          break
+        default:
+          if (filter[name]) {
+            isMatch = isMatch && filter[name] === orderObj[name]
+          }
+      }
+    })
+
+    return isMatch
+  }
+}

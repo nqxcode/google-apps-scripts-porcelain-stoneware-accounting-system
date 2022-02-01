@@ -3,7 +3,8 @@
 
 <style type="text/css">
 
-  .grid-striped .row { 
+  .grid .row,
+  .grid-striped .row {
     border: 1px solid #d9dcdf;
     border-bottom: 0px;
     padding: 15px;
@@ -70,11 +71,10 @@
 
   .toggle-form-container {
     display: flex;
-    /*visibility: hidden;*/
   }
 
-  .toggle-form-group {
-    margin: 1em 0;
+  .list-header {
+    margin: 1em 0 0 0;
   }
 
   .toggle-form span {
@@ -103,6 +103,10 @@
   }
 
   @media (max-width: 992px) {
+    .list-header label {
+      display: none;
+    }
+
     .search-form {
       width: 100%;
     }
