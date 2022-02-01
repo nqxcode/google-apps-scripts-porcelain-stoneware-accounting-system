@@ -61,7 +61,7 @@ function addAssembly(assemblyData, options) {
     assemblyData.width,
     assemblyData.stone_shape,
     assemblyData.stone_color,
-    assemblyData.comment,
+    prepareValue(assemblyData.comment),
   ]);
 }
 
@@ -78,6 +78,11 @@ function updateAssembly(orderIndex, assemblyData) {
       if (field === 'order_number' && value) {
         value = prepareValue(generateOrderNumber(value))
       }
+
+      if (field === 'comment' && value) {
+        value = prepareValue(value)
+      }
+
       assembliesSheet.getRange(assemblyRow, column).setValue(value);
     }
   }

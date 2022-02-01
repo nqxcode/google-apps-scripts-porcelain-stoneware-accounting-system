@@ -26,7 +26,7 @@ function addFree(orderData) {
     orderData.width,
     orderData.stone_shape,
     orderData.stone_color,
-    orderData.comment,
+    prepareValue(orderData.comment),
   ]);
 
   return true
@@ -43,6 +43,10 @@ function updateFree(orderNumber, freeData) {
   for(column = 0; column < freeColumnsMap.length; column++) {
     let field = freeColumnsMap[column]    
     let value = prepareFormFieldValue(field, freeData)
+
+    if (field === 'comment' && value) {
+      value = prepareValue(value)
+    }
 
     if (value !== undefined) {
       freeSheet.getRange(freeRow, column).setValue(value);     
