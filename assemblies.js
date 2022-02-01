@@ -189,25 +189,28 @@ function getAssemblies(filter) {
 function test_filterAssembly() {
   filter = {
     "order_number": "",
-    "stone_shape": "овал",
+    "stone_shape": "",
     "stone_color": "",
     "diameter": "",
     "length_min": "",
     "length_max": "",
-    "width": 1000,
+    "width": "",
     "date_of_adoption": {
       "from": null,
       "to": null
-    }
+    },
+    "comment": "test"
   }
 
   let data = assembliesSheet
-      .getRange(getAssemblyOffset(), 1, assembliesSheet.getLastRow(), 8)
+      .getRange(getAssemblyOffset(), 1, assembliesSheet.getLastRow(), 9)
       .getValues()
       .filter(filterEmptyRow)
       .map((assembly, assemblyIndex) => prepareAssembly(assembly, assemblyIndex))
 
   let test = data.filter(makeOrderFilter(filter));
+
+  Logger.log(test.length > 0)
 
   return
 }

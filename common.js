@@ -62,9 +62,9 @@ function getFormRule(field)
 function getAllStoneShapes()
 {
   return getFormRules()
-    .map(rule => rule.stoneShapes)
-    .reduce(function(accumulator, stoneShapes) { return accumulator.concat(stoneShapes) }, [])
-    .filter(function(value, index, self) { return self.indexOf(value) === index })
+      .map(rule => rule.stoneShapes)
+      .reduce(function(accumulator, stoneShapes) { return accumulator.concat(stoneShapes) }, [])
+      .filter(function(value, index, self) { return self.indexOf(value) === index })
 }
 
 function prepareFormFieldValue(field, formData)
