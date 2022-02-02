@@ -1,76 +1,84 @@
-<div id="shipment-filter-container" class="collapse filter-form-container">
-  <form id="shipment-filter">
-    <div class="form-row controls-row">
-      <div class="form-group col">
-        <label for="order_number">Номер заказа</label>
-        <input type="text" class="form-control" name="order_number" placeholder="Номер заказа">
-      </div>
-      <div class="form-group col">
-        <label for="stone_shape">Форма камня</label>
-        <select class="form-control" name="stone_shape" placeholder="Форма камня"></select>
-      </div>
-      <div class="form-group col">
-        <label for="stone_color">Цвет камня</label>
-        <select class="form-control" name="stone_color" placeholder="Цвет камня"></select>
-      </div>
-      <div class="form-group col">
-        <label for="diameter">Диаметр</label>
-        <input type="text" class="form-control" name="diameter" placeholder="Диаметр">
-      </div>
-      <div class="form-group col">
-        <label for="length">Длина Min</label>
-        <input type="text" class="form-control" name="length_min" placeholder="Длина Min">
-      </div>
-      <div class="form-group col">
-        <label for="length">Длина Max</label>
-        <input type="text" class="form-control" name="length_max" placeholder="Длина Max">
-      </div>
-      <div class="form-group col">
-        <label for="width">Ширина</label>
-        <input type="text" class="form-control" name="width" placeholder="Ширина">
-      </div>
+<div id="shipment-filter-container" class="row collapse filter-form-container">
+  <div class="col">
+    <form id="shipment-filter">
+      <div class="form-row controls-row">
+        <div class="form-group col">
+          <label for="order_number">Номер заказа</label>
+          <input type="text" class="form-control" name="order_number" placeholder="Номер заказа">
+        </div>
+        <div class="form-group col">
+          <label for="stone_shape">Форма камня</label>
+          <select class="form-control" name="stone_shape" placeholder="Форма камня"></select>
+        </div>
+        <div class="form-group col">
+          <label for="stone_color">Цвет камня</label>
+          <select class="form-control" name="stone_color" placeholder="Цвет камня"></select>
+        </div>
+        <div class="form-group col">
+          <label for="diameter">Диаметр</label>
+          <input type="text" class="form-control" name="diameter" placeholder="Диаметр">
+        </div>
+        <div class="form-group col">
+          <label for="length">Длина Min</label>
+          <input type="text" class="form-control" name="length_min" placeholder="Длина Min">
+        </div>
+        <div class="form-group col">
+          <label for="length">Длина Max</label>
+          <input type="text" class="form-control" name="length_max" placeholder="Длина Max">
+        </div>
+        <div class="form-group col">
+          <label for="width">Ширина</label>
+          <input type="text" class="form-control" name="width" placeholder="Ширина">
+        </div>
 
-      <div class="form-group col">
-        <label for="date_of_adoption">Дата принятия керамогранита на отгрузку</label>
-        <div class="form-group">
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="date_of_adoption_from_addon">от</span>
+        <div class="form-group col">
+          <label for="date_of_adoption">Дата принятия керамогранита на отгрузку</label>
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="date_of_adoption_from_addon">от</span>
+              </div>
+              <input type="date" class="form-control" name="date_of_adoption[from]"
+                     placeholder="Дата принятия керамогранита в работу (от)"
+                     aria-describedby="date_of_adoption_from_addon">
             </div>
-            <input type="date" class="form-control" name="date_of_adoption[from]" placeholder="Дата принятия керамогранита в работу (от)" aria-describedby="date_of_adoption_from_addon">
-          </div>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="date_of_adoption_to_addon">до</span>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="date_of_adoption_to_addon">до</span>
+              </div>
+              <input type="date" class="form-control" name="date_of_adoption[to]"
+                     placeholder="Дата принятия керамогранита в работу (до)"
+                     aria-describedby="date_of_adoption_to_addon">
             </div>
-            <input type="date" class="form-control" name="date_of_adoption[to]" placeholder="Дата принятия керамогранита в работу (до)" aria-describedby="date_of_adoption_to_addon">
-          </div>
 
+          </div>
+        </div>
+
+        <div class="form-group col d-flex">
+          <label for="shipped">Отгружен</label>
+          <input type="hidden" name="shipped" value=""/>
+          <input type="checkbox" name="shipped" value="да">
+        </div>
+
+        <div class="form-group col d-flex">
+          <label for="packed">Упакован</label>
+          <input type="hidden" name="packed" value=""/>
+          <input type="checkbox" name="packed" value="да">
+        </div>
+
+        <div class="form-group col-lg-3 d-flex buttons-container actions">
+          <button type="button" data-element="reset-button" class="btn btn-outline-secondary btn-sm">
+            <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                  style="display: none;"></span>
+            Сбросить
+          </button>
+          <button type="submit" data-element="apply-button" class="btn btn-primary btn-sm">
+            <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                  style="display: none;"></span>
+            Фильтровать
+          </button>
         </div>
       </div>
-
-      <div class="form-group col d-flex">
-        <label for="shipped">Отгружен</label>
-        <input type="hidden" name="shipped" value="" />
-        <input type="checkbox" name="shipped" value="да">
-      </div>
-
-      <div class="form-group col d-flex">
-        <label for="packed">Упакован</label>
-        <input type="hidden" name="packed" value="" />
-        <input type="checkbox" name="packed" value="да">
-      </div>
-
-      <div class="form-group col-lg-3 d-flex buttons-container actions">
-        <button type="button" data-element="reset-button" class="btn btn-outline-secondary btn-sm">
-          <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
-          Сбросить
-        </button>
-        <button type="submit" data-element="apply-button" class="btn btn-primary btn-sm">
-          <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
-          Фильтровать
-        </button>
-      </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </div>
