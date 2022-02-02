@@ -118,6 +118,45 @@
 
         loadShipments()
 
+        $('form#shipment-filter').on('submit', function(e) {
+          e.preventDefault();
+
+          let loader = $(this).find('[data-element="apply-button"] [data-element="loader"]')
+
+          loader.show();
+
+          loadShipments()
+              .then(
+                  () => {
+                    loader.hide();
+                  },
+                  error => {
+                    loader.hide();
+                  }
+              )
+        })
+
+
+        $('form#shipment-filter [data-element="reset-button"]').on('click', function(e) {
+          e.preventDefault();
+
+          let loader = $(this).find('[data-element="loader"]')
+          let filterForm = $('form#shipment-filter')
+
+          filterForm.get(0).reset()
+
+          loader.show();
+
+          loadShipments().then(
+              () => {
+                loader.hide();
+              },
+              error => {
+                loader.hide();
+              }
+          )
+        })
+
         $(document).on('click', 'button[data-action="shipments.set-change-mode"]', function(e) {     
           if (shipmentListElement.data('block')) {
             return
