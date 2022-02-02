@@ -157,7 +157,7 @@ function makeOrderFilter(filter) {
           break
         case 'comment':
           if (filter[name]) {
-            isMatch = filter[name].toLowerCase().indexOf(orderObj[name]) > -1
+            isMatch = String(orderObj[name]).toLowerCase().indexOf(String(filter[name]).toLowerCase()) > -1
           }
 
           break
