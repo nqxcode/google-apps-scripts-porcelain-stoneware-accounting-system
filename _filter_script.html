@@ -1,0 +1,60 @@
+<script>
+  function Filter() {
+    function Filter() {
+      let params = {}
+
+      this.load = function (data) {
+        this.reset()
+
+        data.forEach(row => {
+          let name = row.name
+          let value = row.value
+
+          switch (name) {
+            case 'diameter':
+            case 'length_min':
+            case 'length_max':
+            case 'width':
+              params[name] = value ? parseInt(value, 10) : null
+              break
+            case 'date_of_adoption[from]':
+              params.date_of_adoption ||= {}
+              params.date_of_adoption.from = value
+              break
+            case 'date_of_adoption[to]':
+              params.date_of_adoption ||= {}
+              params.date_of_adoption.to = value
+              break
+            default:
+              params[name] = value ? value : null
+          }
+        })
+      }
+
+      this.reset = function () {
+        params = {}
+      }
+
+      this.get = function (name) {
+        return params[name]
+      }
+
+      this.all = function () {
+        console.log('filter', params)
+        return params
+      }
+    }
+
+    let filter = new Filter();
+
+    Object.defineProperties(filter, {
+      stone_shape: {
+        get: function () {
+          return this.get('stone_shape')
+        }
+      }
+    })
+
+    return filter
+  }
+</script>

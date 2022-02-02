@@ -1,7 +1,7 @@
 <script>
       $(function() {                         
         function loadShipments () {
-          let filter = new ShipmentFilter()
+          let filter = new Filter()
 
           filter.load($('form#shipment-filter').serializeArray())
 
