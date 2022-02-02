@@ -106,8 +106,10 @@
 
         let initForms = function() {
           let assemblyForm = $('form#assembly');
+          let assemblyFilterForm = $('form#assembly-filter');
+          let shipmentFilterForm = $('form#shipment-filter');
 
-          let forms = [assemblyForm]
+          let forms = [assemblyForm, assemblyFilterForm, shipmentFilterForm]
 
           forms.forEach(function(form){
               initFormControls(form)
