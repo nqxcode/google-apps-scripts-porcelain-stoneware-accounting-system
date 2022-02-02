@@ -60,14 +60,14 @@
       <textarea rows="1" class="form-control" name="comment" placeholder="Комментарий" style="display: none;"><?= comment ?></textarea>
     </div>
 
-    <div class="col d-flex justify-content-center">
+    <div class="col d-flex">
       <label class="form-check-label" for="with_worktop">Со столешницей</label>
       <div class="mt-auto mb-auto">
         <? if (with_worktop === 'да') { ?>
         <i class="bi bi-check" data-name="with_worktop"></i>
         <? } ?>
         <input type="hidden" name="with_worktop" value="" />
-        <input type="checkbox" class="form-check-input position-static" name="with_worktop" value="да" <? if (with_worktop === 'да') { ?> checked="checked" <? } ?> style="display: none;">
+        <input type="checkbox" name="with_worktop" value="да" <? if (with_worktop === 'да') { ?> checked="checked" <? } ?> style="display: none;">
       </div>
     </div>
 
