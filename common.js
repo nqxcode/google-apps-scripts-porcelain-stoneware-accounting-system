@@ -155,6 +155,12 @@ function makeOrderFilter(filter) {
           }
 
           break
+        case 'comment':
+          if (filter[name]) {
+            isMatch = filter[name].toLowerCase().indexOf(orderObj[name]) > -1
+          }
+
+          break
         default:
           if (filter[name]) {
             isMatch = isMatch && filter[name] === orderObj[name]
