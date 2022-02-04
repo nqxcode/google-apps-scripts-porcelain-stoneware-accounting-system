@@ -77,13 +77,13 @@
           })
         }
 
-        function updateAssembly(orderNumber, assemblyData) {
+        function updateAssembly(orderIndex, assemblyData) {
           return new Promise((resolve, reject) => {
             google.script.run.withSuccessHandler(response => {
               resolve(response)
             }).withFailureHandler(error => {
                 reject(error)
-            }).updateAssembly(orderNumber, assemblyData);
+            }).updateAssembly(orderIndex, assemblyData);
           })
         }
 
@@ -107,7 +107,7 @@
           })
         }
 
-        function getOrderNumber(assemblyElement) {
+        function getOrderIndex(assemblyElement) {
           return assemblyElement.data('orderIndex')
         }
 
@@ -123,7 +123,6 @@
 
             if (orderNumberInput.val() != '') {
               assemblyElement.removeClass('warning')
-              orderNumberInput.prop('disabled', true)
               setChangeModeButton.prop('disabled', false)
               setChangeModeButton.show();
               moveToShipmentButton.prop('disabled', false)
@@ -131,7 +130,6 @@
 
             } else {
               assemblyElement.addClass('warning')
-              orderNumberInput.prop('disabled', false)
               setChangeModeButton.prop('disabled', false)
               setChangeModeButton.show();
               moveToShipmentButton.prop('disabled', true)
@@ -266,7 +264,7 @@
 
           let assemblyElement = assemblyElements.has(this)
 
-          let otherAssemblyElements = assemblyElements.filter(function() { return getOrderNumber($(this)) != getOrderNumber(assemblyElement) })
+          let otherAssemblyElements = assemblyElements.filter(function() { return getOrderIndex($(this)) != getOrderIndex(assemblyElement) })
 
           assemblyElement.find('[data-name]').hide()
           assemblyElement.find('[name]').show()
@@ -308,7 +306,7 @@
                 .find('[data-element="assembly"]')
                 .has(this)
 
-            let orderNumber = getOrderNumber(assemblyElement)
+            let orderIndex = getOrderIndex(assemblyElement)
 
             let loader = $(this).find('[data-element="loader"]')
 
@@ -316,7 +314,7 @@
             let assemblyData = getFormData(form)
 
             loader.show()
-            updateAssembly(orderNumber, assemblyData)
+            updateAssembly(orderIndex, assemblyData)
             .then(
               () => {
                 loadAssemblies().then(() => {
