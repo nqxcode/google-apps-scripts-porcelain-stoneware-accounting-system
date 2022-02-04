@@ -148,9 +148,9 @@ function getShipments(filter) {
       .getValues()
       .filter(filterEmptyRow)
       .map(shipment => prepareShipment(shipment))
-      .filter(makeOrderFilter(filter));
+      .filter(makeOrderFilter(filter))
 
-  return data;
+  return data
 }
 
 function prepareShipment(shipmentData) {

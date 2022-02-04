@@ -1,6 +1,10 @@
 <script>
       $(function() {                         
         function loadFree () {
+          let filter = new Filter()
+
+          filter.load($('form#free-filter').serializeArray())
+
           return new Promise((resolve, reject) => {
             google.script.run.withSuccessHandler(content => {                            
               let freeList = JSON.parse(content)                              
@@ -16,7 +20,7 @@
               resolve(content)
             }).withFailureHandler(error => {
               reject(error)
-            }).getFreeStringified();
+            }).getFreeStringified(filter.all());
           })
         }
 

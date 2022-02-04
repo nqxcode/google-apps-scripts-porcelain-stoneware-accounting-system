@@ -113,13 +113,16 @@ function findFreeRow(orderNumber) {
   return null
 }
 
-function getFree()
+function getFree(filter)
 {
+  filter = filter || {}
+
   let data = freeSheet
     .getRange(getFreeOffset(), 1, freeSheet.getLastRow(), 10)
     .getValues()
     .filter(filterEmptyRow)
-    .map((free, freeIndex) => prepareFree(free, freeIndex + 1));    
+    .map((free, freeIndex) => prepareFree(free, freeIndex + 1))
+    .filter(makeOrderFilter(filter))
 
   return data;
 }
@@ -143,9 +146,9 @@ function prepareFree(freeData, orderNumber)
   return freeObj
 }
 
-function getFreeStringified() 
+function getFreeStringified(filter)
 {
-  let orders = getFree()  
+  let orders = getFree(filter)
 
   return JSON.stringify(orders)
 }
