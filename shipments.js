@@ -49,6 +49,10 @@ function updateShipment(orderIndex, shipmentData) {
     let field = shipmentColumnsMap[column]
     let value = prepareFormFieldValue(field, shipmentData);
 
+    if (field === 'order_number' && !value) {
+      throw new Error(`Заказу в отгрузке должен быть присвоен номер`)
+    }
+
     if (value !== undefined) {
       shipmentsSheet.getRange(shipmentRow, column).setValue(value);
     }
