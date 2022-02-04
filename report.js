@@ -22,6 +22,9 @@ function getReportColumnsMap() {
   return columnsMap;
 }
 
+function getReportDateCell() {
+  return reportSheet.getRange("M1")
+}
 
 function addReportRow(row) {
   reportSheet.appendRow([
@@ -63,10 +66,60 @@ function createReport(filter) {
   })
 }
 
+function clearReport() {
+  let lastRow = reportSheet.getLastRow();
+  for (var i = lastRow; i >= getReportOffset(); i--) {        
+    reportSheet.deleteRow(i)
+  }  
+}
+
 function getReportStringified(filter) {
   filter = filter || {}
 
-  createReport(filter)
+  refreshReportIfNeed(filter)
 
   return JSON.stringify([])
+}
+
+function getReportDate() {  
+  let value = getReportDateCell().getValue()
+
+  if (value) {
+    let dateObj = new Date(value)
+    return !!dateObj.getDate() ? dateObj : null
+  }
+}
+
+function setReportDate(date)
+{
+  let dateString = null
+
+  if (date) {
+    let dateObj = new Date(date)  
+    if (!!dateObj.getDate()) {
+      dateString = dateObj.toISOString()
+    }    
+  }
+
+  getReportDateCell().setValue(dateString)
+}
+
+function isNeedToCreateReport() {
+  let currentDate = new Date()
+  let reportDate = getReportDate()
+  if (reportDate) {
+    reportDate.setDate(reportDate.getDate() + 1)
+    return currentDate > reportDate
+  }
+  
+  return true
+}
+
+function refreshReportIfNeed(filter) {
+    if (isNeedToCreateReport()) {
+    setReportDate(null)
+    clearReport()
+    createReport(filter)
+    setReportDate(new Date())
+  }
 }

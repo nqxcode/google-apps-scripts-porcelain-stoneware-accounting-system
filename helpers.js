@@ -1,4 +1,4 @@
-function formatDate(date) {    
+function formatDate(date, withTime) {    
   let dateObj = new Date(date)
   let formattedDate = null
 
@@ -8,6 +8,14 @@ function formatDate(date) {
     let date = ("0" + dateObj.getDate()).slice(-2)
     
     formattedDate = `${year}-${month}-${date}`;
+
+    if (withTime) {
+        var hours = dateObj.getHours();
+        var minutes = dateObj.getMinutes();
+        var seconds = dateObj.getSeconds();
+
+        formattedDate = `${formattedDate} ${hours}:${minutes}:${seconds}`
+    }
   }  
 
   return formattedDate

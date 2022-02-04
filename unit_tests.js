@@ -57,3 +57,8 @@ function test_filterShipment() {
 
   return
 }
+
+function test_report() {
+  setReportDate(new Date)
+}
+
