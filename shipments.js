@@ -147,7 +147,7 @@ function getShipments(filter) {
       .getRange(getShipmentOffset(), 1, shipmentsSheet.getLastRow(), 10)
       .getValues()
       .filter(filterEmptyRow)
-      .map(shipment => prepareShipment(shipment, shipmentIndex))
+      .map((shipment, shipmentIndex) => prepareShipment(shipment, shipmentIndex))
       .filter(makeOrderFilter(filter))
 
   return data
