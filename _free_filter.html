@@ -1,0 +1,62 @@
+<div id="free-filter-container" class="row collapse filter-form-container">
+  <div class="col">
+    <form id="free-filter">
+      <div class="form-row controls-row">
+        <div class="form-group col">
+          <label for="order_number">Номер в списке</label>
+          <input type="text" class="form-control" name="order_number" placeholder="Номер в списке">
+        </div>
+        <div class="form-group col">
+          <label for="stone_shape">Форма камня</label>
+          <select class="form-control" name="stone_shape" placeholder="Форма камня"></select>
+        </div>
+        <div class="form-group col">
+          <label for="stone_color">Цвет камня</label>
+          <select class="form-control" name="stone_color" placeholder="Цвет камня"></select>
+        </div>
+        <div class="form-group col">
+          <label for="diameter">Диаметр</label>
+          <input type="text" class="form-control" name="diameter" placeholder="Диаметр">
+        </div>
+        <div class="form-group col">
+          <label for="length">Длина Min</label>
+          <input type="text" class="form-control" name="length_min" placeholder="Длина Min">
+        </div>
+        <div class="form-group col">
+          <label for="length">Длина Max</label>
+          <input type="text" class="form-control" name="length_max" placeholder="Длина Max">
+        </div>
+        <div class="form-group col">
+          <label for="width">Ширина</label>
+          <input type="text" class="form-control" name="width" placeholder="Ширина">
+        </div>
+
+        <div class="form-group col">
+          <label for="comment">Комментарий</label>
+          <textarea rows="1" class="form-control" name="comment" placeholder="Комментарий"></textarea>
+        </div>
+
+        <div class="form-group col d-flex">
+          <label for="shipped">Со столешницей</label>
+          <input type="hidden" name="with_worktop" value=""/>
+          <div class="form-check">
+            <input class="form-checkbox position-static" type="checkbox" name="with_worktop" value="да">
+          </div>
+        </div>
+
+        <div class="form-group col-lg-3 d-flex buttons-container actions">
+          <button type="button" data-element="reset-button" class="btn btn-outline-secondary btn-sm">
+            <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                  style="display: none;"></span>
+            Сбросить
+          </button>
+          <button type="submit" data-element="apply-button" class="btn btn-primary btn-sm">
+            <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                  style="display: none;"></span>
+            Фильтровать
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
