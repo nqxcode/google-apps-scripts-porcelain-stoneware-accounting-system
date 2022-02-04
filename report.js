@@ -57,7 +57,6 @@ function createReport(filter) {
     {'items': assemblies, 'name': 'Склад. Сборка'},
     {'items': shipments, 'name': 'Склад. Отгрузка'},
     {'items': free, 'name': 'Свободные'},
-
   ]
 
   sections.forEach(section => {

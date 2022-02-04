@@ -8,11 +8,11 @@
       return new Promise((resolve, reject) => {
         google.script.run.withSuccessHandler(content => {
           let reportList = JSON.parse(content)
-          reportElement.empty()
+          reportListElement.empty()
 
           reportList.forEach(free => {
-            let reportRowHtml = ejs.render(freeRowTemplate, free, {delimiter: '?'});
-            reportElement.append(reportRowHtml)
+            let reportRowHtml = ejs.render(reportRowTemplate, free, {delimiter: '?'});
+            reportListElement.append(reportRowHtml)
           })
 
           $(document).trigger('search.refresh')
