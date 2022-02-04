@@ -1,0 +1,112 @@
+<div id="report-filter-container" class="row filter-form-container">
+  <div class="col">
+    <form id="report-filter">
+      <div class="form-row controls-row">
+        <div class="form-group col">
+          <label for="section">Раздел</label>
+          <select class="form-control" name="section" placeholder="Раздел">
+            <option value=""></option>
+            <option value="assembly">Склад. Сборка</option>
+            <option value="shipment">Склад. Отгрузка</option>
+            <option value="free">Свободные</option>
+          </select>
+        </div>
+        <div class="form-group col">
+          <label for="order_number">Номер заказа</label>
+          <input type="text" class="form-control" name="order_number" placeholder="Номер заказа">
+        </div>
+        <div class="form-group col">
+          <label for="stone_shape">Форма камня</label>
+          <select class="form-control" name="stone_shape" placeholder="Форма камня"></select>
+        </div>
+        <div class="form-group col">
+          <label for="stone_color">Цвет камня</label>
+          <select class="form-control" name="stone_color" placeholder="Цвет камня"></select>
+        </div>
+        <div class="form-group col">
+          <label for="diameter">Диаметр</label>
+          <input type="text" class="form-control" name="diameter" placeholder="Диаметр">
+        </div>
+        <div class="form-group col">
+          <label for="length">Длина Min</label>
+          <input type="text" class="form-control" name="length_min" placeholder="Длина Min">
+        </div>
+        <div class="form-group col">
+          <label for="length">Длина Max</label>
+          <input type="text" class="form-control" name="length_max" placeholder="Длина Max">
+        </div>
+        <div class="form-group col">
+          <label for="width">Ширина</label>
+          <input type="text" class="form-control" name="width" placeholder="Ширина">
+        </div>
+
+        <div class="form-group col">
+          <label for="date_of_adoption">Дата принятия керамогранита в работу</label>
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="date_of_adoption_from_addon">от</span>
+              </div>
+              <input type="date" class="form-control" name="date_of_adoption[from]"
+                     placeholder="Дата принятия керамогранита в работу (от)"
+                     aria-describedby="date_of_adoption_from_addon">
+            </div>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="date_of_adoption_to_addon">до</span>
+              </div>
+              <input type="date" class="form-control" name="date_of_adoption[to]"
+                     placeholder="Дата принятия керамогранита в работу (до)"
+                     aria-describedby="date_of_adoption_to_addon">
+            </div>
+
+          </div>
+        </div>
+
+        <div class="form-group col d-flex">
+          <label for="shipped">Отгружен</label>
+          <input type="hidden" name="shipped" value=""/>
+          <div class="form-check">
+            <input class="form-checkbox position-static" type="checkbox" name="shipped" value="да">
+          </div>
+        </div>
+
+        <div class="form-group col d-flex">
+          <label for="packed">Упакован</label>
+          <input type="hidden" name="packed" value=""/>
+          <div class="form-check">
+            <input class="form-checkbox position-static" type="checkbox" name="packed" value="да">
+          </div>
+        </div>
+
+        <div class="form-group col d-flex">
+          <label for="shipped">Со столешницей</label>
+          <input type="hidden" name="with_worktop" value=""/>
+          <div class="form-check">
+            <input class="form-checkbox position-static" type="checkbox" name="with_worktop" value="да">
+          </div>
+        </div>
+
+        <div class="form-group col">
+          <label for="comment">Комментарий</label>
+          <textarea rows="1" class="form-control" name="comment" placeholder="Комментарий"></textarea>
+        </div>
+
+        <div class="form-group col d-flex buttons-container actions">
+          <div>
+            <button type="submit" data-element="apply-button" class="btn btn-primary btn-sm w-100">
+              <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                    style="display: none;"></span>
+              Сформировать
+            </button>
+            <button type="button" data-element="clear-button" class="btn btn-outline-secondary btn-sm w-100">
+              <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                    style="display: none;"></span>
+              Очистить
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
