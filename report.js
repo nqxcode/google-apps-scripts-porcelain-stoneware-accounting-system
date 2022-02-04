@@ -107,8 +107,9 @@ function prepareReportRow(reportRow, reportRowIndex) {
       if (field === 'date_of_adoption') {
         value = formatDate(value)
       }
-      reportItemObj[field] = value
     }
+
+    reportItemObj[field] = String(value)
   })
 
   return reportItemObj
