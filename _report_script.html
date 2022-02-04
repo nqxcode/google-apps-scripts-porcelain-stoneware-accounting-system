@@ -7,10 +7,10 @@
 
       return new Promise((resolve, reject) => {
         google.script.run.withSuccessHandler(content => {
-          let freeList = JSON.parse(content)
+          let reportList = JSON.parse(content)
           reportElement.empty()
 
-          freeList.forEach(free => {
+          reportList.forEach(free => {
             let reportRowHtml = ejs.render(freeRowTemplate, free, {delimiter: '?'});
             reportElement.append(reportRowHtml)
           })

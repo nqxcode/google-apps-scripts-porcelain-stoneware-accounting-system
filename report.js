@@ -6,14 +6,14 @@ function getReportColumnsMap() {
   let columnsMap = []
 
   columnsMap[1] = 'section'
-  columnsMap[2] = 'date_of_adoption'
-  columnsMap[3] = 'order_number'
-  columnsMap[4] = 'diameter'
-  columnsMap[5] = 'length_min'
-  columnsMap[6] = 'length_max'
-  columnsMap[7] = 'width'
-  columnsMap[8] = 'stone_shape'
-  columnsMap[9] = 'stone_color'
+  columnsMap[2] = 'order_number'
+  columnsMap[3] = 'stone_shape'
+  columnsMap[4] = 'stone_color'
+  columnsMap[5] = 'diameter'
+  columnsMap[6] = 'length_min'
+  columnsMap[7] = 'length_max'
+  columnsMap[8] = 'width'
+  columnsMap[9] = 'date_of_adoption'
   columnsMap[10] = 'shipped'
   columnsMap[11] = 'packed'
   columnsMap[12] = 'with_worktop'
@@ -67,4 +67,6 @@ function getReportStringified(filter) {
   filter = filter || {}
 
   createReport(filter)
+
+  return JSON.stringify([])
 }
