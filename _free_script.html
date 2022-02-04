@@ -75,6 +75,45 @@
         }
 
         loadFree()
+
+        $('form#free-filter').on('submit', function(e) {
+          e.preventDefault();
+
+          let loader = $(this).find('[data-element="apply-button"] [data-element="loader"]')
+
+          loader.show();
+
+          loadFree()
+              .then(
+                  () => {
+                    loader.hide();
+                  },
+                  error => {
+                    loader.hide();
+                  }
+              )
+        })
+
+
+        $('form#free-filter [data-element="reset-button"]').on('click', function(e) {
+          e.preventDefault();
+
+          let loader = $(this).find('[data-element="loader"]')
+          let filterForm = $('form#free-filter')
+
+          filterForm.get(0).reset()
+
+          loader.show();
+
+          loadFree().then(
+              () => {
+                loader.hide();
+              },
+              error => {
+                loader.hide();
+              }
+          )
+        })
         
 
         $(document).on('click', 'button[data-action="free.set-change-mode"]', function(e) {     
