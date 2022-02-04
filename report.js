@@ -149,9 +149,13 @@ function isNeedToCreateReport() {
 
 function refreshReportIfNeed(filter) {
     if (isNeedToCreateReport()) {
-    setReportDate(null)
-    clearReport()
-    createReport(filter)
-    setReportDate(new Date())
+      refreshReport(filter)
   }
+}
+
+function refreshReport(filter) {
+  setReportDate(null)
+  clearReport()
+  createReport(filter)
+  setReportDate(new Date())
 }
