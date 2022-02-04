@@ -131,23 +131,36 @@
               $(this).toggle(textList.join(' ').toLowerCase().indexOf(value) > -1)
             }
 
-            let tabsElements = [
-              {tab: $('#assembly-tab'), elements: $('#assembly_list_tab_content [data-element="assembly"]')},
+            let checkDisplay = function() {
+              return $(this).css('display') !== 'none'
+            }
+
+            let mainTabs = [
+              {tab: $('#assembly-tab'), elements: $('#assembly_list_tab_content [data-list-type="full"] [data-element="assembly"]')},
               {tab: $('#shipment-tab'), elements: $('#shipment_list [data-element="shipment"]')},                            
               {tab: $('#free-tab'), elements: $('#free_list [data-element="free"]')},                            
               {tab: $('#properties-tab'), elements: $('#stone_color_list [data-element="stone_color"], #stone_shape_list [data-element="stone_shape"]')},                            
             ]
 
-            tabsElements.forEach(obj => {
+            mainTabs.forEach(obj => {
               obj.elements.filter(filter);
-              
-              obj.tab.find('sup').text(obj.elements.filter(function() {
-                let parent = $('[data-element="assembly_list"]').has(this)
 
-                return $(this).css('display') !== 'none' && parent.data('listType') !== 'full';
-              }).length)
+              const count = obj.elements.filter(checkDisplay).length
+
+              obj.tab.find('sup').text(count)
             })
-            
+
+            let shapeTabElements = $('#assembly_stone_shapes_tab_list')
+
+            shapeTabElements.children().each((index, tab) => {
+              let elements = $(`#assembly-list-tab-${index} [data-element="assembly"]`)
+
+              elements.filter(filter)
+
+              const count = elements.filter(checkDisplay).length
+
+              $(tab).find('sup').text(count)
+            })
         }
       
         initForms()
