@@ -47,22 +47,67 @@ function addReportRow(row) {
 }
 
 function createReport(filter) {
-  filter = filter || {}
-
-  let assemblies = getAssemblies(filter)
-  let shipments = getShipments(filter)
-  let free = getFree(filter)
+  filter = {
+  "section": "free",
+  "order_number": null,
+  "stone_shape": null,
+  "stone_color": null,
+  "diameter": null,
+  "length_min": null,
+  "length_max": null,
+  "width": null,
+  "date_of_adoption": {
+    "from": "",
+    "to": ""
+  },
+  "shipped": null,
+  "packed": null,
+  "with_worktop": null,
+  "comment": "фывалодло"
+}
+  
 
   let sections = [
-    {'items': assemblies, 'name': 'Склад. Сборка'},
-    {'items': shipments, 'name': 'Склад. Отгрузка'},
-    {'items': free, 'name': 'Свободные'},
+    {'key': 'assembly', 'name': 'Склад. Сборка'},
+    {'key': 'shipment', 'name': 'Склад. Отгрузка'},
+    {'key': 'free',     'name': 'Свободные'},
   ]
 
   sections.forEach(section => {
-    section.items.forEach(orderData => {
-      addReportRow({...{section: section.name}, ...orderData})
-    })
+      switch(section.key) {
+        case 'assembly':
+          if (filter.section && filter.section !== section.key) {
+            break;
+          }
+
+          let assemblies = getAssemblies({...filter, ...{section: null, shipped: null, packed: null, with_worktop: null}})
+          assemblies.forEach(orderData => {
+            addReportRow({...{section: section.name}, ...orderData})
+          })
+          break
+
+        case 'shipment':
+          if (filter.section && filter.section !== section.key) {
+            break;
+          }
+
+          let shipments = getShipments({...filter, ...{section: null, comment: null, shipped: null, packed: null}})
+          shipments.forEach(orderData => {
+            addReportRow({...{section: section.name}, ...orderData})
+          })
+          break
+
+        case 'free':
+          if (filter.section && filter.section !== section.key) {
+            break;
+          }
+
+          let free = getFree({...filter, ...{section: null,with_worktop: null}})
+          free.forEach(orderData => {
+            addReportRow({...{section: section.name}, ...orderData})
+          })
+          break
+      }
   })
 }
 
@@ -84,7 +129,24 @@ function getReportStringified(filter) {
 }
 
 function getReport(filter) {
-  filter = filter || {}
+  filter = {
+  "section": "Свободные",
+  "order_number": null,
+  "stone_shape": null,
+  "stone_color": null,
+  "diameter": null,
+  "length_min": null,
+  "length_max": null,
+  "width": null,
+  "date_of_adoption": {
+    "from": "",
+    "to": ""
+  },
+  "shipped": null,
+  "packed": null,
+  "with_worktop": null,
+  "comment": null
+}
 
   let data = reportSheet
       .getRange(getShipmentOffset(), 1, reportSheet.getLastRow(), 13)
