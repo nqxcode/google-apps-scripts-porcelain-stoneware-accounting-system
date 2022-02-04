@@ -87,7 +87,7 @@ function getReport(filter) {
   filter = filter || {}
 
   let data = reportSheet
-      .getRange(getShipmentOffset(), 1, reportSheet.getLastRow(), 10)
+      .getRange(getShipmentOffset(), 1, reportSheet.getLastRow(), 13)
       .getValues()
       .filter(filterEmptyRow)
       .map((reportRow, reportRowIndex) => prepareReportRow(reportRow, reportRowIndex))
