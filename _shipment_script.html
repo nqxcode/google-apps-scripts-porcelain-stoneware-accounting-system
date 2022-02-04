@@ -55,18 +55,18 @@
           })          
         }
 
-        function updateShipment(orderNumber, shipmentData) {     
+        function updateShipment(orderIndex, shipmentData) {
           return new Promise((resolve, reject) => {
             google.script.run.withSuccessHandler(() => {
               resolve()                                 
             }).withFailureHandler(error => {
                 reject(error)
-            }).updateShipment(orderNumber, shipmentData);
+            }).updateShipment(orderIndex, shipmentData);
           })
         }
 
-        function getOrderNumber(shipmentElement) {
-          return shipmentElement.data('orderNumber') 
+        function getOrderIndex(shipmentElement) {
+          return shipmentElement.data('orderIndex')
         }
 
         function initButtonsState() {
@@ -81,7 +81,6 @@
 
             if (orderNumberInput.val() != '') {
               shipmentElement.removeClass('warning')
-              orderNumberInput.prop('disabled', true)
               setChangeModeButton.prop('disabled', false)
               setChangeModeButton.show();
               moveToAssemblyButton.prop('disabled', false)
@@ -89,7 +88,6 @@
 
             } else {
               shipmentElement.addClass('warning')
-              orderNumberInput.prop('disabled', false)
               setChangeModeButton.prop('disabled', false)
               setChangeModeButton.show();
               moveToAssemblyButton.prop('disabled', true)
@@ -165,7 +163,7 @@
           let shipmentElements = shipmentListElement.find('[data-element="shipment"]')          
           let shipmentElement = shipmentElements.has(this)          
           
-          let otherShipmentElements = shipmentElements.filter(function() { return getOrderNumber($(this)) != getOrderNumber(shipmentElement) })
+          let otherShipmentElements = shipmentElements.filter(function() { return getOrderIndex($(this)) != getOrderIndex(shipmentElement) })
 
           shipmentElement.find('[data-name]').hide()
           shipmentElement.find('[name]').show()
@@ -202,7 +200,7 @@
             shipmentListElement.data('block', true)
 
             let shipmentElement = shipmentListElement.find('[data-element="shipment"]').has(this)
-            let orderNumber = getOrderNumber(shipmentElement)
+            let orderIndex = getOrderIndex(shipmentElement)
 
             let loader = $(this).find('[data-element="loader"]')
 
@@ -212,7 +210,7 @@
 
 
             loader.show()
-            updateShipment(orderNumber, shipmentData)
+            updateShipment(orderIndex, shipmentData)
             .then(
               () => {
                 loadShipments().then(() => {              

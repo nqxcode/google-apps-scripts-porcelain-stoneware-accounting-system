@@ -41,12 +41,8 @@ function addShipment(orderData, options) {
   ]);
 }
 
-function updateShipment(orderNumber, shipmentData) {
-  let shipmentRow = findShipmentRow(orderNumber)
-  if (!shipmentRow) {
-    throw new Error(`Заказа с номером ${orderNumber} не сущестует в отгрузке`)
-  }
-
+function updateShipment(orderIndex, shipmentData) {
+  let shipmentRow = getShipmentRowByIndex(orderIndex)
   let shipmentColumnsMap = getShipmentColumnsMap()
 
   for (column = 0; column < shipmentColumnsMap.length; column++) {
@@ -69,6 +65,10 @@ function findShipmentRow(orderNumber) {
   }
 
   return null
+}
+
+function getShipmentRowByIndex(orderIndex) {
+  return getShipmentOffset() + orderIndex
 }
 
 function findShipment(orderNumber) {
