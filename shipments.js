@@ -147,14 +147,16 @@ function getShipments(filter) {
       .getRange(getShipmentOffset(), 1, shipmentsSheet.getLastRow(), 10)
       .getValues()
       .filter(filterEmptyRow)
-      .map(shipment => prepareShipment(shipment))
+      .map(shipment => prepareShipment(shipment, shipmentIndex))
       .filter(makeOrderFilter(filter))
 
   return data
 }
 
-function prepareShipment(shipmentData) {
+function prepareShipment(shipmentData, orderIndex) {
   let shipmentObj = {}
+
+  shipmentObj.order_index = orderIndex;
 
   getShipmentColumnsMap().forEach((field, column) => {
     let value = shipmentData[column - 1];
