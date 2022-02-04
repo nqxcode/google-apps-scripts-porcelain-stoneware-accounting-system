@@ -78,7 +78,40 @@ function getReportStringified(filter) {
 
   refreshReportIfNeed(filter)
 
-  return JSON.stringify([])
+  let report = getReport(filter)
+
+  return JSON.stringify(report)
+}
+
+function getReport(filter) {
+  filter = filter || {}
+
+  let data = reportSheet
+      .getRange(getShipmentOffset(), 1, reportSheet.getLastRow(), 10)
+      .getValues()
+      .filter(filterEmptyRow)
+      .map((reportRow, reportRowIndex) => prepareReportRow(reportRow, reportRowIndex))
+      .filter(makeOrderFilter(filter))
+
+  return data
+}
+
+function prepareReportRow(reportRow, reportRowIndex) {
+  let reportItemObj = {}
+
+  reportItemObj.order_index = reportRowIndex;
+
+  getReportColumnsMap().forEach((field, column) => {
+    let value = reportRow[column - 1];
+    if (value !== undefined) {
+      if (field === 'date_of_adoption') {
+        value = formatDate(value)
+      }
+      reportItemObj[field] = value
+    }
+  })
+
+  return reportItemObj
 }
 
 function getReportDate() {  
