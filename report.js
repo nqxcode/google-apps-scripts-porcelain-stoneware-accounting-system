@@ -102,14 +102,12 @@ function prepareReportRow(reportRow, reportRowIndex) {
   reportItemObj.order_index = reportRowIndex;
 
   getReportColumnsMap().forEach((field, column) => {
-    let value = reportRow[column - 1];
-    if (value !== undefined) {
-      if (field === 'date_of_adoption') {
-        value = formatDate(value)
-      }
+    let value = reportRow[column - 1];    
+    if (value && field === 'date_of_adoption') {
+      value = formatDate(value)
     }
 
-    reportItemObj[field] = String(value)
+    reportItemObj[field] = value ? value : null
   })
 
   return reportItemObj

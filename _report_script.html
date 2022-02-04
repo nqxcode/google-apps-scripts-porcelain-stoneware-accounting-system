@@ -10,8 +10,11 @@
           let reportList = JSON.parse(content)
           reportListElement.empty()
 
-          reportList.forEach(free => {
-            let reportRowHtml = ejs.render(reportRowTemplate, free, {delimiter: '?'});
+          //console.log(reportList)
+
+          reportList.forEach(reportRow => {
+            let reportRowHtml = ejs.render(reportRowTemplate, reportRow, {delimiter: '?'});
+            console.log(reportRowHtml)
             reportListElement.append(reportRowHtml)
           })
 
