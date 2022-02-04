@@ -1,0 +1,70 @@
+<script>
+  $(function() {
+    function loadReport () {
+      let filter = new Filter()
+
+      filter.load($('form#report-filter').serializeArray())
+
+      return new Promise((resolve, reject) => {
+        google.script.run.withSuccessHandler(content => {
+          let freeList = JSON.parse(content)
+          reportElement.empty()
+
+          freeList.forEach(free => {
+            let reportRowHtml = ejs.render(freeRowTemplate, free, {delimiter: '?'});
+            reportElement.append(reportRowHtml)
+          })
+
+          $(document).trigger('search.refresh')
+
+          resolve(content)
+        }).withFailureHandler(error => {
+          reject(error)
+        }).getReportStringified(filter.all());
+      })
+    }
+    
+    loadReport()
+
+    $('form#report-filter').on('submit', function(e) {
+      e.preventDefault();
+
+      let loader = $(this).find('[data-element="apply-button"] [data-element="loader"]')
+
+      loader.show();
+
+      loadReport()
+          .then(
+              () => {
+                loader.hide();
+              },
+              error => {
+                loader.hide();
+              }
+          )
+    })
+
+
+    $('form#report-filter [data-element="clear-button"]').on('click', function(e) {
+      e.preventDefault();
+
+      let loader = $(this).find('[data-element="loader"]')
+      let filterForm = $('form#free-filter')
+
+      filterForm.get(0).reset()
+
+      loader.show();
+
+      loadReport().then(
+          () => {
+            loader.hide();
+          },
+          error => {
+            loader.hide();
+          }
+      )
+    })
+
+
+  })
+</script>

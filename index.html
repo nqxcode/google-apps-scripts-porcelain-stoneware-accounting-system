@@ -137,6 +137,8 @@
           window.freeRowTemplate = <?!= JSON.stringify(getContent('_free_row_template')) ?>;
           window.stoneColorRowTemplate = <?!= JSON.stringify(getContent('_stone_color_row_template')) ?>;  
           window.stoneShapeRowTemplate = <?!= JSON.stringify(getContent('_stone_shape_row_template')) ?>;
+
+          window.reportRowTemplate = <?!= JSON.stringify(getContent('_report_row_template')) ?>;
         </script>
 
         <script> 
@@ -155,7 +157,7 @@
         <?!= include('_free_move_to_assembly_confirmation'); ?>
         <?!= include('_stone_color_remove_confirmation'); ?>         
         <?!= include('_stone_shape_remove_confirmation'); ?>             
-        
+
         <!-- Include libraries scripts -->
         <?!= include('_scripts'); ?>    
         <?!= include('_ejs_script'); ?>
@@ -168,6 +170,7 @@
         <?!= include('_free_script'); ?>
         <?!= include('_stone_color_script'); ?>        
         <?!= include('_stone_shape_script'); ?>        
+        <?!= include('_report_script'); ?>
 
     </body>        
 </html>
