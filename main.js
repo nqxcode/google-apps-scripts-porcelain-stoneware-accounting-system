@@ -5,6 +5,7 @@ let shipmentsSheet = spreadSheet.getSheetByName("Отгрузка")
 let freeSheet = spreadSheet.getSheetByName("Свободные")
 let propertiesSheet = spreadSheet.getSheetByName("Свойства")
 let reportSheet = spreadSheet.getSheetByName("Отчёт")
+let auditSheet = spreadSheet.getSheetByName("Аудит")
 
 function doGet(e) {    
   return HtmlService.createTemplateFromFile('index').evaluate().setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL); 

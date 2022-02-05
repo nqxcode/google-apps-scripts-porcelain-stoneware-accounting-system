@@ -26,8 +26,11 @@ function formatDate(date, options) {
   return formattedDate
 }
 
+function formatDateTime(date) {
+  return formatDate(date, {withTime: true})
+}
+
 function prepareValue(value)
 {
   return value ? ("'" + value) : undefined
 }
-

@@ -1,3 +1,5 @@
+let freeAudit = new Audit('Свободные')
+
 function getFreeOffset() {
   return 4
 }  
@@ -36,7 +38,9 @@ function updateFree(orderNumber, freeData) {
   let freeRow = findFreeRow(orderNumber)
   if (!freeRow) {
     throw new Error(`Заказа с номером по порядку ${orderNumber} не сущестует в свободных`)
-  }  
+  }
+
+  let prevFreeData = findFree(orderNumber)
 
   let freeColumnsMap = getFreeColumnsMap()
 
@@ -52,6 +56,10 @@ function updateFree(orderNumber, freeData) {
       freeSheet.getRange(freeRow, column).setValue(value);     
     }
   }
+
+  let newFreeData = findFree(orderNumber)
+
+  freeAudit.log(freeAudit.Actions.UPDATE, newFreeData, prevFreeData)
 }
 
 function getFreeRowByIndex(orderIndex) { 
