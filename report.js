@@ -52,15 +52,15 @@ function createReport(filter) {
   let sections = {
     assembly: {
       'name': 'Склад. Сборка', 
-      'items': () => getAssemblies({...filter, ...{section: null, shipped: null, packed: null, with_worktop: null}})
+      'items': () => getAssemblies({...filter, ...{section: null}})
     },
     shipment: {
       'name': 'Склад. Отгрузка', 
-      'items': () => getShipments({...filter, ...{section: null, comment: null, shipped: null, packed: null}})
+      'items': () => getShipments({...filter, ...{section: null}})
     },
     free: {
       'name': 'Свободные', 
-      'items': () => getFree({...filter, ...{section: null, with_worktop: null}})
+      'items': () => getFree({...filter, ...{section: null}})
     }
   }
 

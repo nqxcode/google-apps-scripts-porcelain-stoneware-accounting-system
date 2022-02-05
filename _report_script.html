@@ -67,21 +67,9 @@
     $('form#report-filter [data-element="reset-button"]').on('click', function(e) {
       e.preventDefault();
 
-      let loader = $(this).find('[data-element="loader"]')
       let filterForm = $('form#report-filter')
 
       filterForm.get(0).reset()
-
-      loader.show();
-
-      loadReport().then(
-          () => {
-            loader.hide();
-          },
-          error => {
-            loader.hide();
-          }
-      )
     })
 
 
