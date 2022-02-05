@@ -87,25 +87,18 @@ function clearReport() {
   }
 }
 
-function getReportStringified(filter) {
-  filter = filter || {}
-
-  refreshReportIfNeed(filter)
-
-  let report = getReport(filter)
+function getReportStringified() {
+  let report = getReport()
 
   return JSON.stringify(report)
 }
 
-function getReport(filter) {
-  filter = filter || {}
-
+function getReport() {
   let report = reportSheet
       .getRange(getShipmentOffset(), 1, reportSheet.getLastRow(), 13)
       .getValues()
       .filter(filterEmptyRow)
-      .map((reportRow, reportRowIndex) => prepareReportRow(reportRow, reportRowIndex))
-      .filter(makeOrderFilter(filter))
+      .map((reportRow, reportRowIndex) => prepareReportRow(reportRow, reportRowIndex))      
 
   return report
 }
@@ -148,23 +141,6 @@ function setReportDate(date)
   }
 
   getReportDateCell().setValue(dateString)
-}
-
-function isNeedToCreateReport() {
-  let currentDate = new Date()
-  let reportDate = getReportDate()
-  if (reportDate) {
-    reportDate.setDate(reportDate.getDate() + 1)
-    return currentDate > reportDate
-  }
-  
-  return true
-}
-
-function refreshReportIfNeed(filter) {
-    if (isNeedToCreateReport()) {
-      refreshReport(filter)
-  }
 }
 
 function refreshReport(filter) {
