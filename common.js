@@ -6,7 +6,8 @@ function checkOrderNumberUnique(orderNumber, options) {
     checkOrderNumberUnique: {
       assemblies: true,
       shipments: true
-    }
+    },
+    current: null
   }
 
   options = {...defaultOptions, ...options};
@@ -14,6 +15,10 @@ function checkOrderNumberUnique(orderNumber, options) {
   if (options.checkOrderNumberUnique.assemblies) {
     let assemblyRow = findAssemblyRow(orderNumber)
     if (assemblyRow !== null) {
+      if (options.current && options.current === assemblyRow.order_index) {
+        return true
+      }
+
       if (options.throwIfNotUnique) {
         throw new Error(`Заказ с номером ${orderNumber} уже существует в сборке`)
       }

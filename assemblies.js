@@ -78,7 +78,7 @@ function updateAssembly(orderIndex, assemblyData) {
   let assemblyColumnsMap = getAssemblyColumnsMap()
 
   if (assemblyData.order_number) {
-    assemblyData.order_number = generateOrderNumber(assemblyData.order_number)
+    assemblyData.order_number = generateOrderNumber(assemblyData.order_number, {current: orderIndex})
   }
 
   for (column = 0; column < assemblyColumnsMap.length; column++) {

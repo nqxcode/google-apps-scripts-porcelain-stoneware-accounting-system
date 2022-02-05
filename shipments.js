@@ -53,7 +53,7 @@ function updateShipment(orderIndex, shipmentData) {
   }
 
   if (shipmentData.order_number) {
-    shipmentData.order_number = generateOrderNumber(shipmentData.order_number)
+    shipmentData.order_number = generateOrderNumber(shipmentData.order_number, {current: orderIndex})
   }
 
   let shipmentColumnsMap = getShipmentColumnsMap()
