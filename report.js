@@ -47,75 +47,44 @@ function addReportRow(row) {
 }
 
 function createReport(filter) {
-  filter = {
-  "section": "free",
-  "order_number": null,
-  "stone_shape": null,
-  "stone_color": null,
-  "diameter": null,
-  "length_min": null,
-  "length_max": null,
-  "width": null,
-  "date_of_adoption": {
-    "from": "",
-    "to": ""
-  },
-  "shipped": null,
-  "packed": null,
-  "with_worktop": null,
-  "comment": "фывалодло"
-}
+  filter = filter || {}
   
+  let sections = {
+    assembly: {
+      'name': 'Склад. Сборка', 
+      'items': () => getAssemblies({...filter, ...{section: null, shipped: null, packed: null, with_worktop: null}})
+    },
+    shipment: {
+      'name': 'Склад. Отгрузка', 
+      'items': () => getShipments({...filter, ...{section: null, comment: null, shipped: null, packed: null}})
+    },
+    free: {
+      'name': 'Свободные', 
+      'items': () => getFree({...filter, ...{section: null, with_worktop: null}})
+    }
+  }
 
-  let sections = [
-    {'key': 'assembly', 'name': 'Склад. Сборка'},
-    {'key': 'shipment', 'name': 'Склад. Отгрузка'},
-    {'key': 'free',     'name': 'Свободные'},
-  ]
-
-  sections.forEach(section => {
-      switch(section.key) {
-        case 'assembly':
-          if (filter.section && filter.section !== section.key) {
-            break;
-          }
-
-          let assemblies = getAssemblies({...filter, ...{section: null, shipped: null, packed: null, with_worktop: null}})
-          assemblies.forEach(orderData => {
-            addReportRow({...{section: section.name}, ...orderData})
-          })
-          break
-
-        case 'shipment':
-          if (filter.section && filter.section !== section.key) {
-            break;
-          }
-
-          let shipments = getShipments({...filter, ...{section: null, comment: null, shipped: null, packed: null}})
-          shipments.forEach(orderData => {
-            addReportRow({...{section: section.name}, ...orderData})
-          })
-          break
-
-        case 'free':
-          if (filter.section && filter.section !== section.key) {
-            break;
-          }
-
-          let free = getFree({...filter, ...{section: null,with_worktop: null}})
-          free.forEach(orderData => {
-            addReportRow({...{section: section.name}, ...orderData})
-          })
-          break
-      }
-  })
+  if (!filter.section) {
+    Object.keys(sections).forEach(key => {
+      sections[key].items().forEach(orderData => {
+          addReportRow({...{section: sections[key].name}, ...orderData})
+      })
+    })      
+  } else {
+    sections[filter.section].items().forEach(orderData => {
+      addReportRow({...{section: sections[filter.section].name}, ...orderData})
+    })
+  }
 }
 
 function clearReport() {
-  let lastRow = reportSheet.getLastRow();
-  for (var i = lastRow; i >= getReportOffset(); i--) {        
-    reportSheet.deleteRow(i)
-  }  
+  let startRow = getReportOffset();
+  let lastRow = reportSheet.getLastRow();  
+  let toDeleteCount = lastRow + 1 - startRow
+
+  if (toDeleteCount > 0) {
+    reportSheet.deleteRows(startRow, toDeleteCount);    
+  }
 }
 
 function getReportStringified(filter) {
@@ -129,33 +98,16 @@ function getReportStringified(filter) {
 }
 
 function getReport(filter) {
-  filter = {
-  "section": "Свободные",
-  "order_number": null,
-  "stone_shape": null,
-  "stone_color": null,
-  "diameter": null,
-  "length_min": null,
-  "length_max": null,
-  "width": null,
-  "date_of_adoption": {
-    "from": "",
-    "to": ""
-  },
-  "shipped": null,
-  "packed": null,
-  "with_worktop": null,
-  "comment": null
-}
+  filter = filter || {}
 
-  let data = reportSheet
+  let report = reportSheet
       .getRange(getShipmentOffset(), 1, reportSheet.getLastRow(), 13)
       .getValues()
       .filter(filterEmptyRow)
       .map((reportRow, reportRowIndex) => prepareReportRow(reportRow, reportRowIndex))
       .filter(makeOrderFilter(filter))
 
-  return data
+  return report
 }
 
 function prepareReportRow(reportRow, reportRowIndex) {
@@ -216,6 +168,8 @@ function refreshReportIfNeed(filter) {
 }
 
 function refreshReport(filter) {
+  filter = filter || {}
+
   setReportDate(null)
   clearReport()
   createReport(filter)
