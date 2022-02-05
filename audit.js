@@ -121,7 +121,7 @@ let Audit = function (section) {
 
     return {
       row: row ? row : '-',
-      orderNumber: orderNumber ? orderNumber : '-',
+      orderNumber: orderNumber ? escapeValue(orderNumber) : '-',
       novel: prepareData(newData),
       prev: prepareData(prevData),
       diff: prepareData(diffData),
