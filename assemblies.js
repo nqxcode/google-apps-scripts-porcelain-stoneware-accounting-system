@@ -76,14 +76,10 @@ function updateAssembly(orderIndex, assemblyData) {
 
     if (value !== undefined) {
       if (field === 'order_number' && value) {
-        value = prepareValue(generateOrderNumber(value))
+        value = generateOrderNumber(value)
       }
 
-      if (field === 'comment' && value) {
-        value = prepareValue(value)
-      }
-
-      assembliesSheet.getRange(assemblyRow, column).setValue(value);
+      assembliesSheet.getRange(assemblyRow, column).setValue(prepareValue(value));
     }
   }
 }

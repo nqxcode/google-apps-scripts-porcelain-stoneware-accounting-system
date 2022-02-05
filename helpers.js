@@ -30,7 +30,23 @@ function formatDateTime(date) {
   return formatDate(date, {withTime: true})
 }
 
+function prepareObject(object) {
+  let preparedObject = {};
+
+  Object.keys(object).forEach(key => {
+    preparedObject[key] = prepareValue(object[key])
+  })
+
+  return preparedObject
+}
+
 function prepareValue(value)
 {
-  return value ? ("'" + value) : undefined
+  if (value) {
+    if (!String(value).startsWith("'")) {
+     return "'" + value
+    }
+  }
+
+  return null
 }

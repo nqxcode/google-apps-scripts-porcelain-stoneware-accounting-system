@@ -48,12 +48,8 @@ function updateFree(orderNumber, freeData) {
     let field = freeColumnsMap[column]    
     let value = prepareFormFieldValue(field, freeData)
 
-    if (field === 'comment' && value) {
-      value = prepareValue(value)
-    }
-
     if (value !== undefined) {
-      freeSheet.getRange(freeRow, column).setValue(value);     
+      freeSheet.getRange(freeRow, column).setValue(prepareValue(value));
     }
   }
 

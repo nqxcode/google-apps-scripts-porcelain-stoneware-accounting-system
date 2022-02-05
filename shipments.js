@@ -26,18 +26,19 @@ function addShipment(orderData, options) {
   options = options || {}
 
   let orderNumber = generateOrderNumber(orderData.order_number, options)
+  let preparedData = prepareObject(orderData)
 
   shipmentsSheet.appendRow([
-    orderData.date_of_adoption,
+    preparedData.date_of_adoption,
     prepareValue(orderNumber),
-    orderData.diameter,
-    orderData.length_min,
-    orderData.length_max,
-    orderData.width,
-    orderData.stone_shape,
-    orderData.stone_color,
-    orderData.shipped,
-    orderData.packed,
+    preparedData.diameter,
+    preparedData.length_min,
+    preparedData.length_max,
+    preparedData.width,
+    preparedData.stone_shape,
+    preparedData.stone_color,
+    preparedData.shipped,
+    preparedData.packed,
   ]);
 
   audit.shipments.log(Audit.Action.CREATE, {novel: orderData})
@@ -55,10 +56,10 @@ function updateShipment(orderIndex, shipmentData) {
 
   for (column = 0; column < shipmentColumnsMap.length; column++) {
     let field = shipmentColumnsMap[column]
-    let value = prepareFormFieldValue(field, shipmentData);
+    let value = prepareFormFieldValue(field, shipmentData)
 
     if (value !== undefined) {
-      shipmentsSheet.getRange(shipmentRow, column).setValue(value);
+      shipmentsSheet.getRange(shipmentRow, column).setValue(prepareValue(value))
     }
   }
 
