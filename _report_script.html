@@ -68,6 +68,10 @@
     $('form#report-filter [data-element="reset-button"]').on('click', function(e) {
       e.preventDefault();
 
+      if (reportListElement.data('block')) {
+        return
+      }
+
       let filterForm = $('form#report-filter')
 
       filterForm.get(0).reset()
