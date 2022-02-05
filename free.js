@@ -131,7 +131,7 @@ function getFree(filter)
     .getRange(getFreeOffset(), 1, freeSheet.getLastRow(), 10)
     .getValues()
     .filter(filterEmptyRow)
-    .map((free, freeIndex) => prepareFree(free, freeIndex + 1))
+    .map((free, freeIndex) => prepareFree(free, freeIndex)) 
     .filter(makeOrderFilter(filter))
 
   return data;

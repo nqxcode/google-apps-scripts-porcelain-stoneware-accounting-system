@@ -66,5 +66,9 @@ function test_moveShipmentToAssembly() {
   moveShipmentToAssembly('22212432')
 }
 
+function test_removeFree() {
+  removeFree(0)
+}
+
 
 
