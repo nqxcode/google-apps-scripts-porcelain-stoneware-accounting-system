@@ -86,10 +86,10 @@ function moveFreeToAssembly(orderNumber)
   }
 }
 
-function findFree(orderNumber)
+function findFree(orderIndex)
 {
   let freeList = getFree()  
-  let free = freeList.find(free => free.order_number == orderNumber)
+  let free = freeList.find(free => free.order_index == orderIndex)
 
   return free;
 }
@@ -136,11 +136,11 @@ function getFree(filter)
   return data;
 }
 
-function prepareFree(freeData, orderNumber)
+function prepareFree(freeData, orderIndex)
 {
   let freeObj = {}
   
-  freeObj.order_number = orderNumber
+  freeObj.order_index = orderIndex
 
   getFreeColumnsMap().forEach((field, column) => {
     let value = freeData[column - 1];

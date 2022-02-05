@@ -24,13 +24,13 @@
           })
         }
 
-        function updateFree(orderNumber, freeData) {
+        function updateFree(orderIndex, freeData) {
           return new Promise((resolve, reject) => {
             google.script.run.withSuccessHandler(response => {
               resolve(response)
             }).withFailureHandler(error => {
                 reject(error)
-            }).updateFree(orderNumber, freeData);
+            }).updateFree(orderIndex, freeData);
           })
         }
 
@@ -44,18 +44,18 @@
           })
         }
 
-        function removeFree (orderNumber) {
+        function removeFree (orderIndex) {
           return new Promise((resolve, reject) => {
             google.script.run.withSuccessHandler(() => {
               resolve()
             }).withFailureHandler(error => {
                 reject(error)
-            }).removeFree(orderNumber);
+            }).removeFree(orderIndex);
           })
         }
 
-        function getOrderNumber(freeElement) {
-          return freeElement.data('orderNumber')
+        function getorderIndex(freeElement) {
+          return freeElement.data('orderIndex')
         }
 
         function getButtons(freeElement) {
@@ -136,7 +136,7 @@
           let freeElements = freeListElement.find('[data-element="free"]')
           let freeElement = freeElements.has(this)
 
-          let otherfreeElements = freeElements.filter(function() { return getOrderNumber($(this)) != getOrderNumber(freeElement) })
+          let otherfreeElements = freeElements.filter(function() { return getorderIndex($(this)) != getorderIndex(freeElement) })
 
 
           freeElement.find('[data-name]').hide()
@@ -174,7 +174,7 @@
             freeListElement.data('block', true)
 
             let freeElement = freeListElement.find('[data-element="free"]').has(this)
-            let orderNumber = getOrderNumber(freeElement)
+            let orderIndex = getorderIndex(freeElement)
 
             let saveChangesButton = $(this)
             let setChangeModeButton = freeElement.find('button[data-action="free.set-change-mode"]')
@@ -186,7 +186,7 @@
             let freeData = getFormData(form)
 
             loader.show()
-            updateFree(orderNumber, freeData)
+            updateFree(orderIndex, freeData)
             .then(
               () => {
                 loadFree().then(() => {
@@ -213,7 +213,7 @@
           }
 
           let freeElement = freeListElement.find('[data-element="free"]').has(this)
-          let orderNumber = $(this).data('orderNumber')
+          let orderIndex = $(this).data('orderIndex')
 
           let buttons = getButtons(freeElement)
 
@@ -230,13 +230,13 @@
           if (!freeListElement.data('block')) {
             freeListElement.data('block', true)
 
-            let orderNumber = $(this).data('orderNumber')
+            let orderIndex = $(this).data('orderIndex')
             let loader = $(this).find('[data-element="loader"]')
             let freeMoveToAssemblyModal = $('#freeMoveToAssemblyModal')
 
             loader.show()
 
-            moveFreeToAssembly(orderNumber)
+            moveFreeToAssembly(orderIndex)
               .then(
                 () => {
                   loadFree().then(() => {
@@ -263,24 +263,24 @@
 
         $('#freeMoveToAssemblyModal').on('show.bs.modal', function (e) {
           var button = $(e.relatedTarget)
-          var orderNumber = button.data('orderNumber')
+          var orderIndex = button.data('orderIndex')
 
           var modal = $(this)
-          modal.find('[data-element="order-number"]').text(orderNumber)
-          modal.find('button[data-action="free.move-to-assembly"]').data('orderNumber', orderNumber)
+          modal.find('[data-element="order-number"]').text(orderIndex)
+          modal.find('button[data-action="free.move-to-assembly"]').data('orderIndex', orderIndex)
         })
 
         $(document).on('click', 'button[data-action="free.remove"]', function(e) {
           if (!freeListElement.data('block')) {
             freeListElement.data('block', true)
 
-            let orderNumber = $(this).data('orderNumber')
+            let orderIndex = $(this).data('orderIndex')
             let loader = $(this).find('[data-element="loader"]')
             let freeRemoveModal = $('#freeRemoveModal')
 
             loader.show()
 
-            removeFree(orderNumber)
+            removeFree(orderIndex)
               .then(response => {
                 loadFree().then(response => {
                   loader.hide()
@@ -294,11 +294,11 @@
 
         $('#freeRemoveModal').on('show.bs.modal', function (e) {
           var button = $(e.relatedTarget)
-          var orderNumber = button.data('orderNumber')
+          var orderIndex = button.data('orderIndex')
 
           var modal = $(this)
-          modal.find('[data-element="order-number"]').text(orderNumber)
-          modal.find('button[data-action="free.remove"]').data('orderNumber', orderNumber)
+          modal.find('[data-element="order-number"]').text(orderIndex)
+          modal.find('button[data-action="free.remove"]').data('orderIndex', orderIndex)
         })
 
 

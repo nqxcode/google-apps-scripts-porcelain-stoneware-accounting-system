@@ -1,7 +1,7 @@
-<div data-element="free" data-order-number="<?= order_number ?>" class="row controls-row">
+<div data-element="free" data-order-number="<?= order_index ?>" class="row controls-row">
     <div class="col d-flex">  
-      <label for="order_number">Номер в списке</label>      
-      <div class="mt-auto mb-auto" data-name="order_number"><?= ("#" + order_number) ?></div>                   
+      <label for="order_index">Номер в списке</label>      
+      <div class="mt-auto mb-auto" data-name="order_index"><?= ("#" + order_index) ?></div>                   
     </div>
 
     <div class="col d-flex">
@@ -72,20 +72,20 @@
     </div>
 
     <div class="col-lg-2 d-flex buttons-container actions">
-      <button type="button" data-action="free.show-move-to-assembly-confirmation" data-order-number="<?= order_number ?>" class="btn btn-outline-success btn-sm  show-move-to-assembly-confirmation-button w-100" data-toggle="modal" data-target="#freeMoveToAssemblyModal">
+      <button type="button" data-action="free.show-move-to-assembly-confirmation" data-order-number="<?= order_index ?>" class="btn btn-outline-success btn-sm  show-move-to-assembly-confirmation-button w-100" data-toggle="modal" data-target="#freeMoveToAssemblyModal">
         В&nbsp;сборку
       </button>
-      <button type="button" data-action="free.set-change-mode" data-order-number="<?= order_number ?>" class="btn btn-outline-primary btn-sm w-100">
+      <button type="button" data-action="free.set-change-mode" data-order-number="<?= order_index ?>" class="btn btn-outline-primary btn-sm w-100">
         Изменить
       </button>
-      <button type="button" data-action="free.save-changes" data-order-number="<?= order_number ?>" class="btn btn-outline-primary btn-sm w-100" style="display: none;">
+      <button type="button" data-action="free.save-changes" data-order-number="<?= order_index ?>" class="btn btn-outline-primary btn-sm w-100" style="display: none;">
         <span data-element="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
         Сохранить
       </button>
-      <button type="button" data-action="free.cancel-changes" data-order-number="<?= order_number ?>" class="btn btn-outline-secondary btn-sm w-100" style="display: none;">
+      <button type="button" data-action="free.cancel-changes" data-order-number="<?= order_index ?>" class="btn btn-outline-secondary btn-sm w-100" style="display: none;">
         Отменить
       </button>
-      <button type="button" data-action="free.show-remove-confirmation" data-order-number="<?= order_number ?>" class="btn btn-outline-danger btn-sm w-100" data-toggle="modal" data-target="#freeRemoveModal">
+      <button type="button" data-action="free.show-remove-confirmation" data-order-number="<?= order_index ?>" class="btn btn-outline-danger btn-sm w-100" data-toggle="modal" data-target="#freeRemoveModal">
         Удалить
       </button>
     </div>
