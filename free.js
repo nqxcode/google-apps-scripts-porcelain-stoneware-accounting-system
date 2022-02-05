@@ -29,7 +29,7 @@ function addFree(orderData) {
     prepareValue(orderData.comment),
   ]);
 
-  audit.free.log(Audit.Action.CREATE, {novel: orderData})
+  audit.free.log(Audit.Action.CREATE, {novel: orderData, row: freeSheet.getLastRow()})
 
   return true
 }
@@ -56,7 +56,7 @@ function updateFree(freeIndex, freeData) {
 
   let newFreeData = findFree(freeIndex)
 
-  audit.free.log(Audit.Action.UPDATE, {novel: newFreeData, prev: prevFreeData})
+  audit.free.log(Audit.Action.UPDATE, {novel: newFreeData, prev: prevFreeData, row: prevFreeData.order_index + 1})
 }
 
 function getFreeRowByIndex(orderIndex) { 
@@ -103,7 +103,7 @@ function removeFree(orderIndex) {
   if (freeRow) {
     freeSheet.deleteRow(freeRow)
 
-    audit.free.log(Audit.Action.DELETE, {prev: prevFreeData})
+    audit.free.log(Audit.Action.DELETE, {prev: prevFreeData, row: prevFreeData.order_index + 1})
 
     return true
   }
