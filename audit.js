@@ -53,25 +53,24 @@ let Audit = function (section) {
   }
 
   function prepareObject(object) {
-    //return JSON.stringify(humanizeObject(object))
-    return objectToString(humanizeObject(object))
+    return objectToString(humanizeObject(filterObject(object)))
   }
 
   this.log = function (action, newData, prevData) {
-    newData = filterObject(newData)
-    prevData = filterObject(prevData)
-    let diffData = diffObjects(newData, prevData)
+    newData = newData ? prepareObject(newData) : null
+    prevData = prevData ? prepareObject(prevData) : null
+    let diffData = newData && prevData ? diffObjects(newData, prevData) : null
 
     auditSheet.appendRow([
       formatDateTime(new Date()),
       action,
       Session.getActiveUser().getEmail(),
       this.section,
-      prepareObject(diffData),
-      prepareObject(newData),
-      prepareObject(prevData)
+      diffData ? diffData : '-',
+      newData ? diffData : '-',
+      prevData ? prevData : '-',
     ])
   }
 }
 
-Audit.Actions = {CREATE: 'Создание', UPDATE: 'Обновление', DELETE: 'Удаление', MOVE: 'Перемещение'}
+Audit.Action = {CREATE: 'Создание', UPDATE: 'Обновление', DELETE: 'Удаление'}
