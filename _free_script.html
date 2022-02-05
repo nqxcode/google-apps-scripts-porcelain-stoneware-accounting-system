@@ -1,13 +1,13 @@
 <script>
-      $(function() {                         
+      $(function() {
         function loadFree () {
           let filter = new Filter()
 
           filter.load($('form#free-filter').serializeArray())
 
           return new Promise((resolve, reject) => {
-            google.script.run.withSuccessHandler(content => {                            
-              let freeList = JSON.parse(content)                              
+            google.script.run.withSuccessHandler(content => {
+              let freeList = JSON.parse(content)
               freeListElement.empty()
 
               freeList.forEach(free => {
@@ -16,7 +16,7 @@
               })
 
               $(document).trigger('search.refresh')
-                                       
+
               resolve(content)
             }).withFailureHandler(error => {
               reject(error)
@@ -24,10 +24,10 @@
           })
         }
 
-        function updateFree(orderNumber, freeData) {      
+        function updateFree(orderNumber, freeData) {
           return new Promise((resolve, reject) => {
             google.script.run.withSuccessHandler(response => {
-              resolve(response)                                 
+              resolve(response)
             }).withFailureHandler(error => {
                 reject(error)
             }).updateFree(orderNumber, freeData);
@@ -36,18 +36,18 @@
 
         function moveFreeToAssembly(orderIndex) {
           return new Promise((resolve, reject) => {
-            google.script.run.withSuccessHandler(response => {              
+            google.script.run.withSuccessHandler(response => {
               resolve(response)
             }).withFailureHandler(error => {
                 reject(error)
             }).moveFreeToAssembly(orderIndex);
-          })          
+          })
         }
 
         function removeFree (orderNumber) {
           return new Promise((resolve, reject) => {
             google.script.run.withSuccessHandler(() => {
-              resolve()                                 
+              resolve()
             }).withFailureHandler(error => {
                 reject(error)
             }).removeFree(orderNumber);
@@ -55,7 +55,7 @@
         }
 
         function getOrderNumber(freeElement) {
-          return freeElement.data('orderNumber') 
+          return freeElement.data('orderNumber')
         }
 
         function getButtons(freeElement) {
@@ -101,35 +101,41 @@
         })
 
 
-        $('form#free-filter [data-element="reset-button"]').on('click', function(e) {
+        $('form#free-filter [data-element="reset-button"]').on('click', function (e) {
           e.preventDefault();
 
-          let loader = $(this).find('[data-element="loader"]')
-          let filterForm = $('form#free-filter')
+          if (!freeListElement.data('block')) {
+            freeListElement.data('block', true)
 
-          filterForm.get(0).reset()
+            let loader = $(this).find('[data-element="loader"]')
+            let filterForm = $('form#free-filter')
 
-          loader.show();
+            filterForm.get(0).reset()
 
-          loadFree().then(
-              () => {
-                loader.hide();
-              },
-              error => {
-                loader.hide();
-              }
-          )
+            loader.show();
+
+            loadFree().then(
+                () => {
+                  loader.hide()
+                  freeListElement.data('block', false)
+                },
+                error => {
+                  loader.hide()
+                  freeListElement.data('block', false)
+                }
+            )
+          }
         })
-        
 
-        $(document).on('click', 'button[data-action="free.set-change-mode"]', function(e) {     
+
+        $(document).on('click', 'button[data-action="free.set-change-mode"]', function(e) {
           if (freeListElement.data('block')) {
             return
           }
-        
-          let freeElements = freeListElement.find('[data-element="free"]')          
-          let freeElement = freeElements.has(this)          
-          
+
+          let freeElements = freeListElement.find('[data-element="free"]')
+          let freeElement = freeElements.has(this)
+
           let otherfreeElements = freeElements.filter(function() { return getOrderNumber($(this)) != getOrderNumber(freeElement) })
 
 
@@ -156,7 +162,7 @@
             } else {
               buttons.setChangeModeButton.hide()
             }
-            
+
             buttons.showRemoveConfirmationButton.show()
             buttons.saveChangesButton.hide()
             buttons.cancelChangesButton.hide()
@@ -168,28 +174,28 @@
             freeListElement.data('block', true)
 
             let freeElement = freeListElement.find('[data-element="free"]').has(this)
-            let orderNumber = getOrderNumber(freeElement) 
+            let orderNumber = getOrderNumber(freeElement)
 
-            let saveChangesButton = $(this)                               
+            let saveChangesButton = $(this)
             let setChangeModeButton = freeElement.find('button[data-action="free.set-change-mode"]')
             let cancelChangesButton = freeElement.find('button[data-action="free.cancel-changes"]')
 
             let loader = $(this).find('[data-element="loader"]')
 
             let form = freeElement.find('[name]')
-            let freeData = getFormData(form)       
+            let freeData = getFormData(form)
 
             loader.show()
             updateFree(orderNumber, freeData)
             .then(
               () => {
-                loadFree().then(() => {              
+                loadFree().then(() => {
                   loader.hide()
                   freeListElement.data('block', false)
-                })     
+                })
               },
-              error => {                                
-                loadFree().then(() => {              
+              error => {
+                loadFree().then(() => {
                   messageModal.data('message', prepareError(error))
                   messageModal.modal('show')
 
@@ -201,13 +207,13 @@
           }
         })
 
-        $(document).on('click', 'button[data-action="free.cancel-changes"]', function(e) {         
+        $(document).on('click', 'button[data-action="free.cancel-changes"]', function(e) {
           if (freeListElement.data('block')) {
             return
           }
-          
-          let freeElement = freeListElement.find('[data-element="free"]').has(this) 
-          let orderNumber = $(this).data('orderNumber')                          
+
+          let freeElement = freeListElement.find('[data-element="free"]').has(this)
+          let orderNumber = $(this).data('orderNumber')
 
           let buttons = getButtons(freeElement)
 
@@ -218,86 +224,86 @@
           buttons.showRemoveConfirmationButton.show()
           buttons.saveChangesButton.hide()
           buttons.cancelChangesButton.hide()
-        })  
+        })
 
-        $(document).on('click', 'button[data-action="free.move-to-assembly"]', function(e) {                    
+        $(document).on('click', 'button[data-action="free.move-to-assembly"]', function(e) {
           if (!freeListElement.data('block')) {
-            freeListElement.data('block', true)            
+            freeListElement.data('block', true)
 
-            let orderNumber = $(this).data('orderNumber')                 
+            let orderNumber = $(this).data('orderNumber')
             let loader = $(this).find('[data-element="loader"]')
-            let freeMoveToAssemblyModal = $('#freeMoveToAssemblyModal')            
-            
+            let freeMoveToAssemblyModal = $('#freeMoveToAssemblyModal')
+
             loader.show()
 
             moveFreeToAssembly(orderNumber)
               .then(
-                () => {              
+                () => {
                   loadFree().then(() => {
-                    assemblyListTabContent.trigger('refresh')                  
+                    assemblyListTabContent.trigger('refresh')
                     loader.hide()
                     freeMoveToAssemblyModal.modal('hide')
-                    freeListElement.data('block', false)   
+                    freeListElement.data('block', false)
                   })
                 },
-                error => {           
-                  loadFree().then(() => {                    
+                error => {
+                  loadFree().then(() => {
                     messageModal.data('message', prepareError(error))
-                    messageModal.modal('show')      
-                   
-                    assemblyListTabContent.trigger('refresh')                  
+                    messageModal.modal('show')
+
+                    assemblyListTabContent.trigger('refresh')
                     loader.hide()
                     freeMoveToAssemblyModal.modal('hide')
-                    freeListElement.data('block', false)   
-                  })                                    
+                    freeListElement.data('block', false)
+                  })
                 }
-              )   
+              )
           }
         })
 
         $('#freeMoveToAssemblyModal').on('show.bs.modal', function (e) {
-          var button = $(e.relatedTarget) 
-          var orderNumber = button.data('orderNumber') 
+          var button = $(e.relatedTarget)
+          var orderNumber = button.data('orderNumber')
 
           var modal = $(this)
           modal.find('[data-element="order-number"]').text(orderNumber)
           modal.find('button[data-action="free.move-to-assembly"]').data('orderNumber', orderNumber)
-        })  
+        })
 
-        $(document).on('click', 'button[data-action="free.remove"]', function(e) {                    
+        $(document).on('click', 'button[data-action="free.remove"]', function(e) {
           if (!freeListElement.data('block')) {
             freeListElement.data('block', true)
 
             let orderNumber = $(this).data('orderNumber')
             let loader = $(this).find('[data-element="loader"]')
             let freeRemoveModal = $('#freeRemoveModal')
-            
+
             loader.show()
 
             removeFree(orderNumber)
-              .then(response => {              
+              .then(response => {
                 loadFree().then(response => {
                   loader.hide()
                   freeRemoveModal.modal('hide')
                   freeListElement.data('block', false)
                 })
-              })   
+              })
           }
         })
 
 
         $('#freeRemoveModal').on('show.bs.modal', function (e) {
-          var button = $(e.relatedTarget) 
-          var orderNumber = button.data('orderNumber') 
+          var button = $(e.relatedTarget)
+          var orderNumber = button.data('orderNumber')
 
           var modal = $(this)
           modal.find('[data-element="order-number"]').text(orderNumber)
-          modal.find('button[data-action="free.remove"]').data('orderNumber', orderNumber)          
+          modal.find('button[data-action="free.remove"]').data('orderNumber', orderNumber)
         })
-        
+
 
         freeListElement.on('refresh', function() {
-          loadFree() 
+          loadFree()
         })
       })
 </script>
