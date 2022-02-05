@@ -25,12 +25,12 @@ function getShipmentColumnsMap() {
 function addShipment(shipmentData, options) {
   options = options || {}
 
-  let orderNumber = generateOrderNumber(shipmentData.order_number, options)
-  let preparedData = prepareData(shipmentData)
+  shipmentData.order_number = generateOrderNumber(shipmentData.order_number, options)
+  let preparedData = escapeObjectProps(shipmentData)
 
   shipmentsSheet.appendRow([
-    shipmentData.date_of_adoption,
-    prepareValue(orderNumber),
+    preparedData.date_of_adoption,
+    preparedData.order_number,
     preparedData.diameter,
     preparedData.length_min,
     preparedData.length_max,
@@ -52,6 +52,10 @@ function updateShipment(orderIndex, shipmentData) {
     throw new Error(`Заказу в отгрузке должен быть присвоен номер`)
   }
 
+  if (shipmentData.order_number) {
+    shipmentData.order_number = generateOrderNumber(shipmentData.order_number)
+  }
+
   let shipmentColumnsMap = getShipmentColumnsMap()
 
   for (column = 0; column < shipmentColumnsMap.length; column++) {
@@ -59,7 +63,7 @@ function updateShipment(orderIndex, shipmentData) {
     let value = prepareFormFieldValue(field, shipmentData)
 
     if (value !== undefined) {
-      shipmentsSheet.getRange(shipmentRow, column).setValue(prepareValue(value))
+      shipmentsSheet.getRange(shipmentRow, column).setValue(escapeValue(value))
     }
   }
 

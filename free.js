@@ -26,7 +26,7 @@ function addFree(orderData) {
     orderData.width,
     orderData.stone_shape,
     orderData.stone_color,
-    prepareValue(orderData.comment),
+    escapeValue(orderData.comment),
   ]);
 
   audit.free.log(Audit.Action.CREATE, {novel: orderData, row: freeSheet.getLastRow()})
@@ -50,7 +50,7 @@ function updateFree(freeIndex, freeData) {
     let value = prepareFormFieldValue(field, freeData)
 
     if (value !== undefined) {
-      freeSheet.getRange(freeRow, column).setValue(prepareValue(value));
+      freeSheet.getRange(freeRow, column).setValue(escapeValue(value));
     }
   }
 

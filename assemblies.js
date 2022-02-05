@@ -52,18 +52,21 @@ function addAssembly(assemblyData, options) {
     throw new Error(`Чтобы добавить заказ в сборку, нужно заполнить хотя бы одно поле`)
   }
 
-  let preparedData = prepareData(assemblyData)
+  assemblyData.date_of_adoption = assemblyData.date_of_adoption ? assemblyData.date_of_adoption : formatDate(Date.now())
+  assemblyData.order_number = orderNumber
+
+  let preparedData = escapeObjectProps(assemblyData)
 
   assembliesSheet.appendRow([
-    assemblyData.date_of_adoption ? assemblyData.date_of_adoption : formatDate(Date.now()),
-    prepareValue(orderNumber),
+    preparedData.date_of_adoption,
+    preparedData.order_number,
     preparedData.diameter,
     preparedData.length_min,
     preparedData.length_max,
     preparedData.width,
     preparedData.stone_shape,
     preparedData.stone_color,
-    prepareValue(preparedData.comment),
+    preparedData.comment,
   ]);
 
   audit.assemblies.log(Audit.Action.CREATE, {novel: assemblyData, row: assembliesSheet.getLastRow()})
@@ -74,16 +77,16 @@ function updateAssembly(orderIndex, assemblyData) {
   let prevAssemblyData = getAssemblyByIndex(orderIndex)
   let assemblyColumnsMap = getAssemblyColumnsMap()
 
+  if (assemblyData.order_number) {
+    assemblyData.order_number = generateOrderNumber(assemblyData.order_number)
+  }
+
   for (column = 0; column < assemblyColumnsMap.length; column++) {
     let field = assemblyColumnsMap[column]
     let value = prepareFormFieldValue(field, assemblyData)
 
     if (value !== undefined) {
-      if (field === 'order_number' && value) {
-        value = generateOrderNumber(value)
-      }
-
-      assembliesSheet.getRange(assemblyRow, column).setValue(prepareValue(value));
+      assembliesSheet.getRange(assemblyRow, column).setValue(escapeValue(value));
     }
   }
 

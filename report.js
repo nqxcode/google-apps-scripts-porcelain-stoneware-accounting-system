@@ -29,7 +29,7 @@ function getReportDateCell() {
 function addReportRow(row) {
   reportSheet.appendRow([
     row.section,
-    prepareValue(row.order_number),
+    escapeValue(row.order_number),
     row.stone_shape,
     row.stone_color,
     row.diameter,
@@ -40,7 +40,7 @@ function addReportRow(row) {
     row.shipped,
     row.packed,
     row.with_worktop,
-    prepareValue(row.comment),
+    escapeValue(row.comment),
   ]);
 
   return true
