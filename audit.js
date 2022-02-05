@@ -7,16 +7,16 @@ let Audit = function (section) {
     object = object || {}
 
     Object.keys(object).forEach(propertyKey => {
-        let propertyValue = object[propertyKey]
-        if (typeof propertyValue === 'object' || Array.isArray(propertyValue)) {
-          return
-        }
+      let propertyValue = object[propertyKey]
+      if (typeof propertyValue === 'object' || Array.isArray(propertyValue)) {
+        return
+      }
 
-        if (propertyKey === 'order_index') {
-          return
-        }
+      if (propertyKey === 'order_index') {
+        return
+      }
 
-        result[propertyKey] = propertyValue ? String(propertyValue) : null
+      result[propertyKey] = propertyValue ? String(propertyValue) : null
     })
 
     return result
@@ -25,15 +25,15 @@ let Audit = function (section) {
 
   function diffObjects(o2, o1) {
     return Object
-      .keys(o2)
-      .reduce((diff, key) => {
-        if (o1[key] === o2[key])
-          return diff
+        .keys(o2)
+        .reduce((diff, key) => {
+              if (o1[key] === o2[key])
+                return diff
 
-        return {...diff, [key]: o2[key]}
-      },
-      {}
-    )
+              return {...diff, [key]: o2[key]}
+            },
+            {}
+        )
   }
 
   function translateObjectProps(object) {
@@ -42,18 +42,18 @@ let Audit = function (section) {
       let humanizedKey = trans[key] || key
 
       result[humanizedKey] = object[key]
-    }) 
+    })
 
     return result
   }
 
   function objectToString(object) {
     let keyValueList = []
-      Object.keys(object).forEach((key) => {
-      let value = object[key] || '-'     
+    Object.keys(object).forEach((key) => {
+      let value = object[key] || '-'
 
       keyValueList.push(`${key}: ${value}`)
-    }) 
+    })
 
     let result = keyValueList.join("\n")
 
@@ -64,7 +64,7 @@ let Audit = function (section) {
     let result = {}
 
     Object.keys(object).forEach(propertyKey => {
-      let propertyValue = object[propertyKey]        
+      let propertyValue = object[propertyKey]
 
       if (!propertyValue) {
         return
@@ -79,20 +79,7 @@ let Audit = function (section) {
   function sortObjectProps(object) {
     let result = {}
 
-    let columns = [
-      'order_number',
-      'stone_shape',
-      'stone_color',
-      'diameter',
-      'length_min,',
-      'length_max',
-      'width',
-      'date_of_adoption',
-      'shipped',
-      'packed',
-      'with_worktop',
-      'comment',
-    ]
+    let columns = Object.keys(trans)
 
     let sortedKeys = Array(columns.length)
     Object.keys(object).forEach(key => {
@@ -110,7 +97,7 @@ let Audit = function (section) {
 
     return result
   }
-  
+
   function prepareData(data) {
     data = data || {}
 
@@ -122,6 +109,9 @@ let Audit = function (section) {
   }
 
   function makePayload(options) {
+    let row = options.row ? `#${options.row}` : null
+    let orderNumber = getOrderNumber(options)
+
     let newData = options.novel ? normalizeObject(options.novel) : null
     let prevData = options.prev ? normalizeObject(options.prev) : null
     let diffData = newData && prevData ? diffObjects(newData, prevData) : null
@@ -130,16 +120,29 @@ let Audit = function (section) {
     prevData = removeEmpty(prevData || {})
 
     return {
+      row: row ? row : '-',
+      orderNumber: orderNumber ? orderNumber : '-',
       novel: prepareData(newData),
       prev: prepareData(prevData),
       diff: prepareData(diffData),
     }
   }
 
+  function getOrderNumber(options) {
+    if (options.novel) {
+      return options.novel.order_number
+    }
+
+    if (options.prev) {
+      return options.prev.order_number
+    }
+
+    return null
+  }
+
   this.log = function (action, options) {
     options = options || {}
 
-    let row = options.row ? `#${options.row}` : '-'
     let payload = makePayload(options)
 
     auditSheet.appendRow([
@@ -147,7 +150,8 @@ let Audit = function (section) {
       action,
       Session.getActiveUser().getEmail(),
       this.section,
-      row,
+      payload.row,
+      payload.orderNumber,
       payload.diff,
       payload.novel,
       payload.prev

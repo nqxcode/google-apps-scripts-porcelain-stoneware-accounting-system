@@ -41,7 +41,7 @@ function addShipment(shipmentData, options) {
     preparedData.packed,
   ]);
 
-  audit.shipments.log(Audit.Action.CREATE, {novel: shipmentData})
+  audit.shipments.log(Audit.Action.CREATE, {novel: shipmentData, row: shipmentsSheet.getLastRow()})
 }
 
 function updateShipment(orderIndex, shipmentData) {
@@ -63,7 +63,7 @@ function updateShipment(orderIndex, shipmentData) {
     }
   }
 
-  audit.shipments.log(Audit.Action.UPDATE, {novel: shipmentData, prev: prevShipmentData})
+  audit.shipments.log(Audit.Action.UPDATE, {novel: shipmentData, prev: prevShipmentData, row: orderIndex + 1})
 }
 
 function findShipmentRow(orderNumber) {
@@ -102,7 +102,7 @@ function removeShipment(orderNumber) {
   if (shipmentRow) {
     shipmentsSheet.deleteRow(shipmentRow)
     
-    audit.shipments.log(Audit.Action.DELETE, {prev: prevShipmentData})
+    audit.shipments.log(Audit.Action.DELETE, {prev: prevShipmentData, row: prevShipmentData.order_index + 1})
 
     return true
   }  
