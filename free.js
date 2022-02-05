@@ -34,13 +34,14 @@ function addFree(orderData) {
   return true
 }
 
-function updateFree(orderNumber, freeData) {
-  let freeRow = findFreeRow(orderNumber)
+function updateFree(freeIndex, freeData) {
+  let freeRow = findFreeRow(freeIndex)
   if (!freeRow) {
-    throw new Error(`Заказа с номером по порядку ${orderNumber} не сущестует в свободных`)
+    let freeNumber = freeIndex + 1
+    throw new Error(`Заказа с номером по порядку ${freeNumber} не сущестует в свободных`)
   }
 
-  let prevFreeData = findFree(orderNumber)
+  let prevFreeData = findFree(freeIndex)
 
   let freeColumnsMap = getFreeColumnsMap()
 
@@ -53,7 +54,7 @@ function updateFree(orderNumber, freeData) {
     }
   }
 
-  let newFreeData = findFree(orderNumber)
+  let newFreeData = findFree(freeIndex)
 
   audit.free.log(Audit.Action.UPDATE, {novel: newFreeData, prev: prevFreeData})
 }
@@ -62,11 +63,11 @@ function getFreeRowByIndex(orderIndex) {
   return getFreeOffset() + orderIndex
 }
 
-function moveFreeToAssembly(orderNumber)
+function moveFreeToAssembly(freeIndex)
 {
-  let freeData = findFree(orderNumber)
+  let freeData = findFree(freeIndex)
   if (!freeData) {    
-    throw new Error(`Не найдена свободная позиция c номером ${orderNumber}`)
+    throw new Error(`Не найдена свободная позиция c номером ${freeIndex}`)
   }
 
   addAssembly({
@@ -80,9 +81,9 @@ function moveFreeToAssembly(orderNumber)
     comment: freeData.comment
   })
 
-  let isRemovedFromFree = removeFree(orderNumber)
+  let isRemovedFromFree = removeFree(freeIndex)
   if (!isRemovedFromFree) {
-    throw new Error(`Свободная позиция с номером ${orderNumber} не была удалена`)
+    throw new Error(`Свободная позиция с номером ${freeIndex} не была удалена`)
   }
 }
 
@@ -95,9 +96,9 @@ function findFree(orderIndex)
 }
 
 
-function removeFree(orderNumber) {
-  let freeRow = findFreeRow(orderNumber)
-  let prevFreeData = findFree(orderNumber)
+function removeFree(orderIndex) {
+  let freeRow = findFreeRow(orderIndex)
+  let prevFreeData = findFree(orderIndex)
 
   if (freeRow) {
     freeSheet.deleteRow(freeRow)
@@ -110,11 +111,11 @@ function removeFree(orderNumber) {
   return false
 }
 
-function findFreeRow(orderNumber) {
+function findFreeRow(orderIndex) {
   let freeList = getFree()  
 
   for(freeIndex = 0; freeIndex < freeList.length; freeIndex++) {
-    if (freeList[freeIndex].order_number == orderNumber) {
+    if (freeList[freeIndex].order_index == orderIndex) {
       return getFreeOffset() + freeIndex
     }
   }
