@@ -1,6 +1,7 @@
 let Audit = function (section) {
   this.section = section
-  function filterObject(object) {
+
+  function normalizeObject(object, options) {
     let result = {}
 
     object = object || {}
@@ -11,11 +12,16 @@ let Audit = function (section) {
           return
         }
 
-        result[propertyKey] = propertyValue
+        if (propertyKey === 'order_index') {
+          return
+        }
+
+        result[propertyKey] = propertyValue ? String(propertyValue) : null
     })
 
     return result
   }
+
 
   function diffObjects(o2, o1) {
     return Object
@@ -30,7 +36,7 @@ let Audit = function (section) {
     )
   }
 
-  function humanizeObject(object) {
+  function translateObject(object) {
     let result = {}
     Object.keys(object).forEach((key) => {
       let humanizedKey = trans[key] || key
@@ -49,18 +55,42 @@ let Audit = function (section) {
       keyValueList.push(`${key}: ${value}`)
     }) 
 
-    return keyValueList.join("\n")
+    let result = keyValueList.join("\n")
+
+    return result
   }
 
-  function prepareObject(object) {
-    return objectToString(humanizeObject(filterObject(object)))
+  function removeEmpty(object) {
+    let result = {}
+
+    Object.keys(object).forEach(propertyKey => {
+      let propertyValue = object[propertyKey]        
+
+      if (!propertyValue) {
+        return
+      }
+
+      result[propertyKey] = propertyValue
+    })
+
+    return result
+  }
+
+  function prepareData(data) {
+    data = data || {}
+
+    if (Object.keys(data).length !== 0) {
+      return objectToString(translateObject(data));
+    }
+
+    return '-'
   }
 
   this.log = function (action, options) {
     options = options || {}
 
-    let newData = options.new ? prepareObject(options.new) : null
-    let prevData = options.prev ? prepareObject(options.prev) : null
+    let newData = options.novel ? normalizeObject(options.novel) : null
+    let prevData = options.prev ? normalizeObject(options.prev) : null
     let diffData = newData && prevData ? diffObjects(newData, prevData) : null
 
     auditSheet.appendRow([
@@ -68,9 +98,9 @@ let Audit = function (section) {
       action,
       Session.getActiveUser().getEmail(),
       this.section,
-      diffData ? diffData : '-',
-      newData ? diffData : '-',
-      prevData ? prevData : '-',
+      prepareData(diffData),
+      prepareData(removeEmpty(newData || {})),
+      prepareData(removeEmpty(prevData || {}))
     ])
   }
 }

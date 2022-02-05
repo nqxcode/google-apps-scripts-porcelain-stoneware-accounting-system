@@ -58,7 +58,13 @@ function test_filterShipment() {
   return
 }
 
-function test_report() {
-  setReportDate(new Date)
+function test_updateShipment() {
+  updateShipment(0, {order_number: 789121, packed: 'да'})
 }
+
+function test_moveShipmentToAssembly() {
+  moveShipmentToAssembly('22212432')
+}
+
+
 

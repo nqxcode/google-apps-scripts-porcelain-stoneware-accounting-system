@@ -40,12 +40,16 @@ function addShipment(orderData, options) {
     orderData.packed,
   ]);
 
-  audit.shipments.log(Audit.Action.CREATE, {new: orderData})
+  audit.shipments.log(Audit.Action.CREATE, {novel: orderData})
 }
 
 function updateShipment(orderIndex, shipmentData) {
   let shipmentRow = getShipmentRowByIndex(orderIndex)
   let prevShipmentData = findShipmentByIndex(orderIndex)
+
+  if (!shipmentData['order_number']) {
+    throw new Error(`Заказу в отгрузке должен быть присвоен номер`)
+  }
 
   let shipmentColumnsMap = getShipmentColumnsMap()
 
@@ -53,16 +57,12 @@ function updateShipment(orderIndex, shipmentData) {
     let field = shipmentColumnsMap[column]
     let value = prepareFormFieldValue(field, shipmentData);
 
-    if (field === 'order_number' && !value) {
-      throw new Error(`Заказу в отгрузке должен быть присвоен номер`)
-    }
-
     if (value !== undefined) {
       shipmentsSheet.getRange(shipmentRow, column).setValue(value);
     }
   }
 
-  audit.shipments.log(Audit.Action.UPDATE, {new: shipmentData, prev: prevShipmentData})
+  audit.shipments.log(Audit.Action.UPDATE, {novel: shipmentData, prev: prevShipmentData})
 }
 
 function findShipmentRow(orderNumber) {
@@ -100,10 +100,11 @@ function removeShipment(orderNumber) {
   let prevShipmentData = findShipment(orderNumber)
   if (shipmentRow) {
     shipmentsSheet.deleteRow(shipmentRow)
-    return true
-  }
+    
+    audit.shipments.log(Audit.Action.DELETE, {prev: prevShipmentData})
 
-  audit.shipments.log(Audit.Action.DELETE, {prev: prevShipmentData})
+    return true
+  }  
 
   return false
 }

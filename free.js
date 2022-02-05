@@ -29,7 +29,7 @@ function addFree(orderData) {
     prepareValue(orderData.comment),
   ]);
 
-  audit.free.log(Audit.Action.CREATE, {new: orderData})
+  audit.free.log(Audit.Action.CREATE, {novel: orderData})
 
   return true
 }
@@ -59,7 +59,7 @@ function updateFree(orderNumber, freeData) {
 
   let newFreeData = findFree(orderNumber)
 
-  audit.free.log(Audit.Action.UPDATE, {new: newFreeData, prev: prevFreeData})
+  audit.free.log(Audit.Action.UPDATE, {novel: newFreeData, prev: prevFreeData})
 }
 
 function getFreeRowByIndex(orderIndex) { 
