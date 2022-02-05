@@ -1,11 +1,28 @@
 let spreadSheet = SpreadsheetApp.openByUrl(spreadSheetUrl)
 
-let assembliesSheet = spreadSheet.getSheetByName("Сборка")
-let shipmentsSheet = spreadSheet.getSheetByName("Отгрузка")
-let freeSheet = spreadSheet.getSheetByName("Свободные")
-let propertiesSheet = spreadSheet.getSheetByName("Свойства")
-let reportSheet = spreadSheet.getSheetByName("Отчёт")
-let auditSheet = spreadSheet.getSheetByName("Аудит")
+let sheetNames = {
+  assemblies: "Сборка",
+  shipments: "Отгрузка",
+  free: "Свободные",
+  properties: "Свойства",
+  report: "Отчёт",
+  audit: "Аудит"
+}
+
+let assembliesSheet = spreadSheet.getSheetByName(sheetNames.assemblies)
+let shipmentsSheet = spreadSheet.getSheetByName(sheetNames.shipments)
+let freeSheet = spreadSheet.getSheetByName(sheetNames.free)
+let propertiesSheet = spreadSheet.getSheetByName(sheetNames.properties)
+let reportSheet = spreadSheet.getSheetByName(sheetNames.report)
+let auditSheet = spreadSheet.getSheetByName(sheetNames.audit)
+
+let audit = {
+  assemblies: new Audit(sheetNames.assemblies),
+  shipments: new Audit(sheetNames.shipments),
+  free: new Audit(sheetNames.free),
+  properties: new Audit(sheetNames.properties),
+  report: new Audit(sheetNames.report),
+}
 
 function doGet(e) {    
   return HtmlService.createTemplateFromFile('index').evaluate().setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL); 

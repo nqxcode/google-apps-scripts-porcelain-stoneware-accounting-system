@@ -1,5 +1,3 @@
-let freeAudit = new Audit('Свободные')
-
 function getFreeOffset() {
   return 4
 }  
@@ -59,7 +57,7 @@ function updateFree(orderNumber, freeData) {
 
   let newFreeData = findFree(orderNumber)
 
-  freeAudit.log(freeAudit.Actions.UPDATE, newFreeData, prevFreeData)
+  audit.free.log(Audit.Actions.UPDATE, newFreeData, prevFreeData)
 }
 
 function getFreeRowByIndex(orderIndex) { 

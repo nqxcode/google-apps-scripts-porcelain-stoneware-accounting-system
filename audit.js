@@ -1,7 +1,5 @@
-function Audit (section) {
+let Audit = function (section) {
   this.section = section
-  this.Actions = {CREATE: 'Создание', UPDATE: 'Обновление', DELETE: 'Удаление', MOVE: 'Перемещение'}
-
   function filterObject(object) {
     let result = {}
 
@@ -74,5 +72,6 @@ function Audit (section) {
       prepareObject(prevData)
     ])
   }
-  
 }
+
+Audit.Actions = {CREATE: 'Создание', UPDATE: 'Обновление', DELETE: 'Удаление', MOVE: 'Перемещение'}
