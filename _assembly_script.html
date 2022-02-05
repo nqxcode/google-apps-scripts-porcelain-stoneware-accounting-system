@@ -184,72 +184,90 @@
           }
         });
 
-        $('form#assembly').on('submit', function(e) {
+        $('form#assembly').on('submit', function (e) {
           e.preventDefault();
 
-          if ($(this).valid()) {
-            let form = $(this).get(0)
-            let loader = $(this).find('[data-element="loader"]')
+          if (!assemblyListTabContent.data('block')) {
+            assemblyListTabContent.data('block', true)
 
-            loader.show();
+            if ($(this).valid()) {
+              let form = $(this).get(0)
+              let loader = $(this).find('[data-element="loader"]')
 
-            addAssembly(form)
-              .then(
-                () => {
-                  loadAssemblies().then(response => {
-                    form.reset();
-                    handleActiveStoneShapeTab.apply(getActiveStoneShapeTab())
-                    loader.hide();
-                  })
-                },
-                error => {
-                  formValidator.showErrors({
-                    "order_number": prepareError(error)
-                  });
-                  loader.hide();
-                }
-              )
+              loader.show();
+
+              addAssembly(form)
+                  .then(
+                      () => {
+                        loadAssemblies().then(response => {
+                          form.reset();
+                          handleActiveStoneShapeTab.apply(getActiveStoneShapeTab())
+                          loader.hide();
+                          assemblyListTabContent.data('block', false)
+                        })
+                      },
+                      error => {
+                        formValidator.showErrors({
+                          "order_number": prepareError(error)
+                        });
+                        loader.hide();
+                        assemblyListTabContent.data('block', false)
+                      }
+                  )
+            }
           }
         })
 
         $('form#assembly-filter').on('submit', function(e) {
           e.preventDefault();
 
-          let loader = $(this).find('[data-element="apply-button"] [data-element="loader"]')
+          if (!assemblyListTabContent.data('block')) {
+            assemblyListTabContent.data('block', true)
 
-          loader.show();
+            let loader = $(this).find('[data-element="apply-button"] [data-element="loader"]')
 
-          loadAssemblies()
-              .then(
-                  () => {
-                    loader.hide();
-                  },
-                  error => {
-                    loader.hide();
-                  }
-              )
+            loader.show()
+
+            loadAssemblies()
+                .then(
+                    () => {
+                      loader.hide()
+                      assemblyListTabContent.data('block', false)
+                    },
+                    error => {
+                      loader.hide()
+                      assemblyListTabContent.data('block', false)
+                    }
+                )
+          }
         })
 
 
         $('form#assembly-filter [data-element="reset-button"]').on('click', function(e) {
           e.preventDefault();
 
-          let loader = $(this).find('[data-element="loader"]')
-          let filterForm = $('form#assembly-filter')
+          if (!assemblyListTabContent.data('block')) {
+            assemblyListTabContent.data('block', true)
 
-          filterForm.get(0).reset()
-          handleActiveStoneShapeTab.apply(getActiveStoneShapeTab())
+            let loader = $(this).find('[data-element="loader"]')
+            let filterForm = $('form#assembly-filter')
 
-          loader.show();
+            filterForm.get(0).reset()
+            handleActiveStoneShapeTab.apply(getActiveStoneShapeTab())
 
-          loadAssemblies().then(
-              () => {
-                loader.hide();
-              },
-              error => {
-                loader.hide();
-              }
-          )
+            loader.show()
+
+            loadAssemblies().then(
+                () => {
+                  loader.hide()
+                  assemblyListTabContent.data('block', false)
+                },
+                error => {
+                  loader.hide()
+                  assemblyListTabContent.data('block', false)
+                }
+            )
+          }
         })
 
         $(document).on('click', 'button[data-action="assemblies.set-change-mode"]', function(e) {

@@ -119,40 +119,52 @@
         $('form#shipment-filter').on('submit', function(e) {
           e.preventDefault();
 
-          let loader = $(this).find('[data-element="apply-button"] [data-element="loader"]')
+          if (!shipmentListElement.data('block')) {
+            shipmentListElement.data('block', true)
 
-          loader.show();
+            let loader = $(this).find('[data-element="apply-button"] [data-element="loader"]')
 
-          loadShipments()
-              .then(
-                  () => {
-                    loader.hide();
-                  },
-                  error => {
-                    loader.hide();
-                  }
-              )
+            loader.show();
+
+            loadShipments()
+                .then(
+                    () => {
+                      loader.hide();
+                      shipmentListElement.data('block', false)
+                    },
+                    error => {
+                      loader.hide();
+                      shipmentListElement.data('block', false)
+                    }
+                )
+          }
         })
 
 
         $('form#shipment-filter [data-element="reset-button"]').on('click', function(e) {
           e.preventDefault();
 
-          let loader = $(this).find('[data-element="loader"]')
-          let filterForm = $('form#shipment-filter')
+          if (!shipmentListElement.data('block')) {
+            shipmentListElement.data('block', true)
 
-          filterForm.get(0).reset()
+            let loader = $(this).find('[data-element="loader"]')
+            let filterForm = $('form#shipment-filter')
 
-          loader.show();
+            filterForm.get(0).reset()
 
-          loadShipments().then(
-              () => {
-                loader.hide();
-              },
-              error => {
-                loader.hide();
-              }
-          )
+            loader.show();
+
+            loadShipments().then(
+                () => {
+                  loader.hide();
+                  shipmentListElement.data('block', false)
+                },
+                error => {
+                  loader.hide();
+                  shipmentListElement.data('block', false)
+                }
+            )
+          }
         })
 
         $(document).on('click', 'button[data-action="shipments.set-change-mode"]', function(e) {     

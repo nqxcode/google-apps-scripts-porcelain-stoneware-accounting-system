@@ -79,19 +79,25 @@
         $('form#free-filter').on('submit', function(e) {
           e.preventDefault();
 
-          let loader = $(this).find('[data-element="apply-button"] [data-element="loader"]')
+          if (!freeListElement.data('block')) {
+            freeListElement.data('block', true)
 
-          loader.show();
+            let loader = $(this).find('[data-element="apply-button"] [data-element="loader"]')
 
-          loadFree()
-              .then(
-                  () => {
-                    loader.hide();
-                  },
-                  error => {
-                    loader.hide();
-                  }
-              )
+            loader.show();
+
+            loadFree()
+                .then(
+                    () => {
+                      loader.hide();
+                      freeListElement.data('block', false)
+                    },
+                    error => {
+                      loader.hide();
+                      freeListElement.data('block', false)
+                    }
+                )
+          }
         })
 
 
