@@ -1,5 +1,5 @@
 function getReportOffset() {
-  return 4
+  return 3
 }
 
 function getReportColumnsMap() {
@@ -50,30 +50,27 @@ function createReport(filter) {
   filter = filter || {}
   
   let sections = {
-    assembly: {
-      'name': 'Склад. Сборка', 
+    'Склад. Сборка': {      
       'items': () => getAssemblies({...filter, ...{section: null}})
     },
-    shipment: {
-      'name': 'Склад. Отгрузка', 
+    'Склад. Отгрузка': {      
       'items': () => getShipments({...filter, ...{section: null}})
     },
-    free: {
-      'name': 'Свободные', 
+    'Свободные': {      
       'items': () => getFree({...filter, ...{section: null}})
     }
   }
 
-  if (!filter.section) {
+  if (filter.section) {
+      sections[filter.section].items().forEach(orderData => {
+      addReportRow({...{section: filter.section}, ...orderData})
+    })
+  } else {
     Object.keys(sections).forEach(key => {
       sections[key].items().forEach(orderData => {
-          addReportRow({...{section: sections[key].name}, ...orderData})
+          addReportRow({...{section: key}, ...orderData})
       })
     })      
-  } else {
-    sections[filter.section].items().forEach(orderData => {
-      addReportRow({...{section: sections[filter.section].name}, ...orderData})
-    })
   }
 }
 
@@ -120,15 +117,6 @@ function prepareReportRow(reportRow, reportRowIndex) {
   return reportItemObj
 }
 
-function getReportDate() {  
-  let value = getReportDateCell().getValue()
-
-  if (value) {
-    let dateObj = new Date(value)
-    return !!dateObj.getDate() ? dateObj : null
-  }
-}
-
 function setReportDate(date)
 {
   let dateString = null
@@ -136,7 +124,7 @@ function setReportDate(date)
   if (date) {
     let dateObj = new Date(date)  
     if (!!dateObj.getDate()) {
-      dateString = dateObj.toISOString()
+      dateString = formatDate(dateObj, {withTime: true})
     }    
   }
 
