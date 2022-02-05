@@ -22,14 +22,14 @@ function getShipmentColumnsMap() {
   return columnsMap;
 }
 
-function addShipment(orderData, options) {
+function addShipment(shipmentData, options) {
   options = options || {}
 
-  let orderNumber = generateOrderNumber(orderData.order_number, options)
-  let preparedData = prepareData(orderData)
+  let orderNumber = generateOrderNumber(shipmentData.order_number, options)
+  let preparedData = prepareData(shipmentData)
 
   shipmentsSheet.appendRow([
-    preparedData.date_of_adoption,
+    shipmentData.date_of_adoption,
     prepareValue(orderNumber),
     preparedData.diameter,
     preparedData.length_min,
@@ -41,7 +41,7 @@ function addShipment(orderData, options) {
     preparedData.packed,
   ]);
 
-  audit.shipments.log(Audit.Action.CREATE, {novel: orderData})
+  audit.shipments.log(Audit.Action.CREATE, {novel: shipmentData})
 }
 
 function updateShipment(orderIndex, shipmentData) {

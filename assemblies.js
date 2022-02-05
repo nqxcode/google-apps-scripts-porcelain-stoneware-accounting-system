@@ -52,23 +52,27 @@ function addAssembly(assemblyData, options) {
     throw new Error(`Чтобы добавить заказ в сборку, нужно заполнить хотя бы одно поле`)
   }
 
+  let preparedData = prepareData(assemblyData)
+
   assembliesSheet.appendRow([
     assemblyData.date_of_adoption ? assemblyData.date_of_adoption : formatDate(Date.now()),
     prepareValue(orderNumber),
-    assemblyData.diameter,
-    assemblyData.length_min,
-    assemblyData.length_max,
-    assemblyData.width,
-    assemblyData.stone_shape,
-    assemblyData.stone_color,
-    prepareValue(assemblyData.comment),
+    preparedData.diameter,
+    preparedData.length_min,
+    preparedData.length_max,
+    preparedData.width,
+    preparedData.stone_shape,
+    preparedData.stone_color,
+    prepareValue(preparedData.comment),
   ]);
+
+  audit.assemblies.log(Audit.Action.CREATE, {novel: assemblyData})
 }
 
 function updateAssembly(orderIndex, assemblyData) {
   let assemblyRow = getAssemblyRowByIndex(orderIndex)
+  let prevAssemblyData = getAssemblyByIndex(orderIndex)
   let assemblyColumnsMap = getAssemblyColumnsMap()
-
 
   for (column = 0; column < assemblyColumnsMap.length; column++) {
     let field = assemblyColumnsMap[column]
@@ -82,6 +86,8 @@ function updateAssembly(orderIndex, assemblyData) {
       assembliesSheet.getRange(assemblyRow, column).setValue(prepareValue(value));
     }
   }
+
+  audit.assemblies.log(Audit.Action.UPDATE, {novel: assemblyData, prev: prevAssemblyData})
 }
 
 function moveAssemblyToShipment(orderNumber) {
@@ -156,8 +162,12 @@ function getAssemblyByIndex(orderIndex) {
 
 function removeAssembly(orderNumber) {
   let assemblyRow = findAssemblyRow(orderNumber)
+  let prevAssemblyData = findAssembly(orderNumber)
+
   if (assemblyRow) {
     assembliesSheet.deleteRow(assemblyRow)
+    audit.assemblies.log(Audit.Action.DELETE, {prev: prevAssemblyData})
+
     return true
   }
 
@@ -166,8 +176,11 @@ function removeAssembly(orderNumber) {
 
 function removeAssemblyByIndex(orderIndex) {
   let assemblyRow = getAssemblyRowByIndex(orderIndex)
+  let prevAssemblyData = getAssemblyByIndex(orderIndex)
+
   if (assemblyRow) {
     assembliesSheet.deleteRow(assemblyRow)
+    audit.assemblies.log(Audit.Action.DELETE, {prev: prevAssemblyData})
     return true
   }
 
@@ -185,35 +198,6 @@ function getAssemblies(filter) {
       .filter(makeOrderFilter(filter));
 
   return data;
-}
-
-function test_filterAssembly() {
-  filter = {
-    "order_number": "",
-    "stone_shape": "",
-    "stone_color": "",
-    "diameter": "",
-    "length_min": "",
-    "length_max": "",
-    "width": "",
-    "date_of_adoption": {
-      "from": null,
-      "to": null
-    },
-    "comment": "test"
-  }
-
-  let data = assembliesSheet
-      .getRange(getAssemblyOffset(), 1, assembliesSheet.getLastRow(), 9)
-      .getValues()
-      .filter(filterEmptyRow)
-      .map((assembly, assemblyIndex) => prepareAssembly(assembly, assemblyIndex))
-
-  let test = data.filter(makeOrderFilter(filter));
-
-  Logger.log(test.length > 0)
-
-  return
 }
 
 function prepareAssembly(assemblyData, orderIndex) {
