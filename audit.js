@@ -124,7 +124,7 @@ let Audit = function (section) {
   this.log = function (action, options) {
     options = options || {}
 
-    let row = options.row
+    let row = options.row ? `#${options.row}` : '-'
 
     let newData = options.novel ? normalizeObject(options.novel) : null
     let prevData = options.prev ? normalizeObject(options.prev) : null
