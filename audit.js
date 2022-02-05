@@ -56,9 +56,11 @@ let Audit = function (section) {
     return objectToString(humanizeObject(filterObject(object)))
   }
 
-  this.log = function (action, newData, prevData) {
-    newData = newData ? prepareObject(newData) : null
-    prevData = prevData ? prepareObject(prevData) : null
+  this.log = function (action, options) {
+    options = options || {}
+
+    let newData = options.new ? prepareObject(options.new) : null
+    let prevData = options.prev ? prepareObject(options.prev) : null
     let diffData = newData && prevData ? diffObjects(newData, prevData) : null
 
     auditSheet.appendRow([

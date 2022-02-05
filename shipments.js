@@ -39,10 +39,14 @@ function addShipment(orderData, options) {
     orderData.shipped,
     orderData.packed,
   ]);
+
+  audit.shipments.log(Audit.Action.CREATE, {new: orderData})
 }
 
 function updateShipment(orderIndex, shipmentData) {
   let shipmentRow = getShipmentRowByIndex(orderIndex)
+  let prevShipmentData = findShipmentByIndex(orderIndex)
+
   let shipmentColumnsMap = getShipmentColumnsMap()
 
   for (column = 0; column < shipmentColumnsMap.length; column++) {
@@ -57,6 +61,8 @@ function updateShipment(orderIndex, shipmentData) {
       shipmentsSheet.getRange(shipmentRow, column).setValue(value);
     }
   }
+
+  audit.shipments.log(Audit.Action.UPDATE, {new: shipmentData, prev: prevShipmentData})
 }
 
 function findShipmentRow(orderNumber) {
@@ -82,12 +88,22 @@ function findShipment(orderNumber) {
   return shipment;
 }
 
+function findShipmentByIndex(orderIndex) {
+  let orders = getShipments()
+  let shipment = orders.find((shipment) => shipment.order_index == orderIndex)
+
+  return shipment;
+}
+
 function removeShipment(orderNumber) {
   let shipmentRow = findShipmentRow(orderNumber)
+  let prevShipmentData = findShipment(orderNumber)
   if (shipmentRow) {
     shipmentsSheet.deleteRow(shipmentRow)
     return true
   }
+
+  audit.shipments.log(Audit.Action.DELETE, {prev: prevShipmentData})
 
   return false
 }
