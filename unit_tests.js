@@ -58,8 +58,12 @@ function test_filterShipment() {
   return
 }
 
+function test_updateAssembly() {
+  updateAssembly(5, {order_number: '7746111111'})
+}
+
 function test_updateShipment() {
-  updateShipment(0, {order_number: 789121, packed: 'да'})
+  updateShipment(4, {order_number: '7746-2-2', packed: 'да'})
 }
 
 function test_moveShipmentToAssembly() {

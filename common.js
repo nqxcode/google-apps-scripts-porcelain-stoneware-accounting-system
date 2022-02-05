@@ -30,6 +30,10 @@ function checkOrderNumberUnique(orderNumber, options) {
   if (options.checkOrderNumberUnique.shipments) {
     let shipmentRow = findShipmentRow(orderNumber)
     if (shipmentRow !== null) {
+      if (options.current && options.current === shipmentRow.order_index) {
+        return true
+      }
+
       if (options.throwIfNotUnique) {
         throw new Error(`Заказ с номером ${orderNumber} уже существует в отгрузке`)
       }
