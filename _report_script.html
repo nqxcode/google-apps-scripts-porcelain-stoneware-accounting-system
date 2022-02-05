@@ -45,21 +45,26 @@
     $('form#report-filter').on('submit', function(e) {
       e.preventDefault();
 
-      let loader = $(this).find('[data-element="apply-button"] [data-element="loader"]')
+      if (!reportListElement.data('block')) {
+        reportListElement.data('block', true)
 
-      loader.show();
+        let loader = $(this).find('[data-element="apply-button"] [data-element="loader"]')
 
-      refreshReport().then(() => {
-        loadReport()
-            .then(
-                () => {
-                  loader.hide();
-                },
-                error => {
-                  loader.hide();
-                }
-            )
-      })
+        loader.show();
+
+        refreshReport().then(() => {
+          loadReport()
+              .then(
+                  () => {
+                    loader.hide();
+                    reportListElement.data('block', false)
+                  },
+                  error => {
+                    loader.hide();
+                  }
+              )
+        })
+      }
 
     })
 
