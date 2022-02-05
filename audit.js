@@ -27,7 +27,7 @@ let Audit = function (section) {
     return Object
       .keys(o2)
       .reduce((diff, key) => {
-        if (o1[key] === o2[key]) 
+        if (o1[key] === o2[key])
           return diff
 
         return {...diff, [key]: o2[key]}
@@ -36,7 +36,7 @@ let Audit = function (section) {
     )
   }
 
-  function translateObject(object) {
+  function translateObjectProps(object) {
     let result = {}
     Object.keys(object).forEach((key) => {
       let humanizedKey = trans[key] || key
@@ -49,7 +49,7 @@ let Audit = function (section) {
 
   function objectToString(object) {
     let keyValueList = []
-      Object.keys(object).sort().forEach((key) => {
+      Object.keys(object).forEach((key) => {
       let value = object[key] || '-'     
 
       keyValueList.push(`${key}: ${value}`)
@@ -76,11 +76,46 @@ let Audit = function (section) {
     return result
   }
 
+  function sortObjectProps(object) {
+    let result = {}
+
+    let columns = [
+      'order_number',
+      'stone_shape',
+      'stone_color',
+      'diameter',
+      'length_min,',
+      'length_max',
+      'width',
+      'date_of_adoption',
+      'shipped',
+      'packed',
+      'with_worktop',
+      'comment',
+    ]
+
+    let sortedKeys = Array(columns.length)
+    Object.keys(object).forEach(key => {
+      let index = columns.indexOf(key)
+      if (index !== -1) {
+        sortedKeys[index] = key
+      } else {
+        sortedKeys.push(key)
+      }
+    })
+
+    sortedKeys.forEach(key => {
+      result[key] = object[key];
+    })
+
+    return result
+  }
+  
   function prepareData(data) {
     data = data || {}
 
     if (Object.keys(data).length !== 0) {
-      return objectToString(translateObject(data));
+      return objectToString(translateObjectProps(sortObjectProps(data)));
     }
 
     return '-'
