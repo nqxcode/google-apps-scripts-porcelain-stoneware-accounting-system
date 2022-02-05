@@ -297,7 +297,7 @@
           var orderIndex = button.data('orderIndex')
 
           var modal = $(this)
-          modal.find('[data-element="order-number"]').text(orderIndex)
+          modal.find('[data-element="order-number"]').text(orderIndex + 1)
           modal.find('button[data-action="free.remove"]').data('orderIndex', orderIndex)
         })
 
