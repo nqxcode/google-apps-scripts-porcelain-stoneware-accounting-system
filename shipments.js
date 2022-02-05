@@ -26,7 +26,7 @@ function addShipment(orderData, options) {
   options = options || {}
 
   let orderNumber = generateOrderNumber(orderData.order_number, options)
-  let preparedData = prepareObject(orderData)
+  let preparedData = prepareData(orderData)
 
   shipmentsSheet.appendRow([
     preparedData.date_of_adoption,

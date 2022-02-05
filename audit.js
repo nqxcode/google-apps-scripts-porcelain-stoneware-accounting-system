@@ -1,7 +1,7 @@
 let Audit = function (section) {
   this.section = section
 
-  function normalizeObject(object, options) {
+  function normalizeObject(object) {
     let result = {}
 
     object = object || {}
@@ -49,7 +49,7 @@ let Audit = function (section) {
 
   function objectToString(object) {
     let keyValueList = []
-    Object.keys(object).forEach((key) => {
+      Object.keys(object).sort().forEach((key) => {
       let value = object[key] || '-'     
 
       keyValueList.push(`${key}: ${value}`)

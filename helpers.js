@@ -30,7 +30,7 @@ function formatDateTime(date) {
   return formatDate(date, {withTime: true})
 }
 
-function prepareObject(object) {
+function prepareData(object) {
   let preparedObject = {};
 
   Object.keys(object).forEach(key => {
