@@ -16,6 +16,7 @@ function Audit (section) {
         result[propertyKey] = propertyValue
     })
 
+
     return result
   }
 
