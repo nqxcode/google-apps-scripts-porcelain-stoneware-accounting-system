@@ -16,7 +16,6 @@ function Audit (section) {
         result[propertyKey] = propertyValue
     })
 
-
     return result
   }
 
@@ -68,7 +67,7 @@ function Audit (section) {
     auditSheet.appendRow([
       formatDateTime(new Date()),
       action,
-      'User1',
+      Session.getActiveUser().getEmail(),
       this.section,
       prepareObject(diffData),
       prepareObject(newData),
