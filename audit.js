@@ -124,6 +124,8 @@ let Audit = function (section) {
   this.log = function (action, options) {
     options = options || {}
 
+    let row = options.row
+
     let newData = options.novel ? normalizeObject(options.novel) : null
     let prevData = options.prev ? normalizeObject(options.prev) : null
     let diffData = newData && prevData ? diffObjects(newData, prevData) : null
@@ -133,6 +135,7 @@ let Audit = function (section) {
       action,
       Session.getActiveUser().getEmail(),
       this.section,
+      row,
       prepareData(diffData),
       prepareData(removeEmpty(newData || {})),
       prepareData(removeEmpty(prevData || {}))

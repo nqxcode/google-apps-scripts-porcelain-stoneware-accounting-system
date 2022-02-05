@@ -66,7 +66,7 @@ function addAssembly(assemblyData, options) {
     prepareValue(preparedData.comment),
   ]);
 
-  audit.assemblies.log(Audit.Action.CREATE, {novel: assemblyData})
+  audit.assemblies.log(Audit.Action.CREATE, {novel: assemblyData, row: assembliesSheet.getLastRow()})
 }
 
 function updateAssembly(orderIndex, assemblyData) {
@@ -87,7 +87,7 @@ function updateAssembly(orderIndex, assemblyData) {
     }
   }
 
-  audit.assemblies.log(Audit.Action.UPDATE, {novel: assemblyData, prev: prevAssemblyData})
+  audit.assemblies.log(Audit.Action.UPDATE, {novel: assemblyData, prev: prevAssemblyData, row: orderIndex + 1})
 }
 
 function moveAssemblyToShipment(orderNumber) {
@@ -166,7 +166,7 @@ function removeAssembly(orderNumber) {
 
   if (assemblyRow) {
     assembliesSheet.deleteRow(assemblyRow)
-    audit.assemblies.log(Audit.Action.DELETE, {prev: prevAssemblyData})
+    audit.assemblies.log(Audit.Action.DELETE, {prev: prevAssemblyData, row: prevAssemblyData.order_index + 1})
 
     return true
   }
@@ -180,7 +180,7 @@ function removeAssemblyByIndex(orderIndex) {
 
   if (assemblyRow) {
     assembliesSheet.deleteRow(assemblyRow)
-    audit.assemblies.log(Audit.Action.DELETE, {prev: prevAssemblyData})
+    audit.assemblies.log(Audit.Action.DELETE, {prev: prevAssemblyData, row: prevAssemblyData.order_index + 1})
     return true
   }
 
