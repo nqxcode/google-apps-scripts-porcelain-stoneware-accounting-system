@@ -19,7 +19,7 @@ function Audit (section) {
     return result
   }
 
-  function diff(o2, o1) { 
+  function diffObjects(o2, o1) {
     return Object
       .keys(o2)
       .reduce((diff, key) => {
@@ -62,7 +62,7 @@ function Audit (section) {
   this.log = function (action, newData, prevData) {
     newData = filterObject(newData)
     prevData = filterObject(prevData)
-    diffData = diff(newData, prevData)
+    let diffData = diffObjects(newData, prevData)
 
     auditSheet.appendRow([
       formatDateTime(new Date()),
