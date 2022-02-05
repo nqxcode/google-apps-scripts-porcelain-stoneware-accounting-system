@@ -121,14 +121,26 @@ let Audit = function (section) {
     return '-'
   }
 
+  function makePayload(options) {
+    let newData = options.novel ? normalizeObject(options.novel) : null
+    let prevData = options.prev ? normalizeObject(options.prev) : null
+    let diffData = newData && prevData ? diffObjects(newData, prevData) : null
+
+    newData = removeEmpty(newData || {})
+    prevData = removeEmpty(prevData || {})
+
+    return {
+      novel: prepareData(newData),
+      prev: prepareData(prevData),
+      diff: prepareData(diffData),
+    }
+  }
+
   this.log = function (action, options) {
     options = options || {}
 
     let row = options.row ? `#${options.row}` : '-'
-
-    let newData = options.novel ? normalizeObject(options.novel) : null
-    let prevData = options.prev ? normalizeObject(options.prev) : null
-    let diffData = newData && prevData ? diffObjects(newData, prevData) : null
+    let payload = makePayload(options)
 
     auditSheet.appendRow([
       formatDateTime(new Date()),
@@ -136,9 +148,9 @@ let Audit = function (section) {
       Session.getActiveUser().getEmail(),
       this.section,
       row,
-      prepareData(diffData),
-      prepareData(removeEmpty(newData || {})),
-      prepareData(removeEmpty(prevData || {}))
+      payload.diff,
+      payload.novel,
+      payload.prev
     ])
   }
 }
