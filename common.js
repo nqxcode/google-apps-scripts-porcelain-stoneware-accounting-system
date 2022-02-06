@@ -14,9 +14,11 @@ function checkOrderNumberUnique(orderNumber, options) {
 
   if (options.checkOrderNumberUnique.assemblies) {
     let assemblyData = findAssembly(orderNumber)
-    if (assemblyData !== null) {
-      if (options.current && options.current == assemblyData.order_index) {
-        return true
+    if (assemblyData) {
+      if (options.current !== null) {
+        if (options.current == assemblyData.order_index) {
+          return true
+        }        
       }
 
       if (options.throwIfNotUnique) {
@@ -29,9 +31,11 @@ function checkOrderNumberUnique(orderNumber, options) {
 
   if (options.checkOrderNumberUnique.shipments) {
     let shipmentData = findShipment(orderNumber)
-    if (shipmentData !== null) {
-      if (options.current && options.current == shipmentData.order_index) {
-        return true
+    if (shipmentData) {
+      if (options.current !== null) {
+        if (options.current == shipmentData.order_index) {
+          return true
+        }        
       }
 
       if (options.throwIfNotUnique) {

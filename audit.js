@@ -1,18 +1,16 @@
-let Audit = function (section) {
+let Audit = function (section) {  
   this.section = section
 
-  function normalizeObject(object) {
+  function filterObject(object, excludeProps) {
     let result = {}
+    excludeProps = excludeProps || []
 
     object = object || {}
 
     Object.keys(object).forEach(propertyKey => {
       let propertyValue = object[propertyKey]
-      if (typeof propertyValue === 'object' || Array.isArray(propertyValue)) {
-        return
-      }
 
-      if (propertyKey === 'order_index') {
+      if (excludeProps.includes(propertyKey)) {
         return
       }
 
@@ -21,7 +19,6 @@ let Audit = function (section) {
 
     return result
   }
-
 
   function diffObjects(o2, o1) {
     return Object
@@ -112,19 +109,21 @@ let Audit = function (section) {
     let row = options.row ? `#${options.row}` : null
     let orderNumber = getOrderNumber(options)
 
-    let newData = options.novel ? normalizeObject(options.novel) : null
-    let prevData = options.prev ? normalizeObject(options.prev) : null
-    let diffData = newData && prevData ? diffObjects(newData, prevData) : null
+    const excludeColumns = ['order_index', 'stone_shapes', 'stone_colors']
 
-    newData = removeEmpty(newData || {})
-    prevData = removeEmpty(prevData || {})
+    let novel = options.novel ? filterObject(options.novel, excludeColumns) : null
+    let prev = options.prev ? filterObject(options.prev, excludeColumns) : null
+    let diff = novel && prev ? diffObjects(novel, prev) : null
+
+    novel = removeEmpty(novel || {})
+    prev = removeEmpty(prev || {})
 
     return {
       row: row ? row : '-',
       orderNumber: orderNumber ? escapeValue(orderNumber) : '-',
-      novel: prepareData(newData),
-      prev: prepareData(prevData),
-      diff: prepareData(diffData),
+      novel: prepareData(novel),
+      prev: prepareData(prev),
+      diff: prepareData(diff),
     }
   }
 
