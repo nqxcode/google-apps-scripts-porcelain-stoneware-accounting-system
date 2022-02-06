@@ -20,6 +20,64 @@
       })
     }
 
+    function recoverOrder(orderIndex) {
+      return new Promise((resolve, reject) => {
+        google.script.run.withSuccessHandler(response => {
+          resolve(response)
+        }).withFailureHandler(error => {
+          reject(error)
+        }).recoverOrder(orderIndex);
+      })
+    }
+
     loadTrash()
+
+    $(document).on('click', 'button[data-action="trash.recover"]', function(e) {
+      if (!trashListElement.data('block')) {
+        trashListElement.data('block', true)
+
+
+        let loader = $(this).find('[data-element="loader"]')
+
+        let orderIndex = $(this).data('orderIndex')
+        let trashRecoverModal = $('#trashRecoverRemoveModal')
+
+        loader.show()
+
+        recoverOrder(orderIndex)
+            .then(
+                () => {
+                  loadTrash().then(
+                      () => {
+                        assemblyListTabContent.trigger('refresh')
+                        shipmentListElement.trigger('refresh')
+                        freeListElement.trigger('refresh')
+
+                        loader.hide()
+                        trashRecoverModal.modal('hide')
+
+                        trashListElement.data('block', false)
+                      }
+                  )
+                },
+                error => {
+                  loadTrash().then(() => {
+                    messageModal.data('message', prepareError(error))
+                    messageModal.modal('show')
+
+                    assemblyListTabContent.trigger('refresh')
+                    shipmentListElement.trigger('refresh')
+                    freeListElement.trigger('refresh')
+
+                    loader.hide()
+                    trashRecoverModal.modal('hide')
+
+                    trashListElement.data('block', false)
+                  })
+                }
+            )
+      }
+    })
+
   })
 </script>

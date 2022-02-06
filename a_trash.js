@@ -29,10 +29,6 @@ let Trash = function (section) {
 
     trashSheet.appendRow(objectToRow(rowObject))
   }
-
-  this.recover = function (orderObject) {
-    // TODO realize recover
-  }
 }
 
 Trash.enabled = true
@@ -69,4 +65,20 @@ Trash.getColumnsMap = function () {
   columnsMap[16] = 'with_worktop'
 
   return columnsMap;
+}
+
+Trash.recover = function (orderObject) {
+  switch (orderObject.section) {
+    case sheetNames.assemblies:
+      addAssembly(orderObject)
+      break
+
+    case sheetNames.shipments:
+      addShipment(orderObject)
+      break
+
+    case sheetNames.free:
+      addFree(orderObject)
+      break
+  }
 }

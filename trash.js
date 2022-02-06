@@ -40,3 +40,17 @@ function prepareTrashItem(trashItemData, trashIndex) {
   return trashItemObj
 }
 
+
+function recoverOrder(orderIndex) {
+  let trashItem = findTrashItem(orderIndex);
+  if (trashItem) {
+    Trash.recover(trashItem)
+  }
+}
+
+function findTrashItem(orderIndex) {
+  let trashItems = getTrash()
+  let trashItem = trashItems[orderIndex] || null
+
+  return trashItem
+}
