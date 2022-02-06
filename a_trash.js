@@ -12,11 +12,7 @@ let Trash = function (section) {
     return result
   }
 
-  this.put = function (orderObject) {
-    if (!Trash.enabled) {
-      return
-    }
-
+  this.copy = function (orderObject) {
     let rowObject = {
       ...{
         date: formatDateTime(new Date()),
@@ -29,11 +25,33 @@ let Trash = function (section) {
 
     trashSheet.appendRow(objectToRow(rowObject))
   }
+
+  this.put = function(orderObject) {
+    if (Trash.enabled) {
+      this.copy(orderObject)
+    }    
+
+    let orderIndex = orderObject.order_index
+
+    switch (this.section) {
+      case sheetNames.assemblies:        
+        assembliesSheet.deleteRow(getAssemblyRowByIndex(orderIndex))
+        break
+
+      case sheetNames.shipments:
+        shipmentsSheet.deleteRow(getShipmentRowByIndex(orderIndex))
+        break
+
+      case sheetNames.free:
+        freeSheet.deleteRow(getFreeRowByIndex(orderIndex))
+        break
+    }
+}
 }
 
 Trash.enabled = true
 
-Trash.withoutPuttingToTrash = function (callable) {
+Trash.withPermanentDeletion = function (callable) {
   try {
     Trash.enabled = false
     callable()

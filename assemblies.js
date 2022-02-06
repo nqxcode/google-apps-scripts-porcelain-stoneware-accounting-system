@@ -119,7 +119,7 @@ function moveAssemblyToShipment(orderNumber) {
   )
 
 
-  Trash.withoutPuttingToTrash(() => {
+  Trash.withPermanentDeletion(() => {
     let isRemovedFromAssembly = removeAssemblyByIndex(orderData.order_index)
     if (!isRemovedFromAssembly) {
       throw new Error(`Заказ с номером ${orderNumber} не был удален из сборки`)
@@ -146,7 +146,7 @@ function moveAssemblyToFree(orderIndex) {
       }
   )
 
-  Trash.withoutPuttingToTrash(() => {
+  Trash.withPermanentDeletion(() => {
     let isRemovedFromAssembly = removeAssemblyByIndex(orderIndex)
     if (!isRemovedFromAssembly) {
       throw new Error(`Заказ с номером по порядку ${orderIndex + 1} не был удален из сборки`)
@@ -174,8 +174,7 @@ function removeAssemblyByIndex(orderIndex) {
     return false
   }
 
-  trash.assemblies.put(assemblyData)
-  assembliesSheet.deleteRow(getAssemblyRowByIndex(assemblyData.order_index))
+  trash.assemblies.put(assemblyData)  
   audit.assemblies.log(Audit.Action.DELETE, {prev: assemblyData, row: getAssemblyRowByIndex(assemblyData.order_index)})
 
   return true

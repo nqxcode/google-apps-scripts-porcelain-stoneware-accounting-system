@@ -67,7 +67,7 @@ function updateShipment(orderIndex, shipmentData) {
     }
   }
 
-  audit.shipments.log(Audit.Action.UPDATE, {novel: shipmentData, prev: prevShipmentData, row: getShipmentRowByIndex(orderIndex)})
+  audit.shipments.log(Audit.Action.UPDATE, {novel: shipmentData, prev: prevShipmentData, row: shipmentRow})
 }
 
 function findShipmentRow(orderNumber) {
@@ -105,10 +105,8 @@ function removeShipment(orderNumber) {
   let prevShipmentData = findShipment(orderNumber)
   if (shipmentRow) {
 
-    trash.shipments.put(prevShipmentData)
-    shipmentsSheet.deleteRow(shipmentRow)
-    
-    audit.shipments.log(Audit.Action.DELETE, {prev: prevShipmentData, row: getShipmentRowByIndex(prevShipmentData.order_index)})
+    trash.shipments.put(prevShipmentData)  
+    audit.shipments.log(Audit.Action.DELETE, {prev: prevShipmentData, row: shipmentRow})
 
     return true
   }  
@@ -131,7 +129,7 @@ function moveShipmentToFree(orderNumber) {
     stone_color: orderData.stone_color
   })
 
-  Trash.withoutPuttingToTrash(() => {
+  Trash.withPermanentDeletion(() => {
     let isRemovedFromShipment = removeShipment(orderNumber)
     if (!isRemovedFromShipment) {
       throw new Error(`Заказ с номером ${orderNumber} не был удален из отгрузки`)
@@ -164,7 +162,7 @@ function moveShipmentToAssembly(orderNumber) {
       }
   )
 
-  Trash.withoutPuttingToTrash(() => {
+  Trash.withPermanentDeletion(() => {
     let isRemovedFromShipment = removeShipment(orderNumber)
     if (!isRemovedFromShipment) {
       throw new Error(`Заказ с номером ${orderNumber} не был удален из отгрузки`)

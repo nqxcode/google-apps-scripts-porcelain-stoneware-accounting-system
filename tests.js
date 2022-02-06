@@ -94,5 +94,12 @@ function test_removeFree() {
   removeFree(0)
 }
 
+function test_moveFreeToAssembly() {
+  moveFreeToAssembly(0)
+}
+
+function test_removeShipment() {
+  removeShipment('1-2')
+}
 
 

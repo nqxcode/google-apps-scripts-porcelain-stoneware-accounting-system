@@ -83,7 +83,7 @@ function moveFreeToAssembly(freeIndex)
     comment: freeData.comment
   })
 
-  Trash.withoutPuttingToTrash(() => {
+  Trash.withPermanentDeletion(() => {
     let isRemovedFromFree = removeFree(freeIndex)
     if (!isRemovedFromFree) {
       throw new Error(`Свободная позиция с номером ${freeIndex} не была удалена`)
@@ -107,8 +107,6 @@ function removeFree(orderIndex) {
   if (freeRow) {
 
     trash.free.put(prevFreeData)
-    freeSheet.deleteRow(freeRow)
-
     audit.free.log(Audit.Action.DELETE, {prev: prevFreeData, row: getFreeRowByIndex(prevFreeData.order_index)})
 
     return true
