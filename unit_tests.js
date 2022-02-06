@@ -59,11 +59,19 @@ function test_filterShipment() {
 }
 
 function test_updateAssembly() {
-  updateAssembly(5, {order_number: '7746111111'})
+  updateAssembly(2,   {
+    "order_number": "123123",
+    "stone_shape": "бочка",
+    "stone_color": "Arabescato беж",
+    "length_max": "1600", 
+    "width": "1000",
+    "date_of_adoption": "",
+    "comment": ""
+  })
 }
 
 function test_updateShipment() {
-  updateShipment(4, {order_number: '7746-2-2', packed: 'да'})
+  updateShipment(4, {order_number: '559966', packed: 'да'})
 }
 
 function test_moveShipmentToAssembly() {
