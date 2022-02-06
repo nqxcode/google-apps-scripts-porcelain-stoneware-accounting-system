@@ -102,4 +102,6 @@ function test_removeShipment() {
   removeShipment('1-2')
 }
 
-
+function test_refreshReport() {
+  refreshReport({packed: true})
+}

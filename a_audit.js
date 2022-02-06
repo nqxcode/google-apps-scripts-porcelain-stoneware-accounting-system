@@ -14,7 +14,7 @@ let Audit = function (section) {
         return
       }
 
-      result[propertyKey] = propertyValue ? String(propertyValue) : null
+      result[propertyKey] = (propertyValue || propertyValue === 0) ? String(propertyValue) : null
     })
 
     return result
