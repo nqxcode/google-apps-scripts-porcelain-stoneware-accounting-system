@@ -48,6 +48,8 @@ function addStoneColor(formObj) {
 
   propertiesSheet.appendRow([formObj.stone_color]);
 
+  audit.properties.log(Audit.Action.CREATE, {novel: {stone_color: formObj.stone_color}, row: propertiesSheet.getLastRow()})
+
   return true
 }
 
@@ -100,7 +102,8 @@ function getShapeRowByIndex(shapeIndex)
 function removeStoneColor(colorIndex) {
   let _stoneColors = stoneColors.slice() // copy array
 
-  _stoneColors.splice(colorIndex, 1); // remove by index
+  let deleted = _stoneColors.splice(colorIndex, 1); // remove by index
+  let deletedIndex = colorIndex
 
   for (colorIndex = 0; colorIndex <= stoneColors.length; colorIndex++) {
     let colorRow = getColorRowByIndex(colorIndex)
@@ -111,6 +114,8 @@ function removeStoneColor(colorIndex) {
     let colorRow = getColorRowByIndex(colorIndex)
     propertiesSheet.getRange(colorRow, getColorColumnOffset()).setValue(_stoneColors[colorIndex]);       
   }
+
+  audit.properties.log(Audit.Action.DELETE, {prev: {stone_color: deleted}, row: getPropertyRowOffset() + deletedIndex})
 }
 
 function addStoneShape(shapeData)
@@ -120,7 +125,9 @@ function addStoneShape(shapeData)
   }
 
   let shapeRow = getShapeRowByIndex(stoneShapes.length)
-  propertiesSheet.getRange(shapeRow, getShapeColumnOffset()).setValue(shapeData.stone_shape);       
+  propertiesSheet.getRange(shapeRow, getShapeColumnOffset()).setValue(shapeData.stone_shape);  
+
+  audit.properties.log(Audit.Action.CREATE, {novel: {stone_shape: shapeData.stone_shape}, row: shapeRow})
 
   return true
 }
@@ -128,8 +135,9 @@ function addStoneShape(shapeData)
 function removeStoneShape(shapeIndex)
 {
   let _stoneShapes = stoneShapes.slice() // copy array
-
-  _stoneShapes.splice(shapeIndex, 1); // remove by index
+  
+  let deleted = _stoneShapes.splice(shapeIndex, 1); // remove by index
+  let deletedIndex = shapeIndex
 
   for (shapeIndex = 0; shapeIndex <= stoneShapes.length; shapeIndex++) {
     let shapeRow = getShapeRowByIndex(shapeIndex)
@@ -140,5 +148,7 @@ function removeStoneShape(shapeIndex)
     let shapeRow = getShapeRowByIndex(shapeIndex)
     propertiesSheet.getRange(shapeRow, getShapeColumnOffset()).setValue(_stoneShapes[shapeIndex]);       
   }
+
+  audit.properties.log(Audit.Action.DELETE, {prev: {stone_shape: deleted}, row: getPropertyRowOffset() + deletedIndex})
 }
 
