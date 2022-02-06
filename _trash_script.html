@@ -79,5 +79,20 @@
       }
     })
 
+    $('#trashRecoverModal').on('show.bs.modal', function (e) {
+      let button = $(e.relatedTarget)
+      let orderNumber = button.data('orderNumber')
+      let orderIndex = button.data('orderIndex')
+
+      let modal = $(this)
+      modal.find('[data-element="order-number"]').text(orderNumber || (orderIndex + 1))
+      modal.find('[data-element="sequential-number-info"]').css('display', orderNumber ? 'none' : 'inline')
+
+      let recoverOrderButton = modal.find('button[data-action="trash.recover"]')
+
+      recoverOrderButton.data('orderNumber', orderNumber)
+      recoverOrderButton.data('orderIndex', orderIndex)
+    })
+
   })
 </script>
