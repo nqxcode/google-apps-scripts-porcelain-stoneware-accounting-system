@@ -371,6 +371,7 @@
                 loadShipments().then(response => {
                   loader.hide()
                   shipmentRemoveModal.modal('hide')
+                  $(document).trigger('trash.refresh')
                   shipmentListElement.data('block', false)
                 })
               })   

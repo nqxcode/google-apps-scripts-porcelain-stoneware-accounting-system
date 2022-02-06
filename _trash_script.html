@@ -94,5 +94,8 @@
       recoverOrderButton.data('orderIndex', orderIndex)
     })
 
+    $(document).on('trash.refresh', function() {
+      loadTrash()
+    })
   })
 </script>

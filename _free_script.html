@@ -285,6 +285,7 @@
                 loadFree().then(response => {
                   loader.hide()
                   freeRemoveModal.modal('hide')
+                  $(document).trigger('trash.refresh')
                   freeListElement.data('block', false)
                 })
               })

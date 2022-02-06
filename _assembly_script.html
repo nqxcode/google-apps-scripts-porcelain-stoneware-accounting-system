@@ -498,6 +498,7 @@
                   loadAssemblies().then(response => {
                     loader.hide()
                     assemblyRemoveModal.modal('hide')
+                    $(document).trigger('trash.refresh')
                     assemblyListTabContent.data('block', false)
                   })
                 })
