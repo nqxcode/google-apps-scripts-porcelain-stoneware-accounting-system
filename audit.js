@@ -1,7 +1,7 @@
 let Audit = function (section) {  
   this.section = section
 
-  function filterObject(object, excludeProps) {
+  function normalizeObject(object, excludeProps) {
     let result = {}
     excludeProps = excludeProps || []
 
@@ -109,10 +109,8 @@ let Audit = function (section) {
     let row = options.row ? `#${options.row}` : null
     let orderNumber = getOrderNumber(options)
 
-    const excludeColumns = ['order_index', 'stone_shapes', 'stone_colors']
-
-    let novel = options.novel ? filterObject(options.novel, excludeColumns) : null
-    let prev = options.prev ? filterObject(options.prev, excludeColumns) : null
+    let novel = options.novel ? normalizeObject(options.novel) : null
+    let prev = options.prev ? normalizeObject(options.prev, ['order_index', 'stone_shapes', 'stone_colors']) : null
     let diff = novel && prev ? diffObjects(novel, prev) : null
 
     novel = removeEmpty(novel || {})

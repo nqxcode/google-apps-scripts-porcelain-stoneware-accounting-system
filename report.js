@@ -92,7 +92,7 @@ function getReportStringified() {
 
 function getReport() {
   let report = reportSheet
-      .getRange(getShipmentOffset(), 1, reportSheet.getLastRow(), 13)
+      .getRange(getReportOffset(), 1, reportSheet.getLastRow(), 13)
       .getValues()
       .filter(filterEmptyRow)
       .map((reportRow, reportRowIndex) => prepareReportRow(reportRow, reportRowIndex))      
