@@ -90,7 +90,7 @@ function updateAssembly(orderIndex, assemblyData) {
     }
   }
 
-  audit.assemblies.log(Audit.Action.UPDATE, {novel: assemblyData, prev: prevAssemblyData, row: orderIndex + 1})
+  audit.assemblies.log(Audit.Action.UPDATE, {novel: assemblyData, prev: prevAssemblyData, row: getAssemblyRowByIndex(orderIndex)})
 }
 
 function moveAssemblyToShipment(orderNumber) {
@@ -118,7 +118,7 @@ function moveAssemblyToShipment(orderNumber) {
       }
   )
 
-  let isRemovedFromAssembly = removeAssembly(orderNumber)
+  let isRemovedFromAssembly = removeAssemblyByIndex(orderData.order_index)
   if (!isRemovedFromAssembly) {
     throw new Error(`Заказ с номером ${orderNumber} не был удален из сборки`)
   }
@@ -163,36 +163,19 @@ function getAssemblyByIndex(orderIndex) {
   return assembly;
 }
 
-function removeAssembly(orderNumber) {
-  let assemblyRow = findAssemblyRow(orderNumber)
-
-  if (assemblyRow) {
-    hardDeleteAssembly(assemblyRow, findAssembly(orderNumber))
-    return true
-  }
-
-  return false
-}
-
 function removeAssemblyByIndex(orderIndex) {
-  let assemblyRow = getAssemblyRowByIndex(orderIndex)
-
-  if (assemblyRow) {
-    hardDeleteAssembly(assemblyRow, getAssemblyByIndex(orderIndex))
-    return true
+  let assemblyData = getAssemblyByIndex(orderIndex)
+  if (!assemblyData) {
+    return false
   }
 
-  return false
+  trash.assemblies.put(assemblyData)
+  assembliesSheet.deleteRow(getAssemblyRowByIndex(assemblyData.order_index))
+  audit.assemblies.log(Audit.Action.DELETE, {prev: assemblyData, row: getAssemblyRowByIndex(assemblyData.order_index)})
+
+  return true
 }
 
-function softDeleteAssembly(assemblyRow, assemblyData) {
-
-}
-
-function hardDeleteAssembly(assemblyRow, assemblyData) {
-  assembliesSheet.deleteRow(assemblyRow)
-  audit.assemblies.log(Audit.Action.DELETE, {prev: assemblyData, row: assemblyData.order_index + 1})
-}
 
 function getAssemblies(filter) {
   filter = filter || {}

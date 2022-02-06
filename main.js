@@ -6,7 +6,8 @@ let sheetNames = {
   free: "Свободные",
   properties: "Свойства",
   report: "Отчёт",
-  audit: "Аудит"
+  audit: "Аудит",
+  trash: "Корзина",
 }
 
 let assembliesSheet = spreadSheet.getSheetByName(sheetNames.assemblies)
@@ -15,6 +16,7 @@ let freeSheet = spreadSheet.getSheetByName(sheetNames.free)
 let propertiesSheet = spreadSheet.getSheetByName(sheetNames.properties)
 let reportSheet = spreadSheet.getSheetByName(sheetNames.report)
 let auditSheet = spreadSheet.getSheetByName(sheetNames.audit)
+let trashSheet = spreadSheet.getSheetByName(sheetNames.trash)
 
 let audit = {
   assemblies: new Audit(sheetNames.assemblies),
@@ -22,6 +24,12 @@ let audit = {
   free: new Audit(sheetNames.free),
   properties: new Audit(sheetNames.properties),
   report: new Audit(sheetNames.report),
+}
+
+let trash = {
+  assemblies: new Trash(sheetNames.assemblies),
+  shipments: new Trash(sheetNames.shipments),
+  free: new Trash(sheetNames.free),
 }
 
 function doGet(e) {    

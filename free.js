@@ -19,14 +19,16 @@ function getFreeColumnsMap() {
 
 
 function addFree(orderData) {
+  let preparedData = escapeObjectProps(orderData)
   freeSheet.appendRow([
-    orderData.diameter,
-    orderData.length_min,
-    orderData.length_max,
-    orderData.width,
-    orderData.stone_shape,
-    orderData.stone_color,
-    escapeValue(orderData.comment),
+    preparedData.diameter,
+    preparedData.length_min,
+    preparedData.length_max,
+    preparedData.width,
+    preparedData.stone_shape,
+    preparedData.stone_color,
+    preparedData.comment,
+    preparedData.with_worktop,
   ]);
 
   audit.free.log(Audit.Action.CREATE, {novel: orderData, row: freeSheet.getLastRow()})
@@ -56,7 +58,7 @@ function updateFree(freeIndex, freeData) {
 
   let newFreeData = findFree(freeIndex)
 
-  audit.free.log(Audit.Action.UPDATE, {novel: newFreeData, prev: prevFreeData, row: prevFreeData.order_index + 1})
+  audit.free.log(Audit.Action.UPDATE, {novel: newFreeData, prev: prevFreeData, row: getFreeRowByIndex(prevFreeData.order_index)})
 }
 
 function getFreeRowByIndex(orderIndex) { 
@@ -101,9 +103,11 @@ function removeFree(orderIndex) {
   let prevFreeData = findFree(orderIndex)
 
   if (freeRow) {
+
+    trash.free.put(prevFreeData)
     freeSheet.deleteRow(freeRow)
 
-    audit.free.log(Audit.Action.DELETE, {prev: prevFreeData, row: prevFreeData.order_index + 1})
+    audit.free.log(Audit.Action.DELETE, {prev: prevFreeData, row: getFreeRowByIndex(prevFreeData.order_index)})
 
     return true
   }

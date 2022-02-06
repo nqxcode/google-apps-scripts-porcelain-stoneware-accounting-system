@@ -94,5 +94,9 @@ function test_removeFree() {
   removeFree(0)
 }
 
+function test_removeAssemblyByIndex() {
+  removeAssemblyByIndex(2)
+}
+
 
 
