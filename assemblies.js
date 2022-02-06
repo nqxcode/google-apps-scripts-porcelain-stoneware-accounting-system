@@ -146,10 +146,12 @@ function moveAssemblyToFree(orderIndex) {
       }
   )
 
-  let isRemovedFromAssembly = removeAssemblyByIndex(orderIndex)
-  if (!isRemovedFromAssembly) {
-    throw new Error(`Заказ с номером по порядку ${orderIndex + 1} не был удален из сборки`)
-  }
+  Trash.withoutPuttingToTrash(() => {
+    let isRemovedFromAssembly = removeAssemblyByIndex(orderIndex)
+    if (!isRemovedFromAssembly) {
+      throw new Error(`Заказ с номером по порядку ${orderIndex + 1} не был удален из сборки`)
+    }
+  })
 }
 
 function findAssembly(orderNumber) {

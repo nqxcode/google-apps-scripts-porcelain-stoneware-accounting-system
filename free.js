@@ -83,10 +83,12 @@ function moveFreeToAssembly(freeIndex)
     comment: freeData.comment
   })
 
-  let isRemovedFromFree = removeFree(freeIndex)
-  if (!isRemovedFromFree) {
-    throw new Error(`Свободная позиция с номером ${freeIndex} не была удалена`)
-  }
+  Trash.withoutPuttingToTrash(() => {
+    let isRemovedFromFree = removeFree(freeIndex)
+    if (!isRemovedFromFree) {
+      throw new Error(`Свободная позиция с номером ${freeIndex} не была удалена`)
+    }
+  })
 }
 
 function findFree(orderIndex)

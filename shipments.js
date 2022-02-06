@@ -131,10 +131,12 @@ function moveShipmentToFree(orderNumber) {
     stone_color: orderData.stone_color
   })
 
-  let isRemovedFromShipment = removeShipment(orderNumber)
-  if (!isRemovedFromShipment) {
-    throw new Error(`Заказ с номером ${orderNumber} не был удален из отгрузки`)
-  }
+  Trash.withoutPuttingToTrash(() => {
+    let isRemovedFromShipment = removeShipment(orderNumber)
+    if (!isRemovedFromShipment) {
+      throw new Error(`Заказ с номером ${orderNumber} не был удален из отгрузки`)
+    }
+  })
 }
 
 function moveShipmentToAssembly(orderNumber) {
@@ -162,10 +164,12 @@ function moveShipmentToAssembly(orderNumber) {
       }
   )
 
-  let isRemovedFromShipment = removeShipment(orderNumber)
-  if (!isRemovedFromShipment) {
-    throw new Error(`Заказ с номером ${orderNumber} не был удален из отгрузки`)
-  }
+  Trash.withoutPuttingToTrash(() => {
+    let isRemovedFromShipment = removeShipment(orderNumber)
+    if (!isRemovedFromShipment) {
+      throw new Error(`Заказ с номером ${orderNumber} не был удален из отгрузки`)
+    }
+  })
 }
 
 function getShipments(filter) {
