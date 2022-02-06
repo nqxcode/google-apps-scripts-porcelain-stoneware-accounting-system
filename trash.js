@@ -63,6 +63,6 @@ function getTrashRowByIndex(orderIndex) {
 function removeTrashItem(orderIndex) {
   let trashItem = findTrashItem(orderIndex)
   if (trashItem) {
-    freeSheet.deleteRow(getTrashRowByIndex(trashItem.order_index))
+    trashSheet.deleteRow(getTrashRowByIndex(trashItem.order_index))
   }
 }
