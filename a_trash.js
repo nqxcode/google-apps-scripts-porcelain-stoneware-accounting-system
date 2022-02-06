@@ -12,13 +12,24 @@ let Trash = function (section) {
     return result
   }
 
+  this.getRow = function (orderObject) {
+    switch (this.section) {
+      case sheetNames.assemblies:
+        return getAssemblyRowByIndex(orderObject.order_index);
+      case sheetNames.shipments:
+        return getShipmentRowByIndex(orderObject.order_index)
+      case sheetNames.free:
+        return getFreeRowByIndex(orderObject.order_index)
+    }
+  }
+
   this.copy = function (orderObject) {
     let rowObject = {
       ...{
         date: formatDateTime(new Date()),
         user: Session.getActiveUser().getEmail(),
         section: this.section,
-        row: getAssemblyRowByIndex(orderObject.order_index)
+        row: this.getRow(orderObject)
       },
       ...escapeObjectProps(orderObject)
     }
