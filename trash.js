@@ -45,6 +45,7 @@ function recoverOrder(orderIndex) {
   let trashItem = findTrashItem(orderIndex);
   if (trashItem) {
     Trash.recover(trashItem)
+    removeTrashItem(orderIndex)
   }
 }
 
@@ -53,4 +54,15 @@ function findTrashItem(orderIndex) {
   let trashItem = trashItems[orderIndex] || null
 
   return trashItem
+}
+
+function getTrashRowByIndex(orderIndex) {
+  return getTrashOffset() + orderIndex
+}
+
+function removeTrashItem(orderIndex) {
+  let trashItem = findTrashItem(orderIndex)
+  if (trashItem) {
+    freeSheet.deleteRow(getTrashRowByIndex(trashItem.order_index))
+  }
 }
