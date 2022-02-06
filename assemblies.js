@@ -165,12 +165,9 @@ function getAssemblyByIndex(orderIndex) {
 
 function removeAssembly(orderNumber) {
   let assemblyRow = findAssemblyRow(orderNumber)
-  let prevAssemblyData = findAssembly(orderNumber)
 
   if (assemblyRow) {
-    assembliesSheet.deleteRow(assemblyRow)
-    audit.assemblies.log(Audit.Action.DELETE, {prev: prevAssemblyData, row: prevAssemblyData.order_index + 1})
-
+    hardDeleteAssembly(assemblyRow, findAssembly(orderNumber))
     return true
   }
 
@@ -179,15 +176,22 @@ function removeAssembly(orderNumber) {
 
 function removeAssemblyByIndex(orderIndex) {
   let assemblyRow = getAssemblyRowByIndex(orderIndex)
-  let prevAssemblyData = getAssemblyByIndex(orderIndex)
 
   if (assemblyRow) {
-    assembliesSheet.deleteRow(assemblyRow)
-    audit.assemblies.log(Audit.Action.DELETE, {prev: prevAssemblyData, row: prevAssemblyData.order_index + 1})
+    hardDeleteAssembly(assemblyRow, getAssemblyByIndex(orderIndex))
     return true
   }
 
   return false
+}
+
+function softDeleteAssembly(assemblyRow, assemblyData) {
+
+}
+
+function hardDeleteAssembly(assemblyRow, assemblyData) {
+  assembliesSheet.deleteRow(assemblyRow)
+  audit.assemblies.log(Audit.Action.DELETE, {prev: assemblyData, row: assemblyData.order_index + 1})
 }
 
 function getAssemblies(filter) {
