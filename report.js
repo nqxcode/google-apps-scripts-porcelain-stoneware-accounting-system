@@ -138,4 +138,6 @@ function refreshReport(filter) {
   clearReport()
   createReport(filter)
   setReportDate(new Date())
+
+  audit.report.log(Audit.Action.CREATE, {novel: {'Отобрано': reportSheet.getLastRow()}})
 }

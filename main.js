@@ -21,6 +21,7 @@ let audit = {
   shipments: new Audit(sheetNames.shipments),
   free: new Audit(sheetNames.free),
   properties: new Audit(sheetNames.properties),
+  report: new Audit(sheetNames.report),
 }
 
 function doGet(e) {    
