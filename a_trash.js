@@ -1,5 +1,6 @@
 let Trash = function (section) {
   this.section = section
+  this.enabled = true
 
   function getColumnsMap() {
     let columnsMap = []
@@ -36,6 +37,10 @@ let Trash = function (section) {
   }
 
   this.put = function (orderObject) {
+    if (!Trash.enabled) {
+      return
+    }
+
     let rowObject = {
       ...{
         date: formatDateTime(new Date()),
@@ -50,6 +55,19 @@ let Trash = function (section) {
   }
 
   this.recover = function (orderObject) {
-    
+    // TODO realize recover
+  }
+}
+
+Trash.enabled = true
+
+Trash.withoutPuttingToTrash = function (callable) {
+  try {
+    Trash.enabled = false
+    callable()
+  } catch (Error) {
+    throw Error
+  } finally {
+    Trash.enabled = true
   }
 }
