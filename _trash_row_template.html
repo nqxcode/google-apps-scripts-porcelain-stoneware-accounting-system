@@ -1,0 +1,95 @@
+<div data-element="trash-item" data-order-number="<?= order_number ?>" data-order-index="<?= order_index ?>" class="row controls-row">
+  <div class="col d-flex">
+    <label for="section">Дата и время удаления</label>
+    <div class="mt-auto mb-auto" data-name="section"><?= date ?></div>
+  </div>
+
+  <div class="col d-flex">
+    <label for="section">Пользователь</label>
+    <div class="mt-auto mb-auto" data-name="section"><?= user ?></div>
+  </div>
+
+  <div class="col d-flex">
+    <label for="section">Раздел</label>
+    <div class="mt-auto mb-auto" data-name="section"><?= section ?></div>
+  </div>
+
+  <div class="col d-flex">
+    <label for="order_number">Номер заказа</label>
+    <div class="mt-auto mb-auto" data-name="order_number"><?= order_number ?></div>
+  </div>
+
+  <div class="col d-flex">
+    <label for="stone_shape">Форма камня</label>
+    <div class="mt-auto mb-auto" data-name="stone_shape"><?= stone_shape ?></div>
+  </div>
+
+  <div class="col d-flex">
+    <label for="stone_color">Цвет камня</label>
+    <div class="mt-auto mb-auto" data-name="stone_color"><?= stone_color ?></div>
+  </div>
+
+  <div class="col d-flex">
+    <label for="diameter">Диаметр</label>
+    <div class="mt-auto mb-auto" data-name="diameter"><?= diameter ?></div>
+  </div>
+
+  <div class="col d-flex">
+    <label for="length_min">Длина Min</label>
+    <div class="mt-auto mb-auto" data-name="length_min"><?= length_min ?></div>
+  </div>
+
+  <div class="col d-flex">
+    <label for="length_max">Длина Max</label>
+    <div class="mt-auto mb-auto" data-name="length_max"><?= length_max ?></div>
+  </div>
+
+  <div class="col d-flex">
+    <label for="width">Ширина</label>
+    <div class="mt-auto mb-auto" data-name="width"><?= width ?></div>
+  </div>
+
+  <div class="col d-flex">
+    <label for="date_of_adoption">Дата принятия керамогранита в работу или на отгрузку</label>
+    <div class="mt-auto mb-auto" data-name="date_of_adoption"><?= date_of_adoption ?></div>
+  </div>
+
+  <div class="col d-flex">
+    <label class="form-check-label" for="shipped">Отгружено</label>
+    <div class="center-aligned-horizontally">
+      <? if (shipped === 'да') { ?>
+      <i class="bi bi-check" data-name="shipped"></i>
+      <? } ?>
+    </div>
+  </div>
+
+  <div class="col d-flex">
+    <label class="form-check-label" for="packed">Упакован</label>
+    <div class="center-aligned-horizontally">
+      <? if (packed === 'да') { ?>
+      <i class="bi bi-check" data-name="packed"></i>
+      <? } ?>
+    </div>
+  </div>
+
+  <div class="col d-flex">
+    <label class="form-check-label" for="with_worktop">Со столешницей</label>
+    <div class="center-aligned-horizontally">
+      <? if (with_worktop === 'да') { ?>
+      <i class="bi bi-check" data-name="with_worktop"></i>
+      <? } ?>
+    </div>
+  </div>
+
+  <div class="col-lg-1 d-flex">
+    <label for="comment">Комментарий</label>
+    <div class="mt-auto mb-auto comment" data-name="comment"><?= comment ?></div>
+  </div>
+
+  <div class="col d-flex buttons-container actions">
+    <button type="button" data-action="trash.recover" data-order-number="<?= order_number ?>" class="btn btn-outline-success btn-sm w-100" data-toggle="modal" data-target="#trashRecoverModal">
+      Восстановить
+    </button>
+  </div>
+</div>
+

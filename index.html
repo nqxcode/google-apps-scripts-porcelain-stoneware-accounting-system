@@ -121,6 +121,20 @@
               </div>
             </div>
 
+            <div class="tab-pane fade" id="trash" role="tabpanel" aria-labelledby="trash-tab">
+              <div class="row">
+                <div class="col-12">
+                  <div class="grid">
+                    <?!= include('_trash_header'); ?>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <?!= include('_trash_list'); ?>
+                </div>
+              </div>
+            </div>
           </div>
 
         </div>
@@ -139,6 +153,8 @@
           window.stoneShapeRowTemplate = <?!= JSON.stringify(getContent('_stone_shape_row_template')) ?>;
 
           window.reportRowTemplate = <?!= JSON.stringify(getContent('_report_row_template')) ?>;
+
+          window.trashRowTemplate = <?!= JSON.stringify(getContent('_trash_row_template')) ?>;
         </script>
 
         <script> 
@@ -171,6 +187,7 @@
         <?!= include('_stone_color_script'); ?>        
         <?!= include('_stone_shape_script'); ?>        
         <?!= include('_report_script'); ?>
+        <?!= include('_trash_script'); ?>
 
     </body>        
 </html>
