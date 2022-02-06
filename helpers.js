@@ -15,9 +15,9 @@ function formatDate(date, options) {
     formattedDate = `${year}-${month}-${date}`;
 
     if (options.withTime) {
-        var hours = dateObj.getHours();
-        var minutes = dateObj.getMinutes();
-        var seconds = dateObj.getSeconds();
+        let hours = ("0" + dateObj.getHours()).slice(-2)
+        let minutes = ("0" + dateObj.getMinutes()).slice(-2)
+        let seconds = ("0" + dateObj.getSeconds()).slice(-2)
 
         formattedDate = `${formattedDate} ${hours}:${minutes}:${seconds}`
     }

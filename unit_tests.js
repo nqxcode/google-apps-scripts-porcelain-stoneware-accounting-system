@@ -98,5 +98,8 @@ function test_removeAssemblyByIndex() {
   removeAssemblyByIndex(2)
 }
 
+function test_recoverOrder() {
+  recoverOrder(6)
+}
 
 
