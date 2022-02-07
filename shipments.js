@@ -115,59 +115,71 @@ function removeShipment(orderNumber) {
 }
 
 function moveShipmentToFree(orderNumber) {
-  let orderData = findShipment(orderNumber)
-  if (!orderData) {
-    throw new Error(`Заказа с номером ${orderNumber} уже существует в отгрузке`)
-  }
+  audit.shipments.startTagging('Перемещение из отгрузки в свободные')
 
-  addFree({
-    diameter: orderData.diameter,
-    length_min: orderData.length_min,
-    length_max: orderData.length_max,
-    width: orderData.width,
-    stone_shape: orderData.stone_shape,
-    stone_color: orderData.stone_color
-  })
-
-  Trash.withPermanentDeletion(() => {
-    let isRemovedFromShipment = removeShipment(orderNumber)
-    if (!isRemovedFromShipment) {
-      throw new Error(`Заказ с номером ${orderNumber} не был удален из отгрузки`)
+  try {
+    let orderData = findShipment(orderNumber)
+    if (!orderData) {
+      throw new Error(`Заказа с номером ${orderNumber} уже существует в отгрузке`)
     }
-  })
+
+    addFree({
+      diameter: orderData.diameter,
+      length_min: orderData.length_min,
+      length_max: orderData.length_max,
+      width: orderData.width,
+      stone_shape: orderData.stone_shape,
+      stone_color: orderData.stone_color
+    })
+
+    Trash.withPermanentDeletion(() => {
+      let isRemovedFromShipment = removeShipment(orderNumber)
+      if (!isRemovedFromShipment) {
+        throw new Error(`Заказ с номером ${orderNumber} не был удален из отгрузки`)
+      }
+    })
+  } finally {
+    audit.shipments.stopTagging()
+  }
 }
 
 function moveShipmentToAssembly(orderNumber) {
-  let orderData = findShipment(orderNumber)
-  if (!orderData) {
-    throw new Error(`Заказа с номером ${orderNumber} не существует в отгрузке`)
-  }
+  audit.shipments.startTagging('Перемещение из отгрузки в сборку')
 
-  addAssembly(
-      {
-        date_of_adoption: formatDate(Date.now()),
-        order_number: orderData.order_number,
-        diameter: orderData.diameter,
-        length_min: orderData.length_min,
-        length_max: orderData.length_max,
-        width: orderData.width,
-        stone_shape: orderData.stone_shape,
-        stone_color: orderData.stone_color
-      },
-      {
-        checkOrderNumberUnique: {
-          assemblies: true,
-          shipments: false
-        }
-      }
-  )
-
-  Trash.withPermanentDeletion(() => {
-    let isRemovedFromShipment = removeShipment(orderNumber)
-    if (!isRemovedFromShipment) {
-      throw new Error(`Заказ с номером ${orderNumber} не был удален из отгрузки`)
+  try {
+    let orderData = findShipment(orderNumber)
+    if (!orderData) {
+      throw new Error(`Заказа с номером ${orderNumber} не существует в отгрузке`)
     }
-  })
+
+    addAssembly(
+        {
+          date_of_adoption: formatDate(Date.now()),
+          order_number: orderData.order_number,
+          diameter: orderData.diameter,
+          length_min: orderData.length_min,
+          length_max: orderData.length_max,
+          width: orderData.width,
+          stone_shape: orderData.stone_shape,
+          stone_color: orderData.stone_color
+        },
+        {
+          checkOrderNumberUnique: {
+            assemblies: true,
+            shipments: false
+          }
+        }
+    )
+
+    Trash.withPermanentDeletion(() => {
+      let isRemovedFromShipment = removeShipment(orderNumber)
+      if (!isRemovedFromShipment) {
+        throw new Error(`Заказ с номером ${orderNumber} не был удален из отгрузки`)
+      }
+    })
+  } finally {
+    audit.shipments.stopTagging()
+  }
 }
 
 function getShipments(filter) {

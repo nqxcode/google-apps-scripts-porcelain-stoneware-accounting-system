@@ -46,19 +46,29 @@ function prepareTrashItem(trashItemData, trashIndex) {
 
 
 function recoverOrder(orderIndex) {
-  let trashItem = findTrashItem(orderIndex);
-  if (trashItem) {
-    Trash.recover(trashItem)
-    removeTrashItem(orderIndex)
-    audit.trash.log(Audit.Action.DELETE, {prev: trashItem, row: getTrashRowByIndex(orderIndex), message: 'Восстановление заказа из корзины'})
+  audit.trash.startTagging('Восстановление заказа из корзины')
+  try {
+    let trashItem = findTrashItem(orderIndex);
+    if (trashItem) {
+      Trash.recover(trashItem)
+      removeTrashItem(orderIndex)
+      audit.trash.log(Audit.Action.DELETE, {prev: trashItem, row: getTrashRowByIndex(orderIndex)})
+    }
+  } finally {
+    audit.trash.stopTagging()
   }
 }
 
 function removeOrder(orderIndex) {
-  let trashItem = findTrashItem(orderIndex);
-  if (trashItem) {
-    removeTrashItem(orderIndex)
-    audit.trash.log(Audit.Action.DELETE, {prev: trashItem, row: getTrashRowByIndex(orderIndex), message: 'Безвозвратное удаление заказа из корзины'})
+  audit.trash.startTagging('Безвозвратное удаление заказа из корзины')
+  try {
+    let trashItem = findTrashItem(orderIndex);
+    if (trashItem) {
+      removeTrashItem(orderIndex)
+      audit.trash.log(Audit.Action.DELETE, {prev: trashItem, row: getTrashRowByIndex(orderIndex)})
+    }
+  } finally {
+    audit.trash.stopTagging()
   }
 }
 

@@ -66,8 +66,6 @@ Trash.withPermanentDeletion = function (callable) {
   try {
     Trash.enabled = false
     callable()
-  } catch (Error) {
-    throw Error
   } finally {
     Trash.enabled = true
   }

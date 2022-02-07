@@ -94,64 +94,73 @@ function updateAssembly(orderIndex, assemblyData) {
 }
 
 function moveAssemblyToShipment(orderNumber) {
-  let orderData = findAssembly(orderNumber)
-  if (!orderData) {
-    throw new Error(`Заказа с номером ${orderNumber} не существует в сборке`)
-  }
-
-  addShipment(
-      {
-        date_of_adoption: formatDate(Date.now()),
-        order_number: orderData.order_number,
-        diameter: orderData.diameter,
-        length_min: orderData.length_min,
-        length_max: orderData.length_max,
-        width: orderData.width,
-        stone_shape: orderData.stone_shape,
-        stone_color: orderData.stone_color
-      },
-      {
-        checkOrderNumberUnique: {
-          assemblies: false,
-          shipments: true
-        }
-      }
-  )
-
-
-  Trash.withPermanentDeletion(() => {
-    let isRemovedFromAssembly = removeAssemblyByIndex(orderData.order_index)
-    if (!isRemovedFromAssembly) {
-      throw new Error(`Заказ с номером ${orderNumber} не был удален из сборки`)
+  audit.assemblies.startTagging('Перемещение из сборки в отгрузку')
+  try {
+    let orderData = findAssembly(orderNumber)
+    if (!orderData) {
+      throw new Error(`Заказа с номером ${orderNumber} не существует в сборке`)
     }
-  })
+
+    addShipment(
+        {
+          date_of_adoption: formatDate(Date.now()),
+          order_number: orderData.order_number,
+          diameter: orderData.diameter,
+          length_min: orderData.length_min,
+          length_max: orderData.length_max,
+          width: orderData.width,
+          stone_shape: orderData.stone_shape,
+          stone_color: orderData.stone_color
+        },
+        {
+          checkOrderNumberUnique: {
+            assemblies: false,
+            shipments: true
+          }
+        }
+    )
+
+    Trash.withPermanentDeletion(() => {
+      let isRemovedFromAssembly = removeAssemblyByIndex(orderData.order_index)
+      if (!isRemovedFromAssembly) {
+        throw new Error(`Заказ с номером ${orderNumber} не был удален из сборки`)
+      }
+    })
+  } finally {
+    audit.assemblies.stopTagging()
+  }
 }
 
 function moveAssemblyToFree(orderIndex) {
-  let orderData = getAssemblyByIndex(orderIndex)
-  if (!orderData) {
-    throw new Error(`Заказа с номером по порядку ${orderIndex + 1} не существует в сборке`)
-  }
-
-  addFree(
-      {
-        date_of_adoption: formatDate(Date.now()),
-        diameter: orderData.diameter,
-        length_min: orderData.length_min,
-        length_max: orderData.length_max,
-        width: orderData.width,
-        stone_shape: orderData.stone_shape,
-        stone_color: orderData.stone_color,
-        comment: orderData.comment
-      }
-  )
-
-  Trash.withPermanentDeletion(() => {
-    let isRemovedFromAssembly = removeAssemblyByIndex(orderIndex)
-    if (!isRemovedFromAssembly) {
-      throw new Error(`Заказ с номером по порядку ${orderIndex + 1} не был удален из сборки`)
+  audit.assemblies.startTagging('Перемещение из сборки в свободные')
+  try {
+    let orderData = getAssemblyByIndex(orderIndex)
+    if (!orderData) {
+      throw new Error(`Заказа с номером по порядку ${orderIndex + 1} не существует в сборке`)
     }
-  })
+
+    addFree(
+        {
+          date_of_adoption: formatDate(Date.now()),
+          diameter: orderData.diameter,
+          length_min: orderData.length_min,
+          length_max: orderData.length_max,
+          width: orderData.width,
+          stone_shape: orderData.stone_shape,
+          stone_color: orderData.stone_color,
+          comment: orderData.comment
+        }
+    )
+
+    Trash.withPermanentDeletion(() => {
+      let isRemovedFromAssembly = removeAssemblyByIndex(orderIndex)
+      if (!isRemovedFromAssembly) {
+        throw new Error(`Заказ с номером по порядку ${orderIndex + 1} не был удален из сборки`)
+      }
+    })
+  } finally {
+    audit.assemblies.stopTagging()
+  }
 }
 
 function findAssembly(orderNumber) {
