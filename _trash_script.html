@@ -5,9 +5,8 @@
         google.script.run.withSuccessHandler(content => {
           let trashList = JSON.parse(content)
           trashListElement.empty()
-
           trashList.forEach(trashed => {
-            let trashRowHtml = ejs.render(trashRowTemplate, trashed, {delimiter: '?'});
+            let trashRowHtml = ejs.render(trashRowTemplate, {...trashed, ...auth}, {delimiter: '?'});
             trashListElement.append(trashRowHtml)
           })
 

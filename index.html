@@ -38,13 +38,13 @@
                 </li>
               <? } ?>
 
-              <? if (Auth.check('report')) { ?>
+              <? if (Auth.check('show-report')) { ?>
                 <li class="nav-item" role="presentation">
                   <a class="nav-link" id="report-tab" data-toggle="tab" href="#report" role="tab" aria-controls="report" aria-selected="false">Отчёт<sup></sup></a>
                 </li>
               <? } ?>
 
-              <? if (Auth.check('trash')) { ?>
+              <? if (Auth.check('show-trash')) { ?>
                 <li class="nav-item" role="presentation">
                   <a class="nav-link" id="trash-tab" data-toggle="tab" href="#trash" role="tab" aria-controls="report" aria-selected="false">Корзина<sup></sup></a>
                 </li>
@@ -160,7 +160,7 @@
               </div>
             <? } ?>
 
-            <? if (Auth.check('report')) { ?>
+            <? if (Auth.check('show-report')) { ?>
               <div class="tab-pane fade" id="report" role="tabpanel" aria-labelledby="report-tab">
                 <div class="row">
                   <div class="col-12">
@@ -178,7 +178,7 @@
               </div>
             <? } ?>
 
-            <? if (Auth.check('trash')) { ?>
+            <? if (Auth.check('show-trash')) { ?>
               <div class="tab-pane fade" id="trash" role="tabpanel" aria-labelledby="trash-tab">
                 <div class="row">
                   <div class="col-12">
@@ -217,8 +217,10 @@
           window.trashRowTemplate = <?!= JSON.stringify(getContent('_trash_row_template')) ?>;
         </script>
 
-        <script> 
-          window.spreadSheetUrl = <?= spreadSheetUrl ?>;
+        <!-- Include global variables -->
+        <script>
+
+          window.auth = JSON.parse(<?= JSON.stringify(auth) ?>);
         </script>
         
         <!-- Include modals templates -->

@@ -32,6 +32,13 @@ let trash = {
   free: new Trash(sheetNames.free),
 }
 
+let auth = {
+  can: {
+    'show-report': Auth.check('show-report'),
+    'remove-from-trash': Auth.check('remove-from-trash'),
+  }
+}
+
 function doGet(e) {    
   return HtmlService.createTemplateFromFile('index').evaluate().setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL); 
 }
