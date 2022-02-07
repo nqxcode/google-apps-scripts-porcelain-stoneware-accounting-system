@@ -139,5 +139,5 @@ function refreshReport(filter) {
   createReport(filter)
   setReportDate(new Date())
 
-  audit.report.log(Audit.Action.CREATE, {tag: 'Отобрано: ' + reportSheet.getLastRow() - getReportOffset() + 1})
+  audit.report.log(Audit.Action.CREATE, {tag: 'Отобрано: ' + (reportSheet.getLastRow() - getReportOffset() + 1)})
 }
