@@ -10,131 +10,191 @@
     </head>
     <body>
         <div class="container-fluid">
-          <?!= include('_navbar'); ?>
+          <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="javascript:void(0);">Система учета керамогранита и столешниц</a>
+
+            <ul class="nav nav-tabs mr-auto" id="nav-tab" role="tablist">
+              <? if (Auth.check('assembly')) { ?>   
+                <li class="nav-item" role="presentation">
+                  <a class="nav-link active" id="assembly-tab" data-toggle="tab" href="#assembly" role="tab" aria-controls="assembly" aria-selected="false">Склад. Сборка<sup></sup></a>
+                </li>      
+              <? } ?>
+
+              <? if (Auth.check('shipment')) { ?>   
+                <li class="nav-item" role="presentation">
+                  <a class="nav-link" id="shipment-tab" data-toggle="tab" href="#shipment" role="tab" aria-controls="shipment" aria-selected="false">Склад. Отгрузка<sup></sup></a>
+                </li>
+              <? } ?>
+
+              <? if (Auth.check('free')) { ?>   
+                <li class="nav-item" role="presentation">
+                  <a class="nav-link" id="free-tab" data-toggle="tab" href="#free" role="tab" aria-controls="free" aria-selected="false">Свободные<sup></sup></a>
+                </li>
+              <? } ?>
+
+              <? if (Auth.check('properties')) { ?>   
+                <li class="nav-item" role="presentation">
+                  <a class="nav-link" id="properties-tab" data-toggle="tab" href="#properties" role="tab" aria-controls="properties" aria-selected="false">Свойства</a>
+                </li>
+              <? } ?>
+
+              <? if (Auth.check('report')) { ?>
+                <li class="nav-item" role="presentation">
+                  <a class="nav-link" id="report-tab" data-toggle="tab" href="#report" role="tab" aria-controls="report" aria-selected="false">Отчёт<sup></sup></a>
+                </li>
+              <? } ?>
+
+              <? if (Auth.check('trash')) { ?>
+                <li class="nav-item" role="presentation">
+                  <a class="nav-link" id="trash-tab" data-toggle="tab" href="#trash" role="tab" aria-controls="report" aria-selected="false">Корзина<sup></sup></a>
+                </li>
+              <? } ?>
+            </ul>
+
+            <form class="form-inline my-2 my-lg-0 search-form" onsubmit="javascript: return false;">
+              <input class="form-control mr-sm-2" data-element="query" type="search" placeholder="Поиск" aria-label="Search">    
+              <button data-action="search.clear" type="button" class="btn bg-transparent" style="margin-left: -50px; z-index: 100;">
+                <i class="fa fa-times-circle" style="opacity: 0.5;"></i>
+              </button>
+            </form>
+          </nav>
 
           <div class="tab-content" id="assemblies_tab_content">
-            <div class="tab-pane fade active show" id="assembly" role="tabpanel" aria-labelledby="assembly-tab">
+            <? if (Auth.check('assembly')) { ?>   
+              <div class="tab-pane fade active show" id="assembly" role="tabpanel" aria-labelledby="assembly-tab">
 
-              <ul class="nav nav-tabs" id="assembly_stone_shapes_tab_list" role="tablist"></ul>
+                <ul class="nav nav-tabs" id="assembly_stone_shapes_tab_list" role="tablist"></ul>
 
-              <div class="tab-content" id="assembly_stones_tab_content">
-                <div class="tab-pane fade active show" role="tabpanel" aria-labelledby="assembly-tab"></div>
+                <div class="tab-content" id="assembly_stones_tab_content">
+                  <div class="tab-pane fade active show" role="tabpanel" aria-labelledby="assembly-tab"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                      <div class="grid">
+                        <?!= include('_assembly_list_header'); ?>
+                        <?!= include('_assembly_filter'); ?>
+                        <?!= include('_assembly_form'); ?>
+                      </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                      <?!= include('_assembly_list_tab_content'); ?>
+                    </div>
+                </div>
               </div>
+            <? } ?>
 
-              <div class="row">
+            <? if (Auth.check('shipment')) { ?>   
+              <div class="tab-pane fade" id="shipment" role="tabpanel" aria-labelledby="shipment-tab">
+                <div class="row">
+                    <div class="col-12">
+                      <div class="grid">
+                        <?!= include('_shipment_list_header'); ?>
+                        <?!= include('_shipment_filter'); ?>
+                      </div>
+                    </div>
+                </div>      
+                <div class="row">
+                    <div class="col-12">
+                      <?!= include('_shipment_list'); ?>
+                    </div>
+                </div> 
+              </div>
+            <? } ?>
+
+            <? if (Auth.check('free')) { ?>   
+              <div class="tab-pane fade" id="free" role="tabpanel" aria-labelledby="free-tab">
+                <div class="row">
+                    <div class="col-12">
+                      <div class="grid">
+                        <?!= include('_free_list_header'); ?>
+                        <?!= include('_free_filter'); ?>
+                      </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                      <?!= include('_free_list'); ?>
+                    </div>
+                </div> 
+              </div>
+            <? } ?>
+
+            <? if (Auth.check('properties')) { ?>   
+              <div class="tab-pane fade" id="properties" role="tabpanel" aria-labelledby="properties-tab">
+                <ul class="nav nav-tabs" id="propertiesTabList" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="stone-color-tab" data-toggle="tab" href="#stone_color_tab" role="tab" aria-controls="stone_color_tab" aria-selected="true">Цвет камня</a>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="stone-shape-tab" data-toggle="tab" href="#stone_shape_tab" role="tab" aria-controls="stone_shape_tab" aria-selected="false">Форма камня</a>
+                  </li>
+                </ul>
+                <div class="tab-content" id="propertiesTabContent">
+                  <div class="tab-pane fade show active" id="stone_color_tab" role="tabpanel" aria-labelledby="stone-color-tab">
+                    <div class="row">
+                        <div class="col-12">
+                          <?!= include('_stone_color_form'); ?>                    
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-12">
+                          <?!= include('_stone_color_list'); ?>
+                        </div>
+                    </div> 
+                  </div>
+                  <div class="tab-pane fade" id="stone_shape_tab" role="stone_shape" aria-labelledby="stone-shape-tab">
+                    <div class="row">
+                        <div class="col-12">
+                          <?!= include('_stone_shape_form'); ?>                    
+                        </div>
+                        <div class="col-12">
+                          <?!= include('_stone_shape_list'); ?>                    
+                        </div>                  
+                    </div> 
+                  </div>  
+                </div>
+              </div>
+            <? } ?>
+
+            <? if (Auth.check('report')) { ?>
+              <div class="tab-pane fade" id="report" role="tabpanel" aria-labelledby="report-tab">
+                <div class="row">
                   <div class="col-12">
                     <div class="grid">
-                      <?!= include('_assembly_list_header'); ?>
-                      <?!= include('_assembly_filter'); ?>
-                      <?!= include('_assembly_form'); ?>
+                      <?!= include('_report_header'); ?>
+                      <?!= include('_report_filter'); ?>
                     </div>
                   </div>
-              </div>
-
-              <div class="row">
+                </div>
+                <div class="row">
                   <div class="col-12">
-                    <?!= include('_assembly_list_tab_content'); ?>
+                    <?!= include('_report_list'); ?>
                   </div>
+                </div>
               </div>
-            </div>
+            <? } ?>
 
-            <div class="tab-pane fade" id="shipment" role="tabpanel" aria-labelledby="shipment-tab">
-              <div class="row">
+            <? if (Auth.check('trash')) { ?>
+              <div class="tab-pane fade" id="trash" role="tabpanel" aria-labelledby="trash-tab">
+                <div class="row">
                   <div class="col-12">
                     <div class="grid">
-                      <?!= include('_shipment_list_header'); ?>
-                      <?!= include('_shipment_filter'); ?>
+                      <?!= include('_trash_header'); ?>
                     </div>
                   </div>
-              </div>      
-              <div class="row">
+                </div>
+                <div class="row">
                   <div class="col-12">
-                    <?!= include('_shipment_list'); ?>
+                    <?!= include('_trash_list'); ?>
                   </div>
-              </div> 
-            </div>
+                </div>
+              </div>
+            <? } ?>
 
-            <div class="tab-pane fade" id="free" role="tabpanel" aria-labelledby="free-tab">
-              <div class="row">
-                  <div class="col-12">
-                    <div class="grid">
-                      <?!= include('_free_list_header'); ?>
-                      <?!= include('_free_filter'); ?>
-                    </div>
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-12">
-                    <?!= include('_free_list'); ?>
-                  </div>
-              </div> 
-            </div>
-
-            <div class="tab-pane fade" id="properties" role="tabpanel" aria-labelledby="properties-tab">
-              <ul class="nav nav-tabs" id="propertiesTabList" role="tablist">
-                <li class="nav-item" role="presentation">
-                  <a class="nav-link active" id="stone-color-tab" data-toggle="tab" href="#stone_color_tab" role="tab" aria-controls="stone_color_tab" aria-selected="true">Цвет камня</a>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <a class="nav-link" id="stone-shape-tab" data-toggle="tab" href="#stone_shape_tab" role="tab" aria-controls="stone_shape_tab" aria-selected="false">Форма камня</a>
-                </li>
-              </ul>
-              <div class="tab-content" id="propertiesTabContent">
-                <div class="tab-pane fade show active" id="stone_color_tab" role="tabpanel" aria-labelledby="stone-color-tab">
-                  <div class="row">
-                      <div class="col-12">
-                        <?!= include('_stone_color_form'); ?>                    
-                      </div>
-                  </div> 
-                  <div class="row">
-                      <div class="col-12">
-                        <?!= include('_stone_color_list'); ?>
-                      </div>
-                  </div> 
-                </div>
-                <div class="tab-pane fade" id="stone_shape_tab" role="stone_shape" aria-labelledby="stone-shape-tab">
-                  <div class="row">
-                      <div class="col-12">
-                        <?!= include('_stone_shape_form'); ?>                    
-                      </div>
-                      <div class="col-12">
-                        <?!= include('_stone_shape_list'); ?>                    
-                      </div>                  
-                  </div> 
-                </div>  
-              </div>
-            </div>
-
-            <div class="tab-pane fade" id="report" role="tabpanel" aria-labelledby="report-tab">
-              <div class="row">
-                <div class="col-12">
-                  <div class="grid">
-                    <?!= include('_report_header'); ?>
-                    <?!= include('_report_filter'); ?>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-12">
-                  <?!= include('_report_list'); ?>
-                </div>
-              </div>
-            </div>
-
-            <div class="tab-pane fade" id="trash" role="tabpanel" aria-labelledby="trash-tab">
-              <div class="row">
-                <div class="col-12">
-                  <div class="grid">
-                    <?!= include('_trash_header'); ?>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-12">
-                  <?!= include('_trash_list'); ?>
-                </div>
-              </div>
-            </div>
           </div>
 
         </div>
