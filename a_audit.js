@@ -1,16 +1,15 @@
 let Audit = function (section) {  
   this.section = section
 
-  function normalizeObject(object, excludeProps) {
-    let result = {}
-    excludeProps = excludeProps || []
+  function normalizeObject(object, includeProps) {
+    let result = {}    
 
     object = object || {}
 
     Object.keys(object).forEach(propertyKey => {
       let propertyValue = object[propertyKey]
 
-      if (excludeProps.includes(propertyKey)) {
+      if (includeProps.length > 0 && !includeProps.includes(propertyKey)) {
         return
       }
 
@@ -109,10 +108,10 @@ let Audit = function (section) {
     let row = options.row ? `#${options.row}` : null
     let orderNumber = getOrderNumber(options)
 
-    let excludeColumns = ['order_index', 'stone_shapes', 'stone_colors'];
+    let trackingProps = Audit.getTrackingProps()
 
-    let novel = options.novel ? normalizeObject(options.novel, excludeColumns) : null
-    let prev = options.prev ? normalizeObject(options.prev, excludeColumns) : null
+    let novel = options.novel ? normalizeObject(options.novel, trackingProps) : null
+    let prev = options.prev ? normalizeObject(options.prev, trackingProps) : null
     let diff = novel && prev ? diffObjects(novel, prev) : null
 
     novel = removeEmpty(novel || {})
@@ -170,6 +169,22 @@ Audit.startTagging = function (tag) {
 
 Audit.stopTagging = function () {
   Audit.tag = null
+}
+
+Audit.trackingPropsCallable = null
+
+Audit.setTrackingPropsCallable = function(callable) {
+  Audit.trackingPropsCallable = callable
+}
+
+Audit.trackingProps = null
+
+Audit.getTrackingProps = function() {
+    if (Audit.trackingPropsCallable && Audit.trackingProps === null) {
+      Audit.trackingProps = Audit.trackingPropsCallable.call(this)       
+    }
+
+    return Audit.trackingProps || []
 }
 
 Audit.Action = {CREATE: 'Создание', UPDATE: 'Обновление', DELETE: 'Удаление'}

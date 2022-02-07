@@ -105,3 +105,7 @@ function test_removeShipment() {
 function test_refreshReport() {
   refreshReport({packed: true})
 }
+
+function test_recoverOrder() {
+  recoverOrder(0)
+}

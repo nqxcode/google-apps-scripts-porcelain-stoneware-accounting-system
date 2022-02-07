@@ -50,3 +50,7 @@ function escapeValue(value)
 
   return null
 }
+
+function onlyUnique(value, index, self) {
+  return self.indexOf(value) === index;
+}

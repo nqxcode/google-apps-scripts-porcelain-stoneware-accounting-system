@@ -184,3 +184,12 @@ function makeOrderFilter(filter) {
     return isMatch
   }
 }
+
+function getAuditTrackingProps() {
+  return [
+    ...getAssemblyColumnsMap(), 
+    ...getShipmentColumnsMap(), 
+    ...getFreeColumnsMap()
+  ].filter(onlyUnique)
+}
+

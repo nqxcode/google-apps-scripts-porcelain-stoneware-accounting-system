@@ -18,6 +18,8 @@ let reportSheet = spreadSheet.getSheetByName(sheetNames.report)
 let auditSheet = spreadSheet.getSheetByName(sheetNames.audit)
 let trashSheet = spreadSheet.getSheetByName(sheetNames.trash)
 
+Audit.setTrackingPropsCallable(getAuditTrackingProps)
+
 let audit = {
   assemblies: new Audit(sheetNames.assemblies),
   shipments: new Audit(sheetNames.shipments),
