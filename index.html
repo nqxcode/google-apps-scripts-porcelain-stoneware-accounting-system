@@ -14,25 +14,25 @@
             <a class="navbar-brand" href="javascript:void(0);">Система учета керамогранита и столешниц</a>
 
             <ul class="nav nav-tabs mr-auto" id="nav-tab" role="tablist">
-              <? if (Auth.check('assembly')) { ?>   
+              <? if (Auth.check('show-assembly')) { ?>   
                 <li class="nav-item" role="presentation">
                   <a class="nav-link active" id="assembly-tab" data-toggle="tab" href="#assembly" role="tab" aria-controls="assembly" aria-selected="false">Склад. Сборка<sup></sup></a>
                 </li>      
               <? } ?>
 
-              <? if (Auth.check('shipment')) { ?>   
+              <? if (Auth.check('show-shipment')) { ?>   
                 <li class="nav-item" role="presentation">
                   <a class="nav-link" id="shipment-tab" data-toggle="tab" href="#shipment" role="tab" aria-controls="shipment" aria-selected="false">Склад. Отгрузка<sup></sup></a>
                 </li>
               <? } ?>
 
-              <? if (Auth.check('free')) { ?>   
+              <? if (Auth.check('show-free')) { ?>   
                 <li class="nav-item" role="presentation">
                   <a class="nav-link" id="free-tab" data-toggle="tab" href="#free" role="tab" aria-controls="free" aria-selected="false">Свободные<sup></sup></a>
                 </li>
               <? } ?>
 
-              <? if (Auth.check('properties')) { ?>   
+              <? if (Auth.check('show-properties')) { ?>   
                 <li class="nav-item" role="presentation">
                   <a class="nav-link" id="properties-tab" data-toggle="tab" href="#properties" role="tab" aria-controls="properties" aria-selected="false">Свойства</a>
                 </li>
@@ -60,7 +60,7 @@
           </nav>
 
           <div class="tab-content" id="assemblies_tab_content">
-            <? if (Auth.check('assembly')) { ?>   
+            <? if (Auth.check('show-assembly')) { ?>   
               <div class="tab-pane fade active show" id="assembly" role="tabpanel" aria-labelledby="assembly-tab">
 
                 <ul class="nav nav-tabs" id="assembly_stone_shapes_tab_list" role="tablist"></ul>
@@ -87,7 +87,7 @@
               </div>
             <? } ?>
 
-            <? if (Auth.check('shipment')) { ?>   
+            <? if (Auth.check('show-shipment')) { ?>   
               <div class="tab-pane fade" id="shipment" role="tabpanel" aria-labelledby="shipment-tab">
                 <div class="row">
                     <div class="col-12">
@@ -105,7 +105,7 @@
               </div>
             <? } ?>
 
-            <? if (Auth.check('free')) { ?>   
+            <? if (Auth.check('show-free')) { ?>   
               <div class="tab-pane fade" id="free" role="tabpanel" aria-labelledby="free-tab">
                 <div class="row">
                     <div class="col-12">
@@ -123,7 +123,7 @@
               </div>
             <? } ?>
 
-            <? if (Auth.check('properties')) { ?>   
+            <? if (Auth.check('show-properties')) { ?>   
               <div class="tab-pane fade" id="properties" role="tabpanel" aria-labelledby="properties-tab">
                 <ul class="nav nav-tabs" id="propertiesTabList" role="tablist">
                   <li class="nav-item" role="presentation">
