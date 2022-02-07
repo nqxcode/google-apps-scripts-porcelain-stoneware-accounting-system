@@ -49,6 +49,13 @@ function recoverOrder(orderIndex) {
   }
 }
 
+function removeOrder(orderIndex) {
+  let trashItem = findTrashItem(orderIndex);
+  if (trashItem) {
+    removeTrashItem(orderIndex)
+  }
+}
+
 function findTrashItem(orderIndex) {
   let trashItems = getTrash()
   let trashItem = trashItems[orderIndex] || null

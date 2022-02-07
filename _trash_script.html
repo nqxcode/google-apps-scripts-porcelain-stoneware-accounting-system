@@ -29,6 +29,17 @@
       })
     }
 
+
+    function removeOrder(orderIndex) {
+      return new Promise((resolve, reject) => {
+        google.script.run.withSuccessHandler(response => {
+          resolve(response)
+        }).withFailureHandler(error => {
+          reject(error)
+        }).removeOrder(orderIndex);
+      })
+    }
+
     loadTrash()
 
     $(document).on('click', 'button[data-action="trash.recover"]', function(e) {
@@ -91,6 +102,61 @@
 
       recoverOrderButton.data('orderNumber', orderNumber)
       recoverOrderButton.data('orderIndex', orderIndex)
+    })
+
+
+    $(document).on('click', 'button[data-action="trash.remove"]', function(e) {
+      if (!trashListElement.data('block')) {
+        trashListElement.data('block', true)
+
+
+        let loader = $(this).find('[data-element="loader"]')
+
+        let orderIndex = $(this).data('orderIndex')
+        let trashRemoveModal = $('#trashRemoveModal')
+
+        loader.show()
+
+        removeOrder(orderIndex)
+            .then(
+                () => {
+                  loadTrash().then(
+                      () => {
+                        loader.hide()
+                        trashRemoveModal.modal('hide')
+
+                        trashListElement.data('block', false)
+                      }
+                  )
+                },
+                error => {
+                  loadTrash().then(() => {
+                    messageModal.data('message', prepareError(error))
+                    messageModal.modal('show')
+
+                    loader.hide()
+                    trashRemoveModal.modal('hide')
+
+                    trashListElement.data('block', false)
+                  })
+                }
+            )
+      }
+    })
+
+    $('#trashRemoveModal').on('show.bs.modal', function (e) {
+      let button = $(e.relatedTarget)
+      let orderNumber = button.data('orderNumber')
+      let orderIndex = button.data('orderIndex')
+
+      let modal = $(this)
+      modal.find('[data-element="order-number"]').text(orderNumber || (orderIndex + 1))
+      modal.find('[data-element="sequential-number-info"]').css('display', orderNumber ? 'none' : 'inline')
+
+      let removeOrderButton = modal.find('button[data-action="trash.remove"]')
+
+      removeOrderButton.data('orderNumber', orderNumber)
+      removeOrderButton.data('orderIndex', orderIndex)
     })
 
     $(document).on('trash.refresh', function() {
