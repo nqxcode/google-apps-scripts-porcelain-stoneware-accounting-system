@@ -154,7 +154,7 @@ let Audit = function (section) {
   this.log = function (action, options) {
     options = options || {}
 
-    let payload = makePayload(options)
+    let payload = this.makePayload(options)
 
     auditSheet.appendRow([
       formatDateTime(new Date()),
