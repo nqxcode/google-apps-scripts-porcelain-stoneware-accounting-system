@@ -43,12 +43,13 @@ function prepareTrashItem(trashItemData, trashIndex) {
 
 function recoverOrder(orderIndex) {
   try {
-    Audit.withCommenting('Восстановление заказа из корзины')
     let trashItem = findTrashItem(orderIndex);
     if (trashItem) {
+      Audit.withCommenting('Восстановление заказа из корзины: добавление в соответствующий раздел')
       Trash.recover(trashItem)
+
+      Audit.withCommenting('Восстановление заказа из корзины: удаление из корзины')
       removeTrashItem(orderIndex)
-      audit.trash.log(Audit.Action.DELETE, {prev: trashItem, row: getTrashRowByIndex(orderIndex)})
     }
   } finally {
     Audit.withoutCommenting()
@@ -57,11 +58,10 @@ function recoverOrder(orderIndex) {
 
 function removeOrder(orderIndex) {
   try {
-    Audit.withCommenting('Безвозвратное удаление заказа из корзины')
     let trashItem = findTrashItem(orderIndex);
     if (trashItem) {
+      Audit.withCommenting('Безвозвратное удаление заказа из корзины')
       removeTrashItem(orderIndex)
-      audit.trash.log(Audit.Action.DELETE, {prev: trashItem, row: getTrashRowByIndex(orderIndex)})
     }
   } finally {
     Audit.withoutCommenting()
@@ -83,5 +83,6 @@ function removeTrashItem(orderIndex) {
   let trashItem = findTrashItem(orderIndex)
   if (trashItem) {
     trashSheet.deleteRow(getTrashRowByIndex(trashItem.order_index))
+    audit.trash.log(Audit.Action.DELETE, {prev: trashItem, row: getTrashRowByIndex(orderIndex)})
   }
 }
