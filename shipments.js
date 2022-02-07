@@ -144,14 +144,13 @@ function moveShipmentToFree(orderNumber) {
 }
 
 function moveShipmentToAssembly(orderNumber) {
-  Audit.withCommenting('Перемещение из отгрузки в сборку')
-
   try {
     let orderData = findShipment(orderNumber)
     if (!orderData) {
       throw new Error(`Заказа с номером ${orderNumber} не существует в отгрузке`)
     }
 
+    Audit.withCommenting('Перемещение из отгрузки в сборку: добавление в сборку')
     addAssembly(
         {
           date_of_adoption: formatDate(Date.now()),
@@ -172,6 +171,7 @@ function moveShipmentToAssembly(orderNumber) {
     )
 
     Trash.withPermanentDeletion(() => {
+      Audit.withCommenting('Перемещение из отгрузки в сборку: удаление из отгрузки')
       let isRemovedFromShipment = removeShipment(orderNumber)
       if (!isRemovedFromShipment) {
         throw new Error(`Заказ с номером ${orderNumber} не был удален из отгрузки`)
