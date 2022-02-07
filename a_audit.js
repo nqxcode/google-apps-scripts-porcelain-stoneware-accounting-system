@@ -1,6 +1,5 @@
 let Audit = function (section) {  
   this.section = section
-  this.tag = null
 
   function normalizeObject(object, excludeProps) {
     let result = {}
@@ -119,7 +118,7 @@ let Audit = function (section) {
     novel = removeEmpty(novel || {})
     prev = removeEmpty(prev || {})
 
-    let tag = options.tag ? options.tag : this.tag
+    let tag = options.tag ? options.tag : Audit.tag
 
     return {
       row: row ? row : '-',
@@ -143,14 +142,6 @@ let Audit = function (section) {
     return null
   }
 
-  this.startTagging = function (tag) {
-    this.tag = tag
-  }
-
-  this.stopTagging = function () {
-    this.tag = null
-  }
-
   this.log = function (action, options) {
     options = options || {}
 
@@ -171,5 +162,14 @@ let Audit = function (section) {
   }
 }
 
+Audit.tag = null
+
+Audit.startTagging = function (tag) {
+  Audit.tag = tag
+}
+
+Audit.stopTagging = function () {
+  Audit.tag = null
+}
 
 Audit.Action = {CREATE: 'Создание', UPDATE: 'Обновление', DELETE: 'Удаление'}

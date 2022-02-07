@@ -94,7 +94,7 @@ function updateAssembly(orderIndex, assemblyData) {
 }
 
 function moveAssemblyToShipment(orderNumber) {
-  audit.assemblies.startTagging('Перемещение из сборки в отгрузку')
+  Audit.startTagging('Перемещение из сборки в отгрузку')
   try {
     let orderData = findAssembly(orderNumber)
     if (!orderData) {
@@ -127,12 +127,12 @@ function moveAssemblyToShipment(orderNumber) {
       }
     })
   } finally {
-    audit.assemblies.stopTagging()
+    Audit.stopTagging()
   }
 }
 
 function moveAssemblyToFree(orderIndex) {
-  audit.assemblies.startTagging('Перемещение из сборки в свободные')
+  Audit.startTagging('Перемещение из сборки в свободные')
   try {
     let orderData = getAssemblyByIndex(orderIndex)
     if (!orderData) {
@@ -159,7 +159,7 @@ function moveAssemblyToFree(orderIndex) {
       }
     })
   } finally {
-    audit.assemblies.stopTagging()
+    Audit.stopTagging()
   }
 }
 

@@ -67,7 +67,7 @@ function getFreeRowByIndex(orderIndex) {
 
 function moveFreeToAssembly(freeIndex)
 {
-  audit.free.startTagging('Перемещение из свободных в сборку')
+  Audit.startTagging('Перемещение из свободных в сборку')
 
   try {
     let freeData = findFree(freeIndex)
@@ -93,7 +93,7 @@ function moveFreeToAssembly(freeIndex)
       }
     })
   } finally {
-    audit.free.stopTagging()
+    Audit.stopTagging()
   }
 }
 

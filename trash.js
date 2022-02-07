@@ -2,10 +2,6 @@ function getTrashOffset() {
   return 3
 }
 
-function getTrashRowByIndex(orderIndex) {
-  return getTrashOffset() + orderIndex
-}
-
 function getTrashStringified() {
   let orders = getTrash()
 
@@ -46,7 +42,7 @@ function prepareTrashItem(trashItemData, trashIndex) {
 
 
 function recoverOrder(orderIndex) {
-  audit.trash.startTagging('Восстановление заказа из корзины')
+  Audit.startTagging('Восстановление заказа из корзины')
   try {
     let trashItem = findTrashItem(orderIndex);
     if (trashItem) {
@@ -55,12 +51,12 @@ function recoverOrder(orderIndex) {
       audit.trash.log(Audit.Action.DELETE, {prev: trashItem, row: getTrashRowByIndex(orderIndex)})
     }
   } finally {
-    audit.trash.stopTagging()
+    Audit.stopTagging()
   }
 }
 
 function removeOrder(orderIndex) {
-  audit.trash.startTagging('Безвозвратное удаление заказа из корзины')
+  Audit.startTagging('Безвозвратное удаление заказа из корзины')
   try {
     let trashItem = findTrashItem(orderIndex);
     if (trashItem) {
@@ -68,7 +64,7 @@ function removeOrder(orderIndex) {
       audit.trash.log(Audit.Action.DELETE, {prev: trashItem, row: getTrashRowByIndex(orderIndex)})
     }
   } finally {
-    audit.trash.stopTagging()
+    Audit.stopTagging()
   }
 }
 

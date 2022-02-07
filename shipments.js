@@ -115,7 +115,7 @@ function removeShipment(orderNumber) {
 }
 
 function moveShipmentToFree(orderNumber) {
-  audit.shipments.startTagging('Перемещение из отгрузки в свободные')
+  Audit.startTagging('Перемещение из отгрузки в свободные')
 
   try {
     let orderData = findShipment(orderNumber)
@@ -139,12 +139,12 @@ function moveShipmentToFree(orderNumber) {
       }
     })
   } finally {
-    audit.shipments.stopTagging()
+    Audit.stopTagging()
   }
 }
 
 function moveShipmentToAssembly(orderNumber) {
-  audit.shipments.startTagging('Перемещение из отгрузки в сборку')
+  Audit.startTagging('Перемещение из отгрузки в сборку')
 
   try {
     let orderData = findShipment(orderNumber)
@@ -178,7 +178,7 @@ function moveShipmentToAssembly(orderNumber) {
       }
     })
   } finally {
-    audit.shipments.stopTagging()
+    Audit.stopTagging()
   }
 }
 
