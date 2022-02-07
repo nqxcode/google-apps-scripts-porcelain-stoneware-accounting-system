@@ -38,7 +38,7 @@ let Trash = function (section) {
   }
 
   this.put = function(orderObject) {
-    if (Trash.permanent) {
+    if (!Trash.permanent) {
       this.copy(orderObject)
     }    
 
@@ -60,7 +60,7 @@ let Trash = function (section) {
 }
 }
 
-Trash.permanent = true
+Trash.permanent = false
 
 Trash.withPermanentDeletion = function (callable) {
   try {
