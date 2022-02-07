@@ -94,13 +94,13 @@ function updateAssembly(orderIndex, assemblyData) {
 }
 
 function moveAssemblyToShipment(orderNumber) {
-  Audit.startTagging('Перемещение из сборки в отгрузку')
   try {
     let orderData = findAssembly(orderNumber)
     if (!orderData) {
       throw new Error(`Заказа с номером ${orderNumber} не существует в сборке`)
     }
 
+    Audit.withCommenting('Перемещение из сборки в отгрузку: создание в отгрузке')
     addShipment(
         {
           date_of_adoption: formatDate(Date.now()),
@@ -121,24 +121,25 @@ function moveAssemblyToShipment(orderNumber) {
     )
 
     Trash.withPermanentDeletion(() => {
+      Audit.withCommenting('Перемещение из сборки в отгрузку: удаление из сборки')
       let isRemovedFromAssembly = removeAssemblyByIndex(orderData.order_index)
       if (!isRemovedFromAssembly) {
         throw new Error(`Заказ с номером ${orderNumber} не был удален из сборки`)
       }
     })
   } finally {
-    Audit.stopTagging()
+    Audit.withoutCommenting()
   }
 }
 
 function moveAssemblyToFree(orderIndex) {
-  Audit.startTagging('Перемещение из сборки в свободные')
   try {
     let orderData = getAssemblyByIndex(orderIndex)
     if (!orderData) {
       throw new Error(`Заказа с номером по порядку ${orderIndex + 1} не существует в сборке`)
     }
 
+    Audit.withCommenting('Перемещение из сборки в свободные: добавление в свободные')
     addFree(
         {
           date_of_adoption: formatDate(Date.now()),
@@ -153,13 +154,14 @@ function moveAssemblyToFree(orderIndex) {
     )
 
     Trash.withPermanentDeletion(() => {
+      Audit.withCommenting('Перемещение из сборки в свободные: удаление из сборки')
       let isRemovedFromAssembly = removeAssemblyByIndex(orderIndex)
       if (!isRemovedFromAssembly) {
         throw new Error(`Заказ с номером по порядку ${orderIndex + 1} не был удален из сборки`)
       }
     })
   } finally {
-    Audit.stopTagging()
+    Audit.withoutCommenting()
   }
 }
 

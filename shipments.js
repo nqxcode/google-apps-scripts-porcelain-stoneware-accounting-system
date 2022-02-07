@@ -115,14 +115,13 @@ function removeShipment(orderNumber) {
 }
 
 function moveShipmentToFree(orderNumber) {
-  Audit.startTagging('Перемещение из отгрузки в свободные')
-
   try {
     let orderData = findShipment(orderNumber)
     if (!orderData) {
       throw new Error(`Заказа с номером ${orderNumber} уже существует в отгрузке`)
     }
 
+    Audit.withCommenting('Перемещение из отгрузки в свободные: добавление в свободные')
     addFree({
       diameter: orderData.diameter,
       length_min: orderData.length_min,
@@ -133,18 +132,19 @@ function moveShipmentToFree(orderNumber) {
     })
 
     Trash.withPermanentDeletion(() => {
+      Audit.withCommenting('Перемещение из отгрузки в свободные: удаление из отгрузки')
       let isRemovedFromShipment = removeShipment(orderNumber)
       if (!isRemovedFromShipment) {
         throw new Error(`Заказ с номером ${orderNumber} не был удален из отгрузки`)
       }
     })
   } finally {
-    Audit.stopTagging()
+    Audit.withoutCommenting()
   }
 }
 
 function moveShipmentToAssembly(orderNumber) {
-  Audit.startTagging('Перемещение из отгрузки в сборку')
+  Audit.withCommenting('Перемещение из отгрузки в сборку')
 
   try {
     let orderData = findShipment(orderNumber)
@@ -178,7 +178,7 @@ function moveShipmentToAssembly(orderNumber) {
       }
     })
   } finally {
-    Audit.stopTagging()
+    Audit.withoutCommenting()
   }
 }
 

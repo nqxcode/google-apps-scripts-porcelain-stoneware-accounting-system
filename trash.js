@@ -42,8 +42,8 @@ function prepareTrashItem(trashItemData, trashIndex) {
 
 
 function recoverOrder(orderIndex) {
-  Audit.startTagging('Восстановление заказа из корзины')
   try {
+    Audit.withCommenting('Восстановление заказа из корзины')
     let trashItem = findTrashItem(orderIndex);
     if (trashItem) {
       Trash.recover(trashItem)
@@ -51,20 +51,20 @@ function recoverOrder(orderIndex) {
       audit.trash.log(Audit.Action.DELETE, {prev: trashItem, row: getTrashRowByIndex(orderIndex)})
     }
   } finally {
-    Audit.stopTagging()
+    Audit.withoutCommenting()
   }
 }
 
 function removeOrder(orderIndex) {
-  Audit.startTagging('Безвозвратное удаление заказа из корзины')
   try {
+    Audit.withCommenting('Безвозвратное удаление заказа из корзины')
     let trashItem = findTrashItem(orderIndex);
     if (trashItem) {
       removeTrashItem(orderIndex)
       audit.trash.log(Audit.Action.DELETE, {prev: trashItem, row: getTrashRowByIndex(orderIndex)})
     }
   } finally {
-    Audit.stopTagging()
+    Audit.withoutCommenting()
   }
 }
 

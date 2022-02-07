@@ -67,14 +67,13 @@ function getFreeRowByIndex(orderIndex) {
 
 function moveFreeToAssembly(freeIndex)
 {
-  Audit.startTagging('Перемещение из свободных в сборку')
-
   try {
     let freeData = findFree(freeIndex)
     if (!freeData) {
       throw new Error(`Не найдена свободная позиция c номером ${freeIndex}`)
     }
 
+    Audit.withCommenting('Перемещение из свободных в сборку: создание в сборке')
     addAssembly({
       date_of_adoption: formatDate(Date.now()),
       diameter: freeData.diameter,
@@ -87,13 +86,14 @@ function moveFreeToAssembly(freeIndex)
     })
 
     Trash.withPermanentDeletion(() => {
+      Audit.withCommenting('Перемещение из свободных в сборку: удаление из свободных')
       let isRemovedFromFree = removeFree(freeIndex)
       if (!isRemovedFromFree) {
         throw new Error(`Свободная позиция с номером ${freeIndex} не была удалена`)
       }
     })
   } finally {
-    Audit.stopTagging()
+    Audit.withoutCommenting()
   }
 }
 

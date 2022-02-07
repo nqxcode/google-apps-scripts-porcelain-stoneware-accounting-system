@@ -97,14 +97,17 @@ Trash.getColumnsMap = function () {
 Trash.recover = function (orderObject) {
   switch (orderObject.section) {
     case sheetNames.assemblies:
+      Audit.withCommenting('Восстановление заказа из корзины: добавление в сборку')
       addAssembly(orderObject)
       break
 
     case sheetNames.shipments:
+      Audit.withCommenting('Восстановление заказа из корзины: добавление в отгрузку')
       addShipment(orderObject)
       break
 
     case sheetNames.free:
+      Audit.withCommenting('Восстановление заказа из корзины: добавление в свободные')
       addFree(orderObject)
       break
   }

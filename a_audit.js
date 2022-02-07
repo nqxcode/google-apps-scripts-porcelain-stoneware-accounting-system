@@ -117,7 +117,7 @@ let Audit = function (section) {
     novel = removeEmpty(novel || {})
     prev = removeEmpty(prev || {})
 
-    let tag = options.tag ? options.tag : Audit.tag
+    let comment = options.comment ? options.comment : Audit.comment
 
     return {
       row: row ? row : '-',
@@ -125,7 +125,7 @@ let Audit = function (section) {
       novel: prepareData(novel),
       prev: prepareData(prev),
       diff: prepareData(diff),
-      tag: tag,
+      comment: comment,
     }
   }
 
@@ -156,19 +156,19 @@ let Audit = function (section) {
       payload.diff,
       payload.novel,
       payload.prev,
-      payload.tag
+      payload.comment
     ])
   }
 }
 
-Audit.tag = null
+Audit.comment = null
 
-Audit.startTagging = function (tag) {
-  Audit.tag = tag
+Audit.withCommenting = function (tag) {
+  Audit.comment = tag
 }
 
-Audit.stopTagging = function () {
-  Audit.tag = null
+Audit.withoutCommenting = function () {
+  Audit.comment = null
 }
 
 Audit.trackingPropsCallable = null
