@@ -24,6 +24,7 @@ let audit = {
   free: new Audit(sheetNames.free),
   properties: new Audit(sheetNames.properties),
   report: new Audit(sheetNames.report),
+  trash: new Audit(sheetNames.trash),
 }
 
 let trash = {

@@ -124,6 +124,7 @@ let Audit = function (section) {
       novel: prepareData(novel),
       prev: prepareData(prev),
       diff: prepareData(diff),
+      message: options.message,
     }
   }
 
@@ -153,7 +154,8 @@ let Audit = function (section) {
       payload.orderNumber,
       payload.diff,
       payload.novel,
-      payload.prev
+      payload.prev,
+      payload.message
     ])
   }
 }

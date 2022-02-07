@@ -2,6 +2,10 @@ function getTrashOffset() {
   return 3
 }
 
+function getTrashRowByIndex(orderIndex) {
+  return getTrashOffset() + orderIndex
+}
+
 function getTrashStringified() {
   let orders = getTrash()
 
@@ -46,6 +50,7 @@ function recoverOrder(orderIndex) {
   if (trashItem) {
     Trash.recover(trashItem)
     removeTrashItem(orderIndex)
+    audit.trash.log(Audit.Action.DELETE, {prev: trashItem, row: getTrashRowByIndex(orderIndex), message: 'Восстановление заказа из корзины'})
   }
 }
 
@@ -53,6 +58,7 @@ function removeOrder(orderIndex) {
   let trashItem = findTrashItem(orderIndex);
   if (trashItem) {
     removeTrashItem(orderIndex)
+    audit.trash.log(Audit.Action.DELETE, {prev: trashItem, row: getTrashRowByIndex(orderIndex), message: 'Безвозвратное удаление заказа из корзины'})
   }
 }
 
