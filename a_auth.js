@@ -11,7 +11,7 @@ Auth.gate = function(resource, callable) {
 }
 
 Auth.currentUser = function() {
-  return Session.getActiveUser().getEmail();
+  return currentUser
 }
 
 Auth.check = function (resource) {
