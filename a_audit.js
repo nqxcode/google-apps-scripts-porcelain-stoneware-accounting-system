@@ -149,7 +149,7 @@ let Audit = function (section) {
     auditSheet.appendRow([
       formatDateTime(new Date()),
       action,
-      Session.getActiveUser().getEmail(),
+      Auth.currentUser(),
       this.section,
       payload.row,
       payload.orderNumber,
