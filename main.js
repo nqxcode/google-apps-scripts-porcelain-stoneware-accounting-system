@@ -1,5 +1,4 @@
 let spreadSheet = SpreadsheetApp.openByUrl(spreadSheetUrl)
-let currentUser = Session.getActiveUser().getEmail()
 
 let sheetNames = {
   assemblies: "Сборка",
