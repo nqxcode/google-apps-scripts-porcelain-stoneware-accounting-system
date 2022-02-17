@@ -27,7 +27,7 @@ let Trash = function (section) {
     let rowObject = {
       ...{
         date: formatDateTime(new Date()),
-        user: Session.getActiveUser().getEmail(),
+        user: Auth.currentUser(),
         section: this.section,
         row: this.getRow(orderObject)
       },
