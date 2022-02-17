@@ -10,6 +10,9 @@
     ]
   },
   "exceptionLogging": "STACKDRIVER",
+  "oauthScopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+  ],
   "runtimeVersion": "V8",
   "webapp": {
     "executeAs": "USER_DEPLOYING",
